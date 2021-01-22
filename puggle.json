@@ -1,0 +1,18 @@
+{
+  "version": "0.5.4",
+  "projectName": "deconf-api-toolkit",
+  "preset": {
+    "name": "robb-j:ts-node",
+    "version": "0.2.2"
+  },
+  "plugins": {
+    "npm": "0.1.0"
+  },
+  "params": {
+    "npm": {
+      "packageName": "@openlab/deconf-api-toolkit",
+      "packageInfo": "A library for running decentralised virtual conferences",
+      "repository": "digitalinteraction/deconf-api-toolkit"
+    }
+  }
+}
