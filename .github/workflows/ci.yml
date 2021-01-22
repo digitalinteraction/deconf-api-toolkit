@@ -20,7 +20,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: install dependencies
-        run: npm ci
+        run: npm install --no-audit
 
       - name: run the build
         run: npm run build
