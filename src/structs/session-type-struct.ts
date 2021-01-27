@@ -14,7 +14,8 @@ export enum SessionLayout {
 export type SessionType = Infer<typeof SessionTypeStruct>
 export const SessionTypeStruct = object({
   id: string(),
-  icon: string(),
+  iconGroup: string(),
+  iconName: string(),
   layout: string(),
   title: LocalisedStruct,
 })
