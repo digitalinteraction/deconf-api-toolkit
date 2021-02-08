@@ -262,7 +262,8 @@ describe('getTypes', () => {
     mocked(conference.getTypes).mockResolvedValue([
       {
         id: 'a',
-        icon: 'default.png',
+        iconName: 'fas',
+        iconGroup: 'users',
         layout: 'workshop',
         title: { en: 'Test' },
       },
@@ -275,7 +276,8 @@ describe('getTypes', () => {
       types: [
         {
           id: 'a',
-          icon: 'default.png',
+          iconName: 'fas',
+          iconGroup: 'users',
           layout: 'workshop',
           title: { en: 'Test' },
         },
