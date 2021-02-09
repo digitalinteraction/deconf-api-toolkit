@@ -2,10 +2,10 @@
 // Register request
 //
 
-import { Infer, object, string } from 'superstruct'
+import { Describe, object, string } from 'superstruct'
+import { RegisterRequest } from '@openlab/deconf-shared'
 
-export type RegisterRequest = Infer<typeof RegisterRequestStruct>
-export const RegisterRequestStruct = object({
+export const RegisterRequestStruct: Describe<RegisterRequest> = object({
   name: string(),
   email: string(),
   language: string(),

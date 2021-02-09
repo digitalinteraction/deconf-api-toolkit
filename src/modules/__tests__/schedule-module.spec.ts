@@ -1,5 +1,4 @@
 import { mocked } from 'ts-jest/utils'
-import { AuthToken } from '../../services'
 import {
   mockQueryService,
   mockConferenceService,
@@ -10,7 +9,8 @@ import {
   Session,
   SessionState,
   SessionVisibility,
-} from '../../structs'
+  AuthToken,
+} from '@openlab/deconf-shared'
 import { createScheduleModule } from '../schedule-module'
 import ics = require('ics')
 
@@ -47,7 +47,7 @@ function setup() {
     links: [
       { type: 'video', url: 'https://zoom.us/me/abcdefgh', language: 'en' },
     ],
-    hostLanguage: ['en'],
+    hostLanguages: ['en'],
     enableInterpretation: false,
     speakers: [],
     hostOrganisation: { en: 'Open Lab' },
@@ -56,6 +56,7 @@ function setup() {
     isFeatured: true,
     visibility: SessionVisibility.private,
     state: SessionState.accepted,
+    hideFromSchedule: false,
   }
 
   const settings: ConfigSettings = {
@@ -63,7 +64,7 @@ function setup() {
     whatsOn: { enabled: true, visible: false },
     schedule: { enabled: true, visible: false },
     coffeeChat: { enabled: true, visible: false },
-    helpdesk: { enabled: true, visible: false },
+    helpDesk: { enabled: true, visible: false },
 
     startDate: new Date(0),
     endDate: new Date(thirtyMinutesInMs),

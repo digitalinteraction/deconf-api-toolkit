@@ -2,10 +2,10 @@
 // Link
 //
 
-import { enums, Infer, object, optional, string } from 'superstruct'
+import { Describe, object, optional, string } from 'superstruct'
+import { SessionLink } from '@openlab/deconf-shared'
 
-export type Link = Infer<typeof LinkStruct>
-export const LinkStruct = object({
+export const SessionLinkStruct: Describe<SessionLink> = object({
   type: string(),
   url: string(),
   title: optional(string()),

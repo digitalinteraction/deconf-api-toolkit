@@ -2,11 +2,11 @@
 // Track
 //
 
-import { Infer, object, string } from 'superstruct'
+import { Describe, object, string } from 'superstruct'
 import { LocalisedStruct } from './localised-struct'
+import { Track } from '@openlab/deconf-shared'
 
-export type Track = Infer<typeof TrackStruct>
-export const TrackStruct = object({
+export const TrackStruct: Describe<Track> = object({
   id: string(),
   title: LocalisedStruct,
 })

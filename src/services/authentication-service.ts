@@ -1,14 +1,4 @@
-export interface EmailLoginToken {
-  kind: 'email-login'
-  sub: number
-  user_roles: string[]
-}
-export interface AuthToken {
-  kind: 'auth'
-  sub: number
-  user_roles: string[]
-  user_lang: string
-}
+import { AuthToken } from '@openlab/deconf-shared'
 
 const bearerRegex = /^bearer /i
 

@@ -1,20 +1,20 @@
 import {
-  Session,
-  Slot,
-  SlotJson,
-  Speaker,
-  Track,
-  Theme,
   ConfigSettings,
-  SessionType,
   Interpreter,
-} from '../structs'
+  Session,
+  SessionSlot,
+  SessionSlotJson,
+  SessionType,
+  Speaker,
+  Theme,
+  Track,
+} from '@openlab/deconf-shared'
 
 /**
  * A service for fetching information for the conference
  */
 export interface ConferenceService {
-  getSlots(): Promise<Slot[]>
+  getSlots(): Promise<SessionSlot[]>
   getSessions(): Promise<Session[]>
   findSession(id: string): Promise<Session | null>
   getTracks(): Promise<Track[]>
@@ -41,8 +41,8 @@ export function createConferenceService(
   const getSettings = () =>
     fromCache<ConfigSettings | null>('schedule.settings', null)
 
-  async function getSlots(): Promise<Slot[]> {
-    const slots = await fromCache<SlotJson[]>('schedule.slots', [])
+  async function getSlots(): Promise<SessionSlot[]> {
+    const slots = await fromCache<SessionSlotJson[]>('schedule.slots', [])
     if (!slots) return []
 
     return slots.map((s) => ({

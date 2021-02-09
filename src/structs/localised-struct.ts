@@ -2,7 +2,7 @@
 // Localised
 //
 
-import { Infer, record, string } from 'superstruct'
+import { Describe, record, string } from 'superstruct'
+import { Localised } from '@openlab/deconf-shared'
 
-export type Localised = Infer<typeof LocalisedStruct>
-export const LocalisedStruct = record(string(), string())
+export const LocalisedStruct: Describe<Localised> = record(string(), string())

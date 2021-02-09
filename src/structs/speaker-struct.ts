@@ -2,14 +2,14 @@
 // Speaker
 //
 
-import { Infer, object, string } from 'superstruct'
+import { Describe, object, optional, string } from 'superstruct'
 import { LocalisedStruct } from './localised-struct'
+import { Speaker } from '@openlab/deconf-shared'
 
-export type Speaker = Infer<typeof SpeakerStruct>
-export const SpeakerStruct = object({
+export const SpeakerStruct: Describe<Speaker> = object({
   id: string(),
   name: string(),
   role: LocalisedStruct,
   bio: LocalisedStruct,
-  headshot: string(),
+  headshot: optional(string()),
 })

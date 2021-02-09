@@ -1,11 +1,10 @@
 import { mocked } from 'ts-jest/utils'
-import { AuthToken } from '../../services'
 import {
   mockEmailService,
   mockJwtService,
   mockQueryService,
 } from '../../services/__mocks__/'
-import { Registration } from '../../structs'
+import { AuthToken, Registration } from '@openlab/deconf-shared'
 import { createAccountsModule } from '../accounts-module'
 
 function setup() {

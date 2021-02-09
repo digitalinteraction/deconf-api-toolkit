@@ -3,7 +3,7 @@ import { mockQueryService } from '../../services/__mocks__'
 import { createAttendanceModule } from '../attendance-module'
 
 import { mocked } from 'ts-jest/utils'
-import { AuthToken } from '../../services'
+import { AuthToken } from '@openlab/deconf-shared'
 
 function setup() {
   const registration: any = { id: 123 }

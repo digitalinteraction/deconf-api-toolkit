@@ -2,7 +2,8 @@
 // ConfigSettings
 //
 
-import { boolean, date, Infer, object } from 'superstruct'
+import { boolean, date, Describe, Infer, object } from 'superstruct'
+import { ConfigFlag, ConfigSettings } from '@openlab/deconf-shared'
 
 // enabled | visible | result
 // ------- | ------- | ----
@@ -10,18 +11,17 @@ import { boolean, date, Infer, object } from 'superstruct'
 // false   | true    | coming soon
 // true    | false   | hidden
 // false   | false   | hidden
-const Flag = object({
+const Flag: Describe<ConfigFlag> = object({
   enabled: boolean(),
   visible: boolean(),
 })
 
-export type ConfigSettings = Infer<typeof ConfigSettingsStruct>
-export const ConfigSettingsStruct = object({
+export const ConfigSettingsStruct: Describe<ConfigSettings> = object({
   atrium: Flag,
   whatsOn: Flag,
   schedule: Flag,
   coffeeChat: Flag,
-  helpdesk: Flag,
+  helpDesk: Flag,
 
   startDate: date(),
   endDate: date(),

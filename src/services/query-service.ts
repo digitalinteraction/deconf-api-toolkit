@@ -1,5 +1,9 @@
 import { PostgresService, PostgresClient } from './postgres-service'
-import { Registration, RegisterRequest, Attendance } from '../structs'
+import {
+  Registration,
+  RegisterRequest,
+  Attendance,
+} from '@openlab/deconf-shared'
 
 // NOTE: This is a bit of a behemoth, handling most postgres logic
 

@@ -2,10 +2,10 @@
 // Attendance
 //
 
-import { date, Infer, number, object, string } from 'superstruct'
+import { date, Describe, number, object, string } from 'superstruct'
+import { Attendance } from '@openlab/deconf-shared'
 
-export type Attendance = Infer<typeof AttendanceStruct>
-export const AttendanceStruct = object({
+export const AttendanceStruct: Describe<Attendance> = object({
   id: number(),
   created: date(),
   attendee: number(),

@@ -6,54 +6,47 @@ import {
   array,
   boolean,
   enums,
-  Infer,
+  Describe,
   object,
   optional,
   string,
 } from 'superstruct'
-import { LinkStruct } from './link-struct'
+import { SessionLinkStruct } from './link-struct'
 import { LocalisedStruct } from './localised-struct'
+import {
+  Session,
+  SessionState,
+  SessionVisibility,
+} from '@openlab/deconf-shared'
 
-export enum SessionState {
-  draft = 'draft',
-  accepted = 'accepted',
-  rejected = 'rejected',
-  cancelled = 'cancelled',
-}
-
-export enum SessionVisibility {
-  public = 'public',
-  private = 'private',
-}
-
-export type Session = Infer<typeof SessionStruct>
-export const SessionStruct = object({
+export const SessionStruct: Describe<Session> = object({
   id: string(),
   type: string(),
   slot: optional(string()),
   track: string(),
   themes: array(string()),
-  coverImage: string(),
+  coverImage: optional(string()),
   title: LocalisedStruct,
   content: LocalisedStruct,
-  links: array(LinkStruct),
-  // hostName: string(),
-  // hostEmail: string(),
-  hostLanguage: array(string()),
+  links: array(SessionLinkStruct),
+  hostLanguages: array(string()),
   enableInterpretation: boolean(),
   speakers: array(string()),
   hostOrganisation: LocalisedStruct,
   isRecorded: boolean(),
-  // attendeeInteraction: enums(['view', 'q-and-a', 'workshop', 'games']),
-  // attendeeDevices: enums(['desktop', 'mobile', 'all']),
   isOfficial: boolean(),
-  // isDraft: boolean(),
   isFeatured: boolean(),
-  // isCancelled: optional(boolean()),
-  // isPublic: optional(boolean()),
   visibility: enums(Object.values(SessionVisibility)),
   state: enums(Object.values(SessionState)),
-
   proxyUrl: optional(string()),
-  hideFromSchedule: optional(boolean()),
+  hideFromSchedule: boolean(),
 })
+
+// removed:
+// hostName: string(),
+// hostEmail: string(),
+// attendeeInteraction: enums(['view', 'q-and-a', 'workshop', 'games']),
+// attendeeDevices: enums(['desktop', 'mobile', 'all']),
+// isDraft: boolean(),
+// isCancelled: optional(boolean()),
+// isPublic: optional(boolean()),

@@ -1,5 +1,6 @@
-import { AuthToken, QueryService, ConferenceService } from '../services'
+import { QueryService, ConferenceService } from '../services'
 import { HttpResponse } from '../http-response'
+import { AuthToken } from '@openlab/deconf-shared'
 
 export interface AttendanceModule {
   // POST /attend/:session_id

@@ -2,11 +2,11 @@
 // Theme
 //
 
-import { Infer, object, string } from 'superstruct'
+import { Describe, object, string } from 'superstruct'
 import { LocalisedStruct } from './localised-struct'
+import { Theme } from '@openlab/deconf-shared'
 
-export type Theme = Infer<typeof ThemeStruct>
-export const ThemeStruct = object({
+export const ThemeStruct: Describe<Theme> = object({
   id: string(),
   title: LocalisedStruct,
 })

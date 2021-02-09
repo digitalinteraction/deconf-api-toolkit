@@ -2,13 +2,13 @@
 // RegisterBody - the fields needed to register
 //
 
-import { boolean, date, Infer, number, object, size, string } from 'superstruct'
+import { boolean, date, Describe, number, object, string } from 'superstruct'
+import { Registration } from '@openlab/deconf-shared'
 
 //
 // Registration
 //
-export type Registration = Infer<typeof RegistrationStruct>
-export const RegistrationStruct = object({
+export const RegistrationStruct: Describe<Registration> = object({
   id: number(),
   created: date(),
   name: string(),

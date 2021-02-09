@@ -1,7 +1,5 @@
-import {
-  AuthToken,
-  createAuthenticationService,
-} from '../authentication-service'
+import { AuthToken } from '@openlab/deconf-shared'
+import { createAuthenticationService } from '../authentication-service'
 
 function setup() {
   const token: AuthToken = {

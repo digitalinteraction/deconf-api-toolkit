@@ -1,12 +1,7 @@
 import { HttpResponse } from '../http-response'
-import {
-  AuthToken,
-  ConferenceService,
-  QueryService,
-  UrlService,
-} from '../services'
+import { ConferenceService, QueryService, UrlService } from '../services'
 import ics = require('ics')
-import { SessionState } from '../structs'
+import { AuthToken, SessionState } from '@openlab/deconf-shared'
 
 // TODO: improve session processing
 // - don't put in links when indexing

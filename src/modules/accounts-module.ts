@@ -1,13 +1,9 @@
 import { query } from 'express'
 import { HttpResponse } from '../http-response'
 import emailRegex = require('email-regex')
-import {
-  AuthToken,
-  JwtService,
-  QueryService,
-  EmailLoginToken,
-} from '../services'
+import { JwtService, QueryService } from '../services'
 import { EmailService } from '../services/email-service'
+import { AuthToken, EmailLoginToken } from '@openlab/deconf-shared'
 
 export interface AccountsModule {
   // GET /me

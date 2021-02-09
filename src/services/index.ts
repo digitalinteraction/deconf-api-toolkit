@@ -1,6 +1,4 @@
 export {
-  AuthToken,
-  EmailLoginToken,
   AuthenticationService,
   createAuthenticationService,
 } from './authentication-service'
