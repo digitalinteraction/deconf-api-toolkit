@@ -57,6 +57,7 @@ function setup() {
     visibility: SessionVisibility.private,
     state: SessionState.accepted,
     hideFromSchedule: false,
+    participantCap: null,
   }
 
   const settings: ConfigSettings = {

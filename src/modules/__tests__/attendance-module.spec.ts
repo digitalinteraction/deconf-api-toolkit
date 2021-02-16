@@ -25,6 +25,7 @@ describe('attend', () => {
     const { attendModule, registration, conference, query, authToken } = setup()
     mocked(conference.findSession).mockResolvedValue({} as any)
     mocked(query.getVerifiedRegistration).mockResolvedValue(registration)
+    mocked(query.getSessionAttendance).mockResolvedValue(new Map())
 
     const response = await attendModule.attend(authToken, 'session-2')
 
@@ -34,10 +35,26 @@ describe('attend', () => {
     const { attendModule, registration, conference, query, authToken } = setup()
     mocked(conference.findSession).mockResolvedValue({} as any)
     mocked(query.getVerifiedRegistration).mockResolvedValue(registration)
+    mocked(query.getSessionAttendance).mockResolvedValue(new Map())
 
     await attendModule.attend(authToken, 'session-2')
 
     expect(query.attend).toBeCalledWith(123, 'session-2')
+  })
+  it('should return an error if the session is full', async () => {
+    const { attendModule, registration, conference, query, authToken } = setup()
+    mocked(conference.findSession).mockResolvedValue({
+      id: 'session-2',
+      participantCap: 30,
+    } as any)
+    mocked(query.getVerifiedRegistration).mockResolvedValue(registration)
+    mocked(query.getSessionAttendance).mockResolvedValue(
+      new Map([['session-2', 30]])
+    )
+
+    const response = await attendModule.attend(authToken, 'session-2')
+
+    expect(response.status).toEqual(400)
   })
 })
 

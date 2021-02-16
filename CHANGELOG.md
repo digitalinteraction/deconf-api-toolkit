@@ -2,6 +2,12 @@
 
 This file documents changes
 
+## 2.1.0
+
+**Features**
+
+- Added a hard-cap to `attend` endpoint based on `session.participantCap`
+
 ## 2.0.0
 
 **BREAKING** move to `@openlab/deconf-shared` for types.

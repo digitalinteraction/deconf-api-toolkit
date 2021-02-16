@@ -10,6 +10,8 @@ import {
   object,
   optional,
   string,
+  nullable,
+  number,
 } from 'superstruct'
 import { SessionLinkStruct } from './link-struct'
 import { LocalisedStruct } from './localised-struct'
@@ -38,6 +40,7 @@ export const SessionStruct: Describe<Session> = object({
   isFeatured: boolean(),
   visibility: enums(Object.values(SessionVisibility)),
   state: enums(Object.values(SessionState)),
+  participantCap: nullable(number()),
   proxyUrl: optional(string()),
   hideFromSchedule: boolean(),
 })

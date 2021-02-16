@@ -24,7 +24,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@openlab/deconf-shared": "^1.0.1",
+    "@openlab/deconf-shared": "^2.0.1",
     "dot-prop": "^6.0.1",
     "email-regex": "^4.0.0",
     "fs-extra": "^9.1.0",
