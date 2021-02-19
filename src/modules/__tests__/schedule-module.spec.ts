@@ -158,6 +158,24 @@ describe('getSessions', () => {
       ],
     })
   })
+  it('should filter by state', async () => {
+    const { schedule, conference, query, fakeSession, authToken } = setup()
+    mocked(conference.getSessions).mockResolvedValue([
+      { ...fakeSession, state: SessionState.accepted },
+      { ...fakeSession, state: SessionState.confirmed },
+      { ...fakeSession, state: SessionState.rejected },
+    ])
+    mocked(query.getSessionAttendance).mockResolvedValue(new Map())
+
+    const res = await schedule.getSessions(
+      authToken,
+      new Set([SessionState.confirmed])
+    )
+
+    expect(res.status).toEqual(200)
+    expect(res.body.sessions).toHaveLength(1)
+    expect(res.body.sessions[0].state).toEqual(SessionState.confirmed)
+  })
 })
 
 describe('getSettings', () => {

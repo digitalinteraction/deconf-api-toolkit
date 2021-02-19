@@ -2,6 +2,14 @@
 
 This file documents changes
 
+## 2.2.0
+
+**Features**
+
+- Added optional `states` option to `ScheduleModule#getSessions` to only return
+  sessions that are a specific state.
+  Also removed the default filter of `!= 'draft'`
+
 ## 2.1.0
 
 **Features**

@@ -12,7 +12,10 @@ export interface ScheduleModule {
   generateIcs(token: AuthToken | null, sessionId: string): Promise<HttpResponse>
 
   // GET /sessions
-  getSessions(token: AuthToken | null): Promise<HttpResponse>
+  getSessions(
+    token: AuthToken | null,
+    states?: Set<SessionState>
+  ): Promise<HttpResponse>
 
   // GET /settings
   getSettings(): Promise<HttpResponse>
@@ -101,9 +104,11 @@ export function createScheduleModule({
       })
     },
 
-    async getSessions(authToken) {
+    async getSessions(authToken, states) {
       let sessions = await conference.getSessions()
-      sessions = sessions.filter((s) => s.state !== SessionState.draft)
+      if (states) {
+        sessions = sessions.filter((s) => states.has(s.state))
+      }
 
       const attendance = await query.getSessionAttendance()
 
