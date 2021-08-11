@@ -1,5 +1,5 @@
-import express = require('express')
-import dotenv = require('dotenv')
+import express from 'express'
+import dotenv from 'dotenv'
 import { checkEnvObject, pluck } from 'valid-env'
 
 import * as lib from '../src'

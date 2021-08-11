@@ -1,17 +1,30 @@
 import * as index from '../index'
 
-it('should export modules', () => {
-  expect(index.createAccountsModule).toBeDefined()
+it('should export the attendance module', () => {
+  expect(index.AttendanceRoutes).toBeDefined()
 })
 
-it('should export services', () => {
-  expect(index.createConferenceService).toBeDefined()
+it('should export the carbon module', () => {
+  expect(index.CarbonRoutes).toBeDefined()
 })
 
-it('should export HttpResponse', () => {
-  expect(index.HttpResponse).toBeDefined()
+it('should export the conference module', () => {
+  expect(index.ConferenceRoutes).toBeDefined()
 })
 
-it('should export structs', () => {
-  expect(index.RegistrationStruct).toBeDefined()
+it('should export the database module', () => {
+  expect(index.PostgresService).toBeDefined()
+})
+
+// TODO:
+// it('should export the interpret module', () => {
+//   expect(index.AttendanceRoutes).toBeDefined()
+// })
+
+it('should export the library module', () => {
+  expect(index.EmailService).toBeDefined()
+})
+
+it('should export the registration module', () => {
+  expect(index.RegistrationRoutes).toBeDefined()
 })
