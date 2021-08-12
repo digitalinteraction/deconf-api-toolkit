@@ -23,10 +23,10 @@ import {
   I18nService,
   JwtService,
   ApiError,
+  loadResources,
 } from '../src'
 
 import { MigrateRepository } from '../src/database/migrate-repository'
-import { loadResources } from '../src/lib/resources'
 import { create } from 'superstruct'
 
 function runMigrations(postgres: PostgresService) {
