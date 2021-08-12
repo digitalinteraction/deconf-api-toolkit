@@ -1,23 +1,113 @@
-import { I18nService } from '../i18n-service'
+import path from 'path'
+import { getI18nKeys, I18nService } from '../i18n-service'
 
-function setup() {
-  const service = new I18nService({
-    en: {
+describe('getI18nKeys', () => {
+  it('should return the dot-notation keys on an object', () => {
+    const result = getI18nKeys({
       test: {
         simple: 'Hello, world!',
-        substituted: 'Hello, {{ name }}!',
       },
-    },
-    fr: {
-      test: {
-        simple: 'Bonjour le monde!',
-      },
-    },
-    es: {},
+    })
+
+    expect(result).toEqual(['test.simple'])
   })
-  return { service }
-}
+})
 
 describe('I18nService', () => {
-  it('should ...', () => {})
+  describe('.findMissingKeys', () => {
+    it('should return missing keys', () => {
+      const result = I18nService.findMissingKeys({
+        en: {
+          test: {
+            simple: 'Hello, world',
+          },
+        },
+        fr: {},
+      })
+
+      expect(result).toEqual({
+        en: [],
+        fr: ['test.simple'],
+      })
+    })
+  })
+
+  describe('.loadLocales', () => {
+    it('should load the yaml files in a directory', async () => {
+      const dir = path.join(__dirname, '../../test-lib/test-i18n')
+      const locales = await I18nService.loadLocales(dir)
+
+      expect(locales).toEqual({
+        en: {
+          test: {
+            simple: expect.any(String),
+            substituted: expect.any(String),
+          },
+        },
+        fr: {
+          test: {
+            simple: expect.any(String),
+          },
+        },
+      })
+    })
+  })
+
+  describe('#translate', () => {
+    function setup() {
+      const service = new I18nService({
+        en: {
+          test: {
+            simple: 'Hello, world!',
+            substituted: 'Hello, {{ name }}!',
+          },
+        },
+        fr: {
+          test: {
+            simple: 'Bonjour le monde!',
+          },
+        },
+        es: {},
+      })
+      return { service }
+    }
+
+    it('should perform simple translations', () => {
+      const { service } = setup()
+
+      const result = service.translate('en', 'test.simple')
+      expect(result).toEqual('Hello, world!')
+    })
+
+    it('should perform simple french translations', () => {
+      const { service } = setup()
+
+      const result = service.translate('fr', 'test.simple')
+      expect(result).toEqual('Bonjour le monde!')
+    })
+
+    it('should fail for unknown locales', () => {
+      const { service } = setup()
+
+      const call = () => service.translate('ru', 'test.simple')
+      expect(call).toThrow(/Unknown locale/)
+    })
+
+    it('should fallback to english', () => {
+      const { service } = setup()
+
+      const result = service.translate('es', 'test.simple')
+      expect(result).toEqual('Hello, world!')
+    })
+
+    it('should perform substitutions', () => {
+      const { service } = setup()
+
+      const result = service.translate('en', 'test.substituted', {
+        name: 'Geoff',
+      })
+
+      expect(result).toEqual('Hello, Geoff!')
+    })
+  })
 })

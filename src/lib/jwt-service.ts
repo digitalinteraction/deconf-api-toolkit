@@ -1,20 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken'
 import createDebug from 'debug'
-import {
-  is,
-  type,
-  array,
-  string,
-  Infer,
-  coerce,
-  refine,
-  Describe,
-  literal,
-  number,
-} from 'superstruct'
+import { is, type, array, string, refine, literal, number } from 'superstruct'
 
 import { ApiError } from './api-error'
-import { Contextual, DeconfBaseContext } from './context'
+import { DeconfBaseContext } from './context'
 import { AuthToken, EmailLoginToken } from '@openlab/deconf-shared'
 
 // TODO: move to config
@@ -31,7 +20,7 @@ function authzHeader() {
   return refine(string(), 'authz-bearer', (value) => bearerRegex().test(value))
 }
 
-export const AuthzHeaders = type({
+export const AuthzHeadersStruct = type({
   authorization: authzHeader(),
 })
 
@@ -97,7 +86,7 @@ export class JwtService {
         throw new ApiError(401, ['auth.badToken'])
       }
 
-      throw ApiError.unknown()
+      throw ApiError.internalServerError()
     }
   }
 
@@ -125,22 +114,20 @@ export class JwtService {
     return result
   }
 
-  fromSocketId(socketId: string) {
+  getSocketAuth(socketId: string) {
     debug('fromSocketId %o', socketId)
     return this.#store.retrieve<AuthToken>(`auth_${socketId}`)
   }
 
-  fromRequestHeaders(headers: any) {
+  getRequestAuth(headers: any) {
     debug('fromRequestHeaders %o', headers?.authorization)
 
-    if (!is(headers, AuthzHeaders)) throw ApiError.notAuthorized()
+    if (!is(headers, AuthzHeadersStruct)) return null
 
     const authorization = headers.authorization.replace(bearerRegex(), '')
     const token = this.verifyAuthToken(authorization) as AuthToken
 
-    if (typeof token !== 'object' || token.kind !== 'auth') {
-      throw ApiError.notAuthorized()
-    }
+    if (typeof token !== 'object' || token.kind !== 'auth') return null
 
     return token as AuthToken
   }

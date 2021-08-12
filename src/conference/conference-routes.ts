@@ -100,7 +100,7 @@ export class ConferenceRoutes {
   // GET /links
   async getLinks(authToken: AuthToken | null, sessionId: string) {
     // Make sure they are authorized first
-    if (!authToken) throw ApiError.notAuthorized()
+    if (!authToken) throw ApiError.unauthorized()
 
     const isAdmin = authToken.user_roles.includes('admin')
 
@@ -115,7 +115,7 @@ export class ConferenceRoutes {
       )
       const isAttending = attendance.some((a) => a.session === sessionId)
 
-      if (!isAttending) throw ApiError.notAuthorized()
+      if (!isAttending) throw ApiError.unauthorized()
     }
 
     // Get the slot of the session
@@ -128,7 +128,7 @@ export class ConferenceRoutes {
     // If they are attending only return links when close to the session
     const timeUntil = new Date(slot.start).getTime() - Date.now()
     if (!isAdmin && timeUntil > LINKS_GRACE_MS) {
-      throw ApiError.notAuthorized()
+      throw ApiError.unauthorized()
     }
 
     // If they reached here they can have the links

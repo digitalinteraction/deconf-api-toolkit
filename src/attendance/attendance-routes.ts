@@ -24,7 +24,7 @@ export class AttendanceRoutes {
   }
 
   async #setup(authToken: AuthToken | null, sessionId: string) {
-    if (!authToken) throw ApiError.notAuthorized()
+    if (!authToken) throw ApiError.unauthorized()
 
     const session = await this.#conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
@@ -32,7 +32,7 @@ export class AttendanceRoutes {
     const attendee = await this.#registrationRepo.getVerifiedRegistration(
       authToken.sub
     )
-    if (!attendee) throw ApiError.notAuthorized()
+    if (!attendee) throw ApiError.unauthorized()
 
     return { session, attendee }
   }
@@ -76,7 +76,7 @@ export class AttendanceRoutes {
 
   // GET /attendance/me
   async getUserAttendance(authToken: AuthToken | null) {
-    if (!authToken) throw ApiError.notAuthorized()
+    if (!authToken) throw ApiError.unauthorized()
 
     return this.#attendanceRepo.getUserAttendance(authToken.sub)
   }

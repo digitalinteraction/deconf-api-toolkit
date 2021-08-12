@@ -26,49 +26,30 @@ export function getI18nKeys(object: any, segments: string[] = []) {
   return keys
 }
 
-export function assertLocales<T extends I18nDictionary>(
-  locales: T,
-  throws: boolean,
-  output = console.log
-) {
-  const joiner = '\n - '
-
-  // Emit a warning or throw an error depending on 'throws' variable
-  const errorOrWarn = (msg: string) => {
-    if (throws) throw new Error(msg)
-    else output('WARNING: ' + msg)
-  }
-
-  // A set of all known locale keys
-  const keyset = new Set<string>()
-
-  // A record of locale to their implemented keys
-  const localeKeys: Record<keyof T, string[]> = {} as any
-
-  // For each locale, get its keys and update the global keyset
-  for (const locale in locales) {
-    const keys = getI18nKeys(dot.get(locales, locale))
-    keys.forEach((k) => keyset.add(k))
-    localeKeys[locale] = keys
-  }
-
-  // Get the global keyset as an array
-  const allKeys = Array.from(keyset)
-
-  // For each locale, find keys that it hasn't implemented
-  for (const locale in localeKeys) {
-    const keys = new Set(localeKeys[locale])
-
-    // If there are missing action that
-    const missing = allKeys.filter((k) => !keys.has(k))
-    if (missing.length > 0) {
-      errorOrWarn(`missing ${locale} keys:` + joiner + missing.join(joiner))
-    }
-  }
-}
-
 export class I18nService {
   #locales: I18nDictionary
+
+  static findMissingKeys<T extends I18nDictionary>(locales: T) {
+    const globalKeyset = new Set<string>()
+
+    // For each locale, get it's keys and update the global keyset
+    const localeKeys: Record<keyof T, string[]> = {} as any
+    for (const locale in locales) {
+      localeKeys[locale] = getI18nKeys(dot.get(locales, locale))
+      for (const key of localeKeys[locale]) {
+        globalKeyset.add(key)
+      }
+    }
+
+    // For each locale, work out which keys are missing
+    const allKeys = Array.from(globalKeyset)
+    const missing: Record<keyof T, string[]> = {} as any
+    for (const locale in locales) {
+      const keys = new Set(localeKeys[locale])
+      missing[locale] = allKeys.filter((k) => !keys.has(k))
+    }
+    return missing
+  }
 
   static async loadLocales(directory: string) {
     const directories = await fs.readdir(directory)

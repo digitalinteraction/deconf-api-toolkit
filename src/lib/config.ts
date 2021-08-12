@@ -1,21 +1,11 @@
 import fs from 'fs/promises'
-import {
-  date,
-  number,
-  object,
-  string,
-  coerce,
-  Infer,
-  create,
-  array,
-  defaulted,
-} from 'superstruct'
+import { object, string, Infer, create, array, Struct } from 'superstruct'
 
 // function jsonDate() {
 //   return coerce(date(), string(), (value) => new Date(value))
 // }
 
-const DeconfConfigStruct = object({
+export const DeconfConfigStruct = object({
   admins: array(
     object({
       email: string(),
@@ -36,10 +26,13 @@ const DeconfConfigStruct = object({
 
 export type DeconfConfig = Infer<typeof DeconfConfigStruct>
 
-export async function loadDeconfConfig(path: string) {
+export async function loadConfig<T extends Struct<DeconfConfig>>(
+  path: string,
+  struct: T
+) {
   const rawConfig = JSON.parse(await fs.readFile(path, 'utf8'))
 
-  const config = create(rawConfig, DeconfConfigStruct)
+  const config = create(rawConfig, struct)
 
   return Object.freeze(config)
 }

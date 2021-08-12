@@ -3,6 +3,7 @@ import { MockedObject } from 'ts-jest/dist/utils/testing'
 import { AttendanceRepository } from '../attendance/attendance-repository'
 import { CarbonRepository } from '../carbon/carbon-repository'
 import { ConferenceRepository } from '../conference/conference-repository'
+import { MigrateRepository } from '../database/migrate-repository'
 import { MigrateService } from '../database/migrate-service'
 import { PostgresService, PostgresClient } from '../database/postgres-service'
 import { EmailService } from '../lib/email-service'
@@ -55,14 +56,15 @@ export function mockConferenceRepository(): Readonly<ConferenceRepository> {
 }
 
 //
-// Postgres
+// Database
 //
 
-interface PostgresExtras {
+interface PostgresServiceExtras {
   mockClient: PostgresClient
+  mockSql: jest.Mock
 }
 
-export function mockPostgresClient() {
+export function mockPostgresClient(): Readonly<PostgresClient> {
   return {
     release: jest.fn(),
     sql: jest.fn(),
@@ -70,20 +72,29 @@ export function mockPostgresClient() {
 }
 
 export function mockPostgresService(): Readonly<PostgresService> &
-  PostgresExtras {
+  PostgresServiceExtras {
   const mockClient = mockPostgresClient()
   return {
-    getClient: jest.fn(),
+    getClient: jest.fn(async () => mockClient),
     close: jest.fn(),
-    run: jest.fn(),
+    run: jest.fn((block) => block(mockClient)),
     mockClient,
+    mockSql: mockClient.sql as any,
   }
 }
 
 export function mockMigrateService(): Readonly<MigrateService> {
   return {
-    runAll: jest.fn(),
     runMigrations: jest.fn(),
+  }
+}
+
+export function mockMigrateRepository(): Readonly<MigrateRepository> {
+  return {
+    getTables: jest.fn(),
+    createMigrationsTable: jest.fn(),
+    getPreviousMigrations: jest.fn(),
+    runMigration: jest.fn(),
   }
 }
 

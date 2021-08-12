@@ -73,7 +73,7 @@ export class RegistrationRoutes {
     )
     const verified = registrations.find((r) => r.verified)
 
-    if (!verified) throw ApiError.notAuthorized()
+    if (!verified) throw ApiError.unauthorized()
 
     const tokenPayload: EmailLoginToken = {
       kind: 'email-login',
