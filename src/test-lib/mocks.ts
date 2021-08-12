@@ -139,8 +139,8 @@ export function mockJwtService(): Readonly<JwtService> {
     signToken: jest.fn(),
     verifyAuthToken: jest.fn(),
     verifyEmailLoginToken: jest.fn(),
-    fromSocketId: jest.fn(),
-    fromRequestHeaders: jest.fn(),
+    getRequestAuth: jest.fn(),
+    getSocketAuth: jest.fn(),
   }
 }
 
@@ -159,7 +159,7 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
   const expirys = new Map<string, number>()
   return {
     retrieve: jest.fn(async (key) => data.get(key) ?? null),
-    store: jest.fn(async (key, value) => {
+    put: jest.fn(async (key, value) => {
       data.set(key, value)
     }),
     checkHealth: jest.fn(),

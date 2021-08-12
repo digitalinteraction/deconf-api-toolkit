@@ -41,7 +41,7 @@ describe('CarbonRoutes', () => {
 
       await routes.getCarbon()
 
-      expect(store.store).toBeCalledWith(CARBON_CACHE_KEY, {
+      expect(store.put).toBeCalledWith(CARBON_CACHE_KEY, {
         totalDistance: expect.any(Number),
         carbonNotEmitted: expect.any(Number),
       })
@@ -52,7 +52,7 @@ describe('CarbonRoutes', () => {
       mocked(carbonRepo.getCountryCount).mockResolvedValue([
         { country: 'FR', count: 1 },
       ])
-      mocked(store.retrieve).mockResolvedValue({
+      store.data.set(CARBON_CACHE_KEY, {
         totalDistance: 100,
         carbonNotEmitted: 1,
       })
