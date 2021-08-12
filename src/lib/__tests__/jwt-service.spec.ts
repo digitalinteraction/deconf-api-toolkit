@@ -1,4 +1,4 @@
-import { assert as assertStruct } from 'superstruct'
+import { assert as assertStruct, literal, number, type } from 'superstruct'
 import jsonwebtoken from 'jsonwebtoken'
 
 import { mockKeyValueStore } from '../../test-lib/mocks'
@@ -10,6 +10,7 @@ import {
   JwtService,
   JWT_ISSUER,
 } from '../jwt-service'
+import { ApiError } from '../api-error'
 
 describe('AuthzHeadersStruct', () => {
   it('should validate auth headers', () => {
@@ -75,42 +76,43 @@ describe('JwtService', () => {
     })
   })
 
-  describe('#verifyAuthToken', () => {
-    it('should verify the token', () => {
+  describe('#verifyToken', () => {
+    it('should verify the token with the struct', () => {
       const { service, env } = setup()
       const token = jsonwebtoken.sign(
         {
-          kind: 'auth',
+          kind: 'test_token',
           sub: 1,
-          user_roles: ['admin'],
-          user_lang: 'en',
           iss: JWT_ISSUER,
         },
         env.JWT_SECRET
       )
+      const struct = type({
+        kind: literal('test_token'),
+        sub: number(),
+      })
 
-      const exec = () => service.verifyAuthToken(token)
+      const exec = () => service.verifyToken(token, struct)
 
       expect(exec).not.toThrow()
     })
-  })
-
-  describe('#verifyEmailLoginToken', () => {
-    it('should verify the token', () => {
+    it('should throw a badRequest if the structure is invalid', () => {
       const { service, env } = setup()
       const token = jsonwebtoken.sign(
         {
-          kind: 'email-login',
-          sub: 1,
-          user_roles: ['admin'],
+          kind: 'test_token',
           iss: JWT_ISSUER,
         },
         env.JWT_SECRET
       )
+      const struct = type({
+        kind: literal('test_token'),
+        sub: number(),
+      })
 
-      const exec = () => service.verifyEmailLoginToken(token)
+      const exec = () => service.verifyToken(token, struct)
 
-      expect(exec).not.toThrow()
+      expect(exec).toThrow(ApiError)
     })
   })
 

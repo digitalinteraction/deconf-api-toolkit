@@ -31,5 +31,6 @@ export class ApiError extends Error {
         .join('\n')}`
     )
     this.name = 'ApiError'
+    Error.captureStackTrace(this, ApiError)
   }
 }

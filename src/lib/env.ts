@@ -11,7 +11,8 @@ export function createEnv(processEnv = process.env) {
       'SENDGRID_API_KEY',
       'JWT_SECRET',
       'DATABASE_URL',
-      'SELF_URL'
+      'SELF_URL',
+      'CLIENT_URL'
     ),
     NODE_ENV,
   })
@@ -24,5 +25,6 @@ export function createTestingEnv(): DeconfEnv {
     JWT_SECRET: 'not_secret',
     DATABASE_URL: 'postgresql://user:secret@127.0.0.1/user',
     SELF_URL: 'http://localhost:3000',
+    CLIENT_URL: 'http://localhost:8080',
   }
 }

@@ -17,6 +17,9 @@ export class UrlService {
   }
 
   getSessionLink(sessionId: string) {
-    return new URL(`session/${sessionId}`, this.#env.SELF_URL)
+    return new URL(`session/${sessionId}`, this.#env.CLIENT_URL)
+  }
+  getClientLoginLink(token: string) {
+    return new URL(`login/${token}`, this.#env.CLIENT_URL)
   }
 }

@@ -1,6 +1,15 @@
 import jsonwebtoken from 'jsonwebtoken'
 import createDebug from 'debug'
-import { is, type, array, string, refine, literal, number } from 'superstruct'
+import {
+  is,
+  type,
+  array,
+  string,
+  refine,
+  literal,
+  number,
+  Struct,
+} from 'superstruct'
 
 import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
@@ -63,12 +72,16 @@ export class JwtService {
     this.#context = context
   }
 
-  #verifyToken(token: string) {
+  verifyToken<T extends object>(token: string, struct: Struct<T>): T {
     debug('verifyToken %o', token)
     try {
-      return jsonwebtoken.verify(token, this.#env.JWT_SECRET, {
+      const result = jsonwebtoken.verify(token, this.#env.JWT_SECRET, {
         issuer: JWT_ISSUER,
       })
+
+      if (!is(result, struct)) throw new ApiError(401, ['auth.badToken'])
+
+      return result
     } catch (error) {
       // https://github.com/auth0/node-jsonwebtoken#notbeforeerror
       if (error instanceof jsonwebtoken.NotBeforeError) {
@@ -86,32 +99,19 @@ export class JwtService {
         throw new ApiError(401, ['auth.badToken'])
       }
 
+      // Pass-through ApiErrors
+      if (error instanceof ApiError) throw error
+
       throw ApiError.internalServerError()
     }
   }
 
-  signToken(token: EmailLoginToken | AuthToken, options: JwtSignOptions = {}) {
+  signToken<T extends object>(token: T, options: JwtSignOptions = {}) {
     debug('sign %o', token)
     return jsonwebtoken.sign(token, this.#env.JWT_SECRET, {
       ...options,
       issuer: JWT_ISSUER,
     })
-  }
-
-  verifyAuthToken(token: string) {
-    const result = this.#verifyToken(token)
-    if (!is(result, AuthTokenStruct)) {
-      throw new ApiError(401, ['auth.badToken'])
-    }
-    return result
-  }
-
-  verifyEmailLoginToken(token: string) {
-    const result = this.#verifyToken(token)
-    if (!is(result, EmailLoginTokenStruct)) {
-      throw new ApiError(401, ['auth.badToken'])
-    }
-    return result
   }
 
   getSocketAuth(socketId: string) {
@@ -125,7 +125,7 @@ export class JwtService {
     if (!is(headers, AuthzHeadersStruct)) return null
 
     const authorization = headers.authorization.replace(bearerRegex(), '')
-    const token = this.verifyAuthToken(authorization) as AuthToken
+    const token = this.verifyToken(authorization, AuthTokenStruct)
 
     if (typeof token !== 'object' || token.kind !== 'auth') return null
 

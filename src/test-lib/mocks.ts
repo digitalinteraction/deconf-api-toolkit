@@ -149,8 +149,7 @@ export function mockI18nService(): Readonly<I18nService> {
 export function mockJwtService(): Readonly<JwtService> {
   return {
     signToken: jest.fn(),
-    verifyAuthToken: jest.fn(),
-    verifyEmailLoginToken: jest.fn(),
+    verifyToken: jest.fn(),
     getRequestAuth: jest.fn(),
     getSocketAuth: jest.fn(),
   }
@@ -158,6 +157,7 @@ export function mockJwtService(): Readonly<JwtService> {
 
 export function mockUrlService(): Readonly<UrlService> {
   return {
+    getClientLoginLink: jest.fn(),
     getSessionLink: jest.fn(),
   }
 }
