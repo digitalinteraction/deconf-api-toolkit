@@ -28,3 +28,7 @@ it('should export the library module', () => {
 it('should export the registration module', () => {
   expect(index.RegistrationRoutes).toBeDefined()
 })
+
+it('should export the pretalx module', () => {
+  expect(index.PretalxService).toBeDefined()
+})
