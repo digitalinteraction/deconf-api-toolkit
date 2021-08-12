@@ -134,4 +134,39 @@ export class ConferenceRoutes {
     // If they reached here they can have the links
     return session.links
   }
+
+  async lintSessions() {
+    const sessions = await this.#conferenceRepo.getSessions()
+    const types = await this.#conferenceRepo.getTypes()
+    const tracks = await this.#conferenceRepo.getTracks()
+
+    const typeIds = new Set(types.map((t) => t.id))
+    const trackIds = new Set(tracks.map((t) => t.id))
+
+    const noType = sessions.filter((s) => !typeIds.has(s.type))
+    const noTrack = sessions.filter((s) => !trackIds.has(s.track))
+    const noLinks = sessions.filter((s) => s.links.length === 0)
+
+    return [
+      {
+        title: 'Bad type',
+        subtitle: 'e.g. it is not mapped to a schedule type or is unset',
+        messages: noType.map(
+          (s) => `Session '${s.id}' - unknown type '${s.type}'`
+        ),
+      },
+      {
+        title: 'Bad track',
+        subtitle: 'e.g. it is not mapped to a schedule track or is unset',
+        messages: noTrack.map(
+          (s) => `Session '${s.id}' - unknown track '${s.track}'`
+        ),
+      },
+      {
+        title: 'No links',
+        subtitle: 'i.e. it has no links attached to it',
+        messages: noLinks.map((s) => `Session '${s.id}' - has no links`),
+      },
+    ]
+  }
 }

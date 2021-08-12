@@ -1,4 +1,4 @@
-import { SessionState } from '@openlab/deconf-shared/dist'
+import { SessionLink, SessionState } from '@openlab/deconf-shared/dist'
 import { mocked } from 'ts-jest/utils'
 import { ApiError } from '../../lib/api-error'
 import { createTestingDeconfConfig } from '../../lib/config'
@@ -212,6 +212,61 @@ describe('ConferenceRoutes', () => {
       const result = routes.getLinks(authToken, 'session-a')
 
       await expect(result).rejects.toThrow(ApiError)
+    })
+  })
+
+  describe('#lintSessions', () => {
+    it('should lint for links, types and themes', async () => {
+      const { routes, conferenceRepo } = setup()
+      const links: SessionLink[] = [
+        { type: 'video', url: 'https://youtu.be', language: 'en' },
+      ]
+      mocked(conferenceRepo.getSessions).mockResolvedValue([
+        mockSession({
+          id: 'session-a',
+          type: 'unknown',
+          track: 'track-a',
+          links,
+        }),
+        mockSession({
+          id: 'session-b',
+          type: 'type-a',
+          track: 'unknown',
+          links,
+        }),
+        mockSession({
+          id: 'session-c',
+          type: 'type-a',
+          track: 'track-a',
+          links: [],
+        }),
+      ])
+      mocked(conferenceRepo.getTypes).mockResolvedValue([
+        mockSessionType({ id: 'type-a' }),
+      ])
+      mocked(conferenceRepo.getTracks).mockResolvedValue([
+        mockSessionType({ id: 'track-a' }),
+      ])
+
+      const result = await routes.lintSessions()
+
+      expect(result).toEqual([
+        {
+          title: 'Bad type',
+          subtitle: expect.any(String),
+          messages: [expect.stringContaining('session-a')],
+        },
+        {
+          title: 'Bad track',
+          subtitle: expect.any(String),
+          messages: [expect.stringContaining('session-b')],
+        },
+        {
+          title: 'No links',
+          subtitle: expect.any(String),
+          messages: [expect.stringContaining('session-c')],
+        },
+      ])
     })
   })
 })
