@@ -126,7 +126,8 @@ export function mockI18nService(): Readonly<I18nService> {
 export function mockJwtService(): Readonly<JwtService> {
   return {
     signToken: jest.fn(),
-    verifyToken: jest.fn(),
+    verifyAuthToken: jest.fn(),
+    verifyEmailLoginToken: jest.fn(),
     fromSocketId: jest.fn(),
     fromRequestHeaders: jest.fn(),
   }

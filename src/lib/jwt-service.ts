@@ -1,6 +1,17 @@
 import jsonwebtoken from 'jsonwebtoken'
 import createDebug from 'debug'
-import { is, type, array, string, Infer, coerce, refine } from 'superstruct'
+import {
+  is,
+  type,
+  array,
+  string,
+  Infer,
+  coerce,
+  refine,
+  Describe,
+  literal,
+  number,
+} from 'superstruct'
 
 import { ApiError } from './api-error'
 import { Contextual, DeconfBaseContext } from './context'
@@ -22,6 +33,19 @@ function authzHeader() {
 
 export const AuthzHeaders = type({
   authorization: authzHeader(),
+})
+
+export const AuthTokenStruct = type({
+  kind: literal('auth'),
+  sub: number(),
+  user_roles: array(string()),
+  user_lang: string(),
+})
+
+export const EmailLoginTokenStruct = type({
+  kind: literal('email-login'),
+  sub: number(),
+  user_roles: array(string()),
 })
 
 //
@@ -50,6 +74,33 @@ export class JwtService {
     this.#context = context
   }
 
+  #verifyToken(token: string) {
+    debug('verifyToken %o', token)
+    try {
+      return jsonwebtoken.verify(token, this.#env.JWT_SECRET, {
+        issuer: JWT_ISSUER,
+      })
+    } catch (error) {
+      // https://github.com/auth0/node-jsonwebtoken#notbeforeerror
+      if (error instanceof jsonwebtoken.NotBeforeError) {
+        throw new ApiError(401, ['auth.tooEarly'])
+      }
+
+      // https://github.com/auth0/node-jsonwebtoken#tokenexpirederror
+      if (error instanceof jsonwebtoken.TokenExpiredError) {
+        throw new ApiError(401, ['auth.tokenExpired'])
+      }
+
+      // https://github.com/auth0/node-jsonwebtoken#jsonwebtokenerror
+      if (error instanceof jsonwebtoken.JsonWebTokenError) {
+        debug('JWT ERROR %o', error.message)
+        throw new ApiError(401, ['auth.badToken'])
+      }
+
+      throw ApiError.unknown()
+    }
+  }
+
   signToken(token: EmailLoginToken | AuthToken, options: JwtSignOptions = {}) {
     debug('sign %o', token)
     return jsonwebtoken.sign(token, this.#env.JWT_SECRET, {
@@ -58,11 +109,20 @@ export class JwtService {
     })
   }
 
-  verifyToken(token: string) {
-    debug('verify %o', token)
-    return jsonwebtoken.verify(token, this.#env.JWT_SECRET, {
-      issuer: JWT_ISSUER,
-    })
+  verifyAuthToken(token: string) {
+    const result = this.#verifyToken(token)
+    if (!is(result, AuthTokenStruct)) {
+      throw new ApiError(401, ['auth.badToken'])
+    }
+    return result
+  }
+
+  verifyEmailLoginToken(token: string) {
+    const result = this.#verifyToken(token)
+    if (!is(result, EmailLoginTokenStruct)) {
+      throw new ApiError(401, ['auth.badToken'])
+    }
+    return result
   }
 
   fromSocketId(socketId: string) {
@@ -76,7 +136,7 @@ export class JwtService {
     if (!is(headers, AuthzHeaders)) throw ApiError.notAuthorized()
 
     const authorization = headers.authorization.replace(bearerRegex(), '')
-    const token = this.verifyToken(authorization) as AuthToken
+    const token = this.verifyAuthToken(authorization) as AuthToken
 
     if (typeof token !== 'object' || token.kind !== 'auth') {
       throw ApiError.notAuthorized()
