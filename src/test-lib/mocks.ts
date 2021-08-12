@@ -10,7 +10,10 @@ import { EmailService } from '../lib/email-service'
 import { I18nService } from '../lib/i18n-service'
 import { JwtService } from '../lib/jwt-service'
 import { KeyValueService } from '../lib/key-value-service'
+import { SemaphoreService } from '../lib/semaphore-service'
+import { SocketService } from '../lib/socket-service'
 import { UrlService } from '../lib/url-service'
+import { MetricsRepository } from '../metrics/metrics-repository'
 import { RegistrationRepository } from '../registration/registration-repository'
 
 //
@@ -112,6 +115,15 @@ export function mockRegistrationRepository(): Readonly<RegistrationRepository> {
 }
 
 //
+// Metrics
+//
+export function mockMetricsRepository(): Readonly<MetricsRepository> {
+  return {
+    trackEvent: jest.fn(),
+  }
+}
+
+//
 // Library
 //
 interface EmailExtras {
@@ -172,5 +184,24 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
     close: jest.fn(),
     data,
     expirys,
+  }
+}
+
+export function mockSocketService(): Readonly<SocketService> {
+  return {
+    emitToEveryone: jest.fn(),
+    emitTo: jest.fn(),
+    getRoomSize: jest.fn(),
+    joinRoom: jest.fn(),
+    leaveRoom: jest.fn(),
+    sendError: jest.fn(),
+  }
+}
+
+export function mockSemaphore(): Readonly<SemaphoreService> {
+  return {
+    aquire: jest.fn(),
+    hasLock: jest.fn(),
+    release: jest.fn(),
   }
 }

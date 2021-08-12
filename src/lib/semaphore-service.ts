@@ -47,4 +47,10 @@ export class SemaphoreService {
     this.#store.delete(lockKey)
     return true
   }
+
+  /** Check if the current host has the lock */
+  async hasLock(lockKey: string) {
+    const lock = await this.#store.retrieve<LockRecord>(lockKey)
+    return lock?.hostname === os.hostname()
+  }
 }

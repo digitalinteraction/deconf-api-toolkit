@@ -93,4 +93,18 @@ describe('SemaphoreService', () => {
       expect(store.data.get('lock_key')).toEqual(undefined)
     })
   })
+
+  describe('#hasLock', () => {
+    it('should return if the host has the lock', async () => {
+      const { service, store } = setup()
+      store.data.set('lock_key', {
+        time: Date.now(),
+        hostname: os.hostname(),
+      })
+
+      const result = await service.hasLock('lock_key')
+
+      expect(result).toEqual(true)
+    })
+  })
 })

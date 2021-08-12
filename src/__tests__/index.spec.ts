@@ -32,3 +32,7 @@ it('should export the registration module', () => {
 it('should export the pretalx module', () => {
   expect(index.PretalxService).toBeDefined()
 })
+
+it('should export the metrics module', () => {
+  expect(index.MetricsRepository).toBeDefined()
+})
