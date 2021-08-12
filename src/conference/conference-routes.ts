@@ -1,5 +1,5 @@
 import { AuthToken, SessionState } from '@openlab/deconf-shared'
-import ics from 'ics'
+import * as ics from 'ics'
 
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
@@ -42,8 +42,7 @@ export class ConferenceRoutes {
   }
 
   // GET /ics/:session_id
-  async generateIcs(authToken: AuthToken | null, sessionId: string) {
-    const locale = authToken?.user_lang ?? 'en'
+  async generateIcs(locale: string, sessionId: string) {
     const localise = (obj: Record<string, string>) => obj[locale]
 
     const session = await this.#conferenceRepo.findSession(sessionId)
@@ -67,6 +66,8 @@ export class ConferenceRoutes {
     })
 
     if (!icsFile.value) throw ApiError.badRequest()
+
+    return icsFile.value
   }
 
   // GET /sessions
@@ -97,7 +98,7 @@ export class ConferenceRoutes {
   }
 
   // GET /links
-  async getLink(sessionId: string, authToken?: AuthToken) {
+  async getLinks(authToken: AuthToken | null, sessionId: string) {
     // Make sure they are authorized first
     if (!authToken) throw ApiError.notAuthorized()
 

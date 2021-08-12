@@ -5,6 +5,7 @@ import {
   Interpreter,
   Registration,
   Session,
+  SessionSlot,
   SessionState,
   SessionType,
   SessionVisibility,
@@ -41,6 +42,12 @@ export const mockSession = makeFixture<Session>({
   participantCap: null,
   proxyUrl: undefined,
   hideFromSchedule: false,
+})
+
+export const mockSlot = makeFixture<SessionSlot>({
+  id: 'slot-a',
+  start: new Date('2000-01-01T00:00:00.000Z'),
+  end: new Date('3000-01-01T00:00:00.000Z'),
 })
 
 export const mockRegistration = makeFixture<Registration>({

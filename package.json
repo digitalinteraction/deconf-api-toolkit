@@ -30,7 +30,7 @@
     "email-regex": "^4.0.0",
     "fs-extra": "^9.1.0",
     "haversine-distance": "^1.2.1",
-    "ics": "^2.26.2",
+    "ics": "^2.31.0",
     "ioredis": "^4.19.4",
     "jsonwebtoken": "^8.5.1",
     "mustache": "^4.1.0",
