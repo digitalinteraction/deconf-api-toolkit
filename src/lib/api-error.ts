@@ -19,6 +19,11 @@ export class ApiError extends Error {
     return new this(500, ['general.internalServerError'])
   }
 
+  /** https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/501 */
+  static notImplemented() {
+    return new this(501, ['general.notImplemented'])
+  }
+
   constructor(public status: number, public codes: string[]) {
     super(
       `There were error(s) with your request: ${codes

@@ -56,12 +56,17 @@ export class RegistrationRoutes {
     }
   }
 
+  // TODO: throw an error if not auth or not found?
   async getRegistration(authToken: AuthToken | null) {
     if (!authToken) return null
 
     return this.#registrationRepo.getVerifiedRegistration(authToken.sub)
   }
 
+  // TODO: convert to struct usage?
+  // TODO: should this redirect to the client not server?
+  // TODO: should this use i18n for the email?
+  //       or something else for sendgrid templates?
   async startEmailLogin(emailAddress: string) {
     if (typeof emailAddress !== 'string' || !emailRegex().test(emailAddress)) {
       throw ApiError.badRequest()
@@ -92,18 +97,18 @@ export class RegistrationRoutes {
   }
 
   finishEmailLogin(token: any) {
-    throw new Error('TODO: Not implemented')
+    throw ApiError.notImplemented()
   }
 
   startRegister(options: NewRegistration) {
-    throw new Error('TODO: Not implemented')
+    throw ApiError.notImplemented()
   }
 
   finishRegister(token: any) {
-    throw new Error('TODO: Not implemented')
+    throw ApiError.notImplemented()
   }
 
   unregister(token: AuthToken | null) {
-    throw new Error('TODO: Not implemented')
+    throw ApiError.notImplemented()
   }
 }

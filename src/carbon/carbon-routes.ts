@@ -79,6 +79,7 @@ export class CarbonRoutes {
     }
   }
 
+  // GET /carbon
   async getCarbon() {
     const cached = await this.#store.retrieve<CarbonResult | null>(
       CARBON_CACHE_KEY
@@ -109,7 +110,7 @@ export class CarbonRoutes {
     }
 
     // Cache the response for 5 minutes
-    this.#store.store(CARBON_CACHE_KEY, response)
+    this.#store.put(CARBON_CACHE_KEY, response)
     this.#store.setExpiry(CARBON_CACHE_KEY, 5 * 60)
 
     return response
