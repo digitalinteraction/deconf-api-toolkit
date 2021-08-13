@@ -69,6 +69,7 @@ export class MetricsSockets {
   }
 
   async wentOffline(socketId: string) {
+    // Does it need to leave the room?
     this.#sockets.leaveRoom(socketId, SITE_VISITORS_ROOM)
     await this.#triggerVisitors()
   }
@@ -76,7 +77,7 @@ export class MetricsSockets {
   async event(socketId: string, eventName: string, payload: any) {
     const authToken = await this.#jwt.getSocketAuth(socketId)
     await this.#metricsRepo.trackEvent(eventName, payload, {
-      attendee: authToken?.sub,
+      attendee: authToken?.authToken.sub,
       socket: socketId,
     })
   }
@@ -88,7 +89,7 @@ export class MetricsSockets {
       stack: error.stack,
     }
     await this.#metricsRepo.trackEvent('client-error', payload, {
-      attendee: authToken?.sub,
+      attendee: authToken?.authToken.sub,
       socket: socketId,
     })
   }

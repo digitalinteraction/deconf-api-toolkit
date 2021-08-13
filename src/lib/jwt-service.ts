@@ -13,13 +13,11 @@ import {
 
 import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
-import { AuthToken, EmailLoginToken } from '@openlab/deconf-shared'
+import { AuthToken, EmailLoginToken, Interpreter } from '@openlab/deconf-shared'
 
 // TODO: move to config
 export const JWT_ISSUER = 'deconf-app'
-
 const debug = createDebug('deconf:lib:jwt')
-
 export const bearerRegex = () => /^bearer\s+/i
 
 //
@@ -51,6 +49,14 @@ export const EmailLoginTokenStruct = type({
 //
 export interface JwtSignOptions {
   expiresIn?: string | number
+}
+
+export interface SocketAuth {
+  authToken: AuthToken
+  email: string
+  interpreter: Interpreter | null
+
+  // Not including Registration because json & dates
 }
 
 //
@@ -114,9 +120,11 @@ export class JwtService {
     })
   }
 
-  getSocketAuth(socketId: string) {
+  async getSocketAuth(socketId: string) {
     debug('fromSocketId %o', socketId)
-    return this.#store.retrieve<AuthToken>(`auth_${socketId}`)
+    const auth = await this.#store.retrieve<SocketAuth>(`auth_${socketId}`)
+    if (!auth) throw ApiError.unauthorized()
+    return auth
   }
 
   getRequestAuth(headers: any) {

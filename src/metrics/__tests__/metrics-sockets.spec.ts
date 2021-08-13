@@ -4,6 +4,7 @@ import {
   mockJwtService,
   mockMetricsRepository,
   mockSemaphore,
+  mockSocketAuth,
   mockSocketService,
 } from '../../test-lib/module'
 import { MetricsSockets, SITE_VISITORS_ROOM } from '../metrics-sockets'
@@ -88,7 +89,9 @@ describe('MetricsSockets', () => {
   describe('#event', () => {
     it('should store an event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue(mockAuthToken({ sub: 1 }))
+      mocked(jwt.getSocketAuth).mockResolvedValue(
+        mockSocketAuth({ id: 1, email: 'geoff@example.com' })
+      )
 
       await metrics.event('socket-a', 'test-event', { name: 'Geoff' })
 
@@ -103,7 +106,9 @@ describe('MetricsSockets', () => {
   describe('#event', () => {
     it('should store an event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue(mockAuthToken({ sub: 1 }))
+      mocked(jwt.getSocketAuth).mockResolvedValue(
+        mockSocketAuth({ id: 1, email: 'geoff@example.com' })
+      )
 
       await metrics.error('socket-a', new Error('Test Error'))
 

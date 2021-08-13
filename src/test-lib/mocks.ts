@@ -6,6 +6,7 @@ import { ConferenceRepository } from '../conference/conference-repository'
 import { MigrateRepository } from '../database/migrate-repository'
 import { MigrateService } from '../database/migrate-service'
 import { PostgresService, PostgresClient } from '../database/postgres-service'
+import { InterpreterRepository } from '../interpret/interpreter-repository'
 import { EmailService } from '../lib/email-service'
 import { I18nService } from '../lib/i18n-service'
 import { JwtService } from '../lib/jwt-service'
@@ -195,6 +196,7 @@ export function mockSocketService(): Readonly<SocketService> {
     joinRoom: jest.fn(),
     leaveRoom: jest.fn(),
     sendError: jest.fn(),
+    getSocketRooms: jest.fn(),
   }
 }
 
@@ -203,5 +205,15 @@ export function mockSemaphore(): Readonly<SemaphoreService> {
     aquire: jest.fn(),
     hasLock: jest.fn(),
     release: jest.fn(),
+  }
+}
+
+//
+// Interpretation
+//
+
+export function mockInterpreterRepository(): Readonly<InterpreterRepository> {
+  return {
+    prepInterpreter: jest.fn(),
   }
 }

@@ -14,6 +14,7 @@ import {
   Theme,
   Track,
 } from '@openlab/deconf-shared'
+import { SocketAuth } from '../lib/jwt-service'
 import { VerifyToken } from '../registration/registration-routes'
 
 function makeFixture<T>(base: T) {
@@ -135,3 +136,29 @@ export const mockSettings = makeFixture<ConfigSettings>({
   endDate: new Date('3000-01-01T00:00:00.000Z'),
   isStatic: false,
 })
+
+//
+// Interpretation
+//
+
+interface MockSocketAuthArgs {
+  id?: number
+  email?: string
+  interpreter?: boolean
+}
+
+export function mockSocketAuth(
+  options: MockSocketAuthArgs & { interpreter: true }
+): SocketAuth & { interpreter: Interpreter }
+
+export function mockSocketAuth(options: MockSocketAuthArgs): SocketAuth
+
+export function mockSocketAuth(options: MockSocketAuthArgs = {}) {
+  const { email = 'geoff@example.com', id = 1, interpreter = false } = options
+
+  return {
+    authToken: mockAuthToken({ sub: id }),
+    email: email,
+    interpreter: interpreter ? mockInterpreter({ email: email }) : null,
+  }
+}

@@ -288,6 +288,7 @@ _misc conventions_
   - TODO this might be better as an `example.com`
 - `jess@exmaple.com` is used for an interpreter
 - `tim@exmaple.com` is used for new registrations
+- `list@exmaple.com` is used for listening to interpretation
 
 ---
 
@@ -295,4 +296,21 @@ _misc conventions_
 
 These are generate ideas and thoughts about future changes or refactorings of the codebase.
 
-...
+### Typed Socket Service
+
+```ts
+//
+// IDEA: typed socket-service to unknowingly pass around socket.io socket objects
+// Which lets the concrete instance use socket instance methods
+//
+export interface SocketService<T extends { id: string }> {
+  // ...
+
+  getRoomSize(roomNameOrId: string): Promise<number>
+  joinRoom(socket: T, roomName: string): void
+  leaveRoom(socket: T, roomName: string): void
+  getSocketRooms(socket: T): Promise<Set<string>>
+
+  sendError(error: ApiError): void
+}
+```

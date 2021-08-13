@@ -4,7 +4,7 @@ import { ApiError } from './api-error'
 //
 // Messages
 //
-interface SocketMessage<Name extends string, Parameters extends unknown[]> {
+interface SocketMessage<Name, Parameters> {
   name: Name
   parameters: Parameters
 }
@@ -57,6 +57,7 @@ export interface SocketService {
   getRoomSize(roomNameOrId: string): Promise<number>
   joinRoom(socketId: string, roomName: string): void
   leaveRoom(socketId: string, roomName: string): void
+  getSocketRooms(socketId: string): Promise<Set<string>>
 
   sendError(error: ApiError): void
 }
