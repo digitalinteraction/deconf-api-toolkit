@@ -170,7 +170,124 @@ it('should return true if they are logged in', () => {
 })
 ```
 
+When testing an mocked object like `mockRegistration` only test for values you pass to the mock:
+
+```ts
+import { mocked } from 'ts-jest'
+
+it('should return true if they are logged in', () => {
+  const { routes, registrationRepo } = setup()
+
+  const result = routes.checkRegistration(
+    // specifically pass an email
+    mockRegistration({ email: 'jess@example.com' })
+  )
+
+  expect(registrationRepo.isValid).toBeCalledWith(
+    // Only test agains that email
+    expect.objectContaining({ email: 'jess@example.com' })
+  )
+})
+```
+
+The idea is to keep everything in a test contained to make it as easy as possible
+to update in the future and you only have to look in one place for that test.
+
+**4. Structure and naming**
+
+The test file should be the same as the name of the component it is testing,
+ending with `.spec.ts`
+Test files should be structured using nested `describe` blocks with `it` statements for tests.
+
+These tests below demonstrate the naming and structuring:
+
+_A function_
+
+```ts
+// add.ts
+function add(a: number, b: number) {
+  return a + b
+}
+
+// __tests__/add.spec.ts
+import { add } from '../add'
+describe('add', () => {
+  it('should return the sum of the two numbers', () => {
+    // ...
+  })
+})
+```
+
+_A class_
+
+```ts
+// location.ts
+class Location {
+  static getPlanet() {
+    return 'Earth'
+  }
+  constructor(public location: string) {}
+  toString() {
+    return `${Location.getPlanet()} - ${this.location}`
+  }
+}
+
+// __tests__/location.spec.ts
+import { Location } from '../location'
+function setup() {
+  const location = new Location('Antartica')
+  return location
+}
+
+describe('Location', () => {
+  // Use a "." to signify a static property or field
+  describe('.getPlanet', () => {
+    it('should return earth', () => {
+      /** ... */
+    })
+  })
+  // Use a "#" to signify an instance property or field
+  describe('#toString', () => {
+    it('should format the location ', () => {
+      /** ... */
+    })
+  })
+})
+```
+
 > Also note `sub` isn't needed here as it isn't the thing being tested
+
+**5. Known values**
+
+While as much as possible is defined in tests, there are a couple of things that
+are the same for all tests:
+
+_env_
+
+The testing environment is defined alongside the rest of the environment logic in
+[src/lib/env.ts](/src/lib/env.ts).
+These values should be used for all `env` objects in tests
+and those values can be assumed in tests.
+See `createdTestingEnv` for those values.
+
+_config_
+
+The testing config is defined alongside the rest of the configuration logic in
+[src/lib/config.ts](/src/lib/config.ts).
+These values should be used for all `config` objects in tests
+and those values can be assumed in tests.
+
+This makes `geoff@example.com` and admin, which may be relevant in tests.
+
+_misc conventions_
+
+- use `example.com` for domains and email addresses
+- use `http://localhost:3000` as the server url
+  - TODO this might be better as an `example.com`
+- use `http://localhost:8080` as the client url
+  - TODO this might be better as an `example.com`
+- `jess@exmaple.com` is used for an interpreter
+- `tim@exmaple.com` is used for new registrations
 
 ---
 

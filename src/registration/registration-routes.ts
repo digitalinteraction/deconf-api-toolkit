@@ -117,14 +117,11 @@ export class RegistrationRoutes {
     return user
   }
 
-  // TODO: convert to struct usage?
-  // TODO: should this redirect to the client not server?
-  // TODO: should this use i18n for the email?
-  //       or something else for sendgrid templates?
   async startEmailLogin(body: any) {
     if (!is(body, LoginBodyStruct)) throw ApiError.badRequest()
 
     // Make sure they have a verified record
+    // TODO: a query for registations based on email not just id
     const allRegistrations = await this.#registrationRepo.findRegistrations(
       body.email
     )

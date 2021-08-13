@@ -2,6 +2,7 @@ import {
   Attendance,
   AuthToken,
   ConfigSettings,
+  EmailLoginToken,
   Interpreter,
   Registration,
   Session,
@@ -13,6 +14,7 @@ import {
   Theme,
   Track,
 } from '@openlab/deconf-shared'
+import { VerifyToken } from '../registration/registration-routes'
 
 function makeFixture<T>(base: T) {
   return (options: Partial<T> = {}): T => {
@@ -67,6 +69,17 @@ export const mockAuthToken = makeFixture<AuthToken>({
   sub: 1,
   user_roles: [],
   user_lang: 'en',
+})
+
+export const mockEmailLoginToken = makeFixture<EmailLoginToken>({
+  kind: 'email-login',
+  sub: 1,
+  user_roles: [],
+})
+
+export const mockVerifyToken = makeFixture<VerifyToken>({
+  kind: 'verify',
+  sub: 1,
 })
 
 export const mockAttendance = makeFixture<Attendance>({
