@@ -119,7 +119,7 @@ describe('JwtService', () => {
   describe('#getSocketAuth', () => {
     it('should retrieve the auth from the store', async () => {
       const { service, store } = setup()
-      store.data.set('auth_abcdef', 'mock_token')
+      store.data.set('auth/abcdef', 'mock_token')
 
       const result = await service.getSocketAuth('abcdef')
 

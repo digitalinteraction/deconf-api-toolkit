@@ -17,16 +17,16 @@ type ChannelStarted = SocketMessage<'channel-started', []>
 type ChannelData = SocketMessage<'channel-data', [Buffer]>
 type ChannelStopped = SocketMessage<'channel-stopped', []>
 
-type InterpretAccepted = SocketMessage<'interpret-accepted', [Interpreter]>
-type InterpretJoined = SocketMessage<'interpret-joined', [Interpreter]>
-type InterpretLeft = SocketMessage<'interpret-left', [Interpreter]>
-type InterpretMessage = SocketMessage<
-  'interpret-message',
+type InterpreterAccepted = SocketMessage<'interpreter-accepted', [Interpreter]>
+type InterpreterJoined = SocketMessage<'interpreter-joined', [Interpreter]>
+type InterpreterLeft = SocketMessage<'interpreter-left', [Interpreter]>
+type InterpreterMessage = SocketMessage<
+  'interpreter-message',
   [Interpreter, string]
 >
-type InterpretStarted = SocketMessage<'interpret-started', [Interpreter]>
-type InterpretTakeover = SocketMessage<'interpret-takeover', [Interpreter]>
-type InterpretStopped = SocketMessage<'interpret-stopped', [Interpreter]>
+type InterpreterStarted = SocketMessage<'interpreter-started', [Interpreter]>
+type InterpreterTakeover = SocketMessage<'interpreter-takeover', [Interpreter]>
+type InterpreterStopped = SocketMessage<'interpreter-stopped', [Interpreter]>
 
 type SocketMessages =
   | SiteVisitors
@@ -34,14 +34,13 @@ type SocketMessages =
   | ChannelStarted
   | ChannelData
   | ChannelStopped
-  | InterpretAccepted
-  | InterpretJoined
-  | InterpretLeft
-  | InterpretMessage
-  | InterpretStarted
-  | InterpretTakeover
-  | InterpretTakeover
-  | InterpretStopped
+  | InterpreterAccepted
+  | InterpreterJoined
+  | InterpreterLeft
+  | InterpreterMessage
+  | InterpreterStarted
+  | InterpreterTakeover
+  | InterpreterStopped
 
 export interface SocketService {
   emitToEveryone<T extends SocketMessages>(
@@ -54,7 +53,8 @@ export interface SocketService {
     ...parameters: T['parameters']
   ): void
 
-  getRoomSize(roomNameOrId: string): Promise<number>
+  getRoomSize(roomName: string): Promise<number>
+  getRoomSockets(roomName: string): Promise<string[]>
   joinRoom(socketId: string, roomName: string): void
   leaveRoom(socketId: string, roomName: string): void
   getSocketRooms(socketId: string): Promise<Set<string>>

@@ -1,3 +1,4 @@
+import { Interpreter } from '@openlab/deconf-shared/dist'
 import { is } from 'superstruct'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'

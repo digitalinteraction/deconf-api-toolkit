@@ -1,5 +1,3 @@
-import { MockedObject } from 'ts-jest/dist/utils/testing'
-
 import { AttendanceRepository } from '../attendance/attendance-repository'
 import { CarbonRepository } from '../carbon/carbon-repository'
 import { ConferenceRepository } from '../conference/conference-repository'
@@ -197,6 +195,7 @@ export function mockSocketService(): Readonly<SocketService> {
     leaveRoom: jest.fn(),
     sendError: jest.fn(),
     getSocketRooms: jest.fn(),
+    getRoomSockets: jest.fn(),
   }
 }
 

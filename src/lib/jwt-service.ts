@@ -122,7 +122,7 @@ export class JwtService {
 
   async getSocketAuth(socketId: string) {
     debug('fromSocketId %o', socketId)
-    const auth = await this.#store.retrieve<SocketAuth>(`auth_${socketId}`)
+    const auth = await this.#store.retrieve<SocketAuth>(`auth/${socketId}`)
     if (!auth) throw ApiError.unauthorized()
     return auth
   }
