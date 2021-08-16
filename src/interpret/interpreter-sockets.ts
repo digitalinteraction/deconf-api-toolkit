@@ -66,6 +66,7 @@ export class InterpreterSockets {
     // 1. remove the active-interpreter if set
     const activeInterpreter = await this.#getActiveInterpreter(socketId)
     if (!activeInterpreter) return
+    const { sessionId, channel } = activeInterpreter.booth
 
     await this.#store.delete(this.#activeInterpreterKey(socketId))
 
@@ -74,34 +75,25 @@ export class InterpreterSockets {
     if (!activeBooth) return
 
     // 3. emit the leave to the booth
-    // TODO:
+    this.#sockets.emitTo(
+      `interpret/${sessionId}/${channel}`,
+      'interpreter-left',
+      activeBooth.interpreter
+    )
 
     if (activeBooth.socketId !== socketId) return
 
     await this.#store.delete(this.#activeBoothKey(activeInterpreter.booth))
 
     // 3. emit the stop to the booth
-    // TODO:
+    this.#sockets.emitTo(
+      `interpret/${sessionId}/${channel}`,
+      'interpreter-stopped',
+      activeBooth.interpreter
+    )
 
     // 4. emit the stop to the channel
-    // TODO:
-
-    // // TODO: reconsider logic ...
-    // const rooms = await this.#sockets.getSocketRooms(socketId)
-
-    // const auth = await this.#jwt.getSocketAuth(socketId)
-    // if (!auth || !auth.interpreter) throw ApiError.unauthorized()
-
-    // const interpretRooms = Array.from(rooms).filter((room) =>
-    //   room.startsWith('interpret/')
-    // )
-
-    // for (const room of interpretRooms) {
-    //   this.#sockets.emitTo(room, 'interpreter-left', auth.interpreter)
-    // }
-
-    // TODO: does this need to #stopInterpretation ?
-    // await this.#store.delete(`active-interpreter/${socketId}`)
+    this.#sockets.emitTo(`channel/${sessionId}/${channel}`, 'channel-stopped')
   }
 
   //
