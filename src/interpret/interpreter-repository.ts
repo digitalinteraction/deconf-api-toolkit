@@ -25,10 +25,12 @@ export class InterpreterRepository {
       socketId
     )
     if (!interpreter) throw ApiError.unauthorized()
-    const auth = { authToken, email, interpreter }
 
-    const session = await this.#conferenceRepo.findSession(booth.sessionId)
-    const interpretRoom = `interpret/${booth.sessionId}/${booth.channel}`
-    return { auth, session, interpretRoom }
+    return {
+      auth: { authToken, email, interpreter },
+      session: await this.#conferenceRepo.findSession(booth.sessionId),
+      interpretRoom: `interpret/${booth.sessionId}/${booth.channel}`,
+      channelRoom: `channel/${booth.sessionId}/${booth.channel}`,
+    }
   }
 }

@@ -9,9 +9,13 @@ export interface ActiveBooth {
   interpreter: Interpreter
 }
 
+export interface ActiveInterpreter {
+  booth: InterpretBooth
+}
+
 type Context = Pick<
   DeconfBaseContext,
-  'sockets' | 'interpreterRepo' | 'metricsRepo' | 'jwt' | 'store'
+  'sockets' | 'interpreterRepo' | 'metricsRepo' | 'jwt' | 'store' | 's3'
 >
 
 export class InterpreterSockets {
@@ -30,63 +34,95 @@ export class InterpreterSockets {
   get #store() {
     return this.#context.store
   }
+  get #s3() {
+    return this.#context.s3
+  }
 
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
-  #getActiveBooth({ sessionId, channel }: InterpretBooth) {
-    return this.#store.retrieve<ActiveBooth>(
-      `active-booth/${sessionId}/${channel}`
+  #activeBoothKey({ sessionId, channel }: InterpretBooth) {
+    return `active-booth/${sessionId}/${channel}`
+  }
+  #getActiveBooth(booth: InterpretBooth) {
+    return this.#store.retrieve<ActiveBooth>(this.#activeBoothKey(booth))
+  }
+  #activeInterpreterKey(socketId: string) {
+    return `active-interpreter/${socketId}`
+  }
+  #getActiveInterpreter(socketId: string) {
+    return this.#store.retrieve<ActiveInterpreter>(
+      this.#activeInterpreterKey(socketId)
     )
   }
 
-  async #stopInterpretation(
-    { sessionId, channel }: InterpretBooth,
-    interpreter: Interpreter
-  ) {
-    const activeBooth = await this.#getActiveBooth({ sessionId, channel })
-    if (activeBooth) {
-      this.#sockets.emitTo(
-        `interpret/${sessionId}/${channel}`,
-        'interpreter-stopped',
-        interpreter
-      )
-      this.#sockets.emitTo(`channel/${sessionId}/${channel}`, 'channel-stopped')
-      await this.#store.delete(`active-booth/${sessionId}/${channel}`)
-    }
-  }
-
+  //
   // Events
+  //
+
   async socketDisconnected(socketId: string) {
-    const rooms = await this.#sockets.getSocketRooms(socketId)
+    // 1. remove the active-interpreter if set
+    const activeInterpreter = await this.#getActiveInterpreter(socketId)
+    if (!activeInterpreter) return
 
-    const auth = await this.#jwt.getSocketAuth(socketId)
-    if (!auth || !auth.interpreter) throw ApiError.unauthorized()
+    await this.#store.delete(this.#activeInterpreterKey(socketId))
 
-    const interpretRooms = Array.from(rooms).filter((room) =>
-      room.startsWith('interpret/')
-    )
+    // 2. remove the active-booth packet if interpreting
+    const activeBooth = await this.#getActiveBooth(activeInterpreter.booth)
+    if (!activeBooth) return
 
-    for (const room of interpretRooms) {
-      this.#sockets.emitTo(room, 'interpreter-left', auth.interpreter)
-    }
+    // 3. emit the leave to the booth
+    // TODO:
+
+    if (activeBooth.socketId !== socketId) return
+
+    await this.#store.delete(this.#activeBoothKey(activeInterpreter.booth))
+
+    // 3. emit the stop to the booth
+    // TODO:
+
+    // 4. emit the stop to the channel
+    // TODO:
+
+    // // TODO: reconsider logic ...
+    // const rooms = await this.#sockets.getSocketRooms(socketId)
+
+    // const auth = await this.#jwt.getSocketAuth(socketId)
+    // if (!auth || !auth.interpreter) throw ApiError.unauthorized()
+
+    // const interpretRooms = Array.from(rooms).filter((room) =>
+    //   room.startsWith('interpret/')
+    // )
+
+    // for (const room of interpretRooms) {
+    //   this.#sockets.emitTo(room, 'interpreter-left', auth.interpreter)
+    // }
+
+    // TODO: does this need to #stopInterpretation ?
+    // await this.#store.delete(`active-interpreter/${socketId}`)
   }
 
+  //
   // Interpret
+  //
+
+  // TODO: this might not be needed
   async acceptInterpret(socketId: string, booth: InterpretBooth) {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,
       booth
     )
 
+    // 1. emit the acceptance to the interpreter room
     this.#sockets.emitTo(
       interpretRoom,
       'interpreter-accepted',
       auth.interpreter
     )
 
+    // 2. log the event
     await this.#metricsRepo.trackEvent('interpreter-accepted', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
@@ -131,10 +167,11 @@ export class InterpreterSockets {
   }
 
   async leaveBooth(socketId: string, booth: InterpretBooth) {
-    const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
-      socketId,
-      booth
-    )
+    const {
+      auth,
+      interpretRoom,
+      channelRoom,
+    } = await this.#interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. leave the interpreter room
     this.#sockets.leaveRoom(socketId, interpretRoom)
@@ -143,9 +180,20 @@ export class InterpreterSockets {
     this.#sockets.emitTo(interpretRoom, 'interpreter-left', auth.interpreter)
 
     // 3. stop interpretation if active
-    await this.#stopInterpretation(booth, auth.interpreter)
+    const activeBooth = await this.#getActiveBooth(booth)
+    if (activeBooth && activeBooth.socketId === socketId) {
+      this.#sockets.emitTo(
+        interpretRoom,
+        'interpreter-stopped',
+        auth.interpreter
+      )
+      this.#sockets.emitTo(channelRoom, 'channel-stopped')
+    }
 
-    // 4. log an event
+    // 4. remove any lingering active packets
+    await this.#store.delete(this.#activeInterpreterKey(socketId))
+
+    // 5. log an event
     await this.#metricsRepo.trackEvent('interpreter-left', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
@@ -167,33 +215,119 @@ export class InterpreterSockets {
     )
   }
 
-  async requestInterpret(
+  async requestInterpreter(
     socketId: string,
     booth: InterpretBooth,
     duration: number
   ) {
+    const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
+      socketId,
+      booth
+    )
+
     // 1. broadcast the request to the booth
+    this.#sockets.emitTo(
+      interpretRoom,
+      'interpreter-requested',
+      auth.interpreter,
+      duration
+    )
+
+    // 2. log an event
+    await this.#metricsRepo.trackEvent(
+      'interpreter-requested',
+      { ...booth, duration },
+      { socket: socketId, attendee: auth.authToken.sub }
+    )
   }
 
   async sendAudio(socketId: string, rawData: Buffer) {
-    // 1. get the booth packet
-    // 2. broadcast the data to the channel
-    // 3. upload the chunk to s3
+    const activeInterpreter = await this.#getActiveInterpreter(socketId)
+    if (!activeInterpreter) throw ApiError.unauthorized()
+    const { sessionId, channel } = activeInterpreter.booth
+
+    // 1. broadcast the data to the channel
+    this.#sockets.emitTo(
+      `channel/${sessionId}/${channel}`,
+      'channel-data',
+      rawData
+    )
+
+    // 2. upload the chunk to s3
+    const timestamp = new Date().getTime()
+    const cleanSessionId = sessionId.replace(/\s+/g, '').toLowerCase()
+    await this.#s3.uploadFile(
+      `interpret/${cleanSessionId}/${channel}/${timestamp}.pcm`,
+      rawData
+    )
   }
 
   async startInterpret(socketId: string, booth: InterpretBooth) {
+    const {
+      auth,
+      interpretRoom,
+      channelRoom,
+    } = await this.#interpreterRepo.prepInterpreter(socketId, booth)
+
     // 1. boot any existing interpreters
-    // 2. store the booth packet
-    // 3. broadcast the start to the booth
-    // 4. broadcast the start to the channel
-    // 5. log an event
+    const activeBooth = await this.#getActiveBooth(booth)
+    if (activeBooth) {
+      this.#sockets.emitTo(
+        activeBooth.socketId,
+        'interpreter-takeover',
+        auth.interpreter
+      )
+    }
+
+    // 2. store the active-booth packet
+    await this.#store.put<ActiveBooth>(this.#activeBoothKey(booth), {
+      attendee: auth.authToken.sub,
+      interpreter: auth.interpreter,
+      socketId: socketId,
+    })
+
+    // 3. store the active-interpreter packet
+    await this.#store.put<ActiveInterpreter>(
+      this.#activeInterpreterKey(socketId),
+      { booth }
+    )
+
+    // 4. broadcast the start to the booth
+    this.#sockets.emitTo(interpretRoom, 'interpreter-started', auth.interpreter)
+
+    // 5. broadcast the start to the channel
+    this.#sockets.emitTo(channelRoom, 'channel-started')
+
+    // 6. log an event
+    this.#metricsRepo.trackEvent('interpreter-started', booth, {
+      attendee: auth.authToken.sub,
+      socket: socketId,
+    })
   }
 
   async stopInterpret(socketId: string, booth: InterpretBooth) {
-    // 1. get the booth packet
-    // 2. remove the booth packet
+    const {
+      auth,
+      interpretRoom,
+      channelRoom,
+    } = await this.#interpreterRepo.prepInterpreter(socketId, booth)
+
+    // 1. remove the active-interpreter packet
+    this.#store.delete(this.#activeInterpreterKey(socketId))
+
+    // 2. remove the active-booth packet
+    this.#store.delete(this.#activeBoothKey(booth))
+
     // 3. broadcast the stop to the booth
+    this.#sockets.emitTo(interpretRoom, 'interpreter-stopped', auth.interpreter)
+
     // 4. broadcast the stop to the channel
+    this.#sockets.emitTo(channelRoom, 'channel-stopped')
+
     // 5. log an event
+    this.#metricsRepo.trackEvent('interpreter-stopped', booth, {
+      attendee: auth.authToken.sub,
+      socket: socketId,
+    })
   }
 }

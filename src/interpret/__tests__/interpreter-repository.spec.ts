@@ -40,6 +40,7 @@ describe('InterpreterRepository', () => {
         },
         session: expect.objectContaining({ id: 'session-a' }),
         interpretRoom: 'interpret/session-a/en',
+        channelRoom: 'channel/session-a/en',
       })
     })
   })

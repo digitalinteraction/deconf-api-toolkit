@@ -7,6 +7,7 @@ import { I18nService } from './i18n-service'
 import { JwtService } from './jwt-service'
 import { KeyValueService } from './key-value-service'
 import { PostgresService } from '../database/postgres-service'
+import { S3Service } from './s3-service'
 import { SemaphoreService } from './semaphore-service'
 import { SocketService } from './socket-service'
 import { UrlService } from './url-service'
@@ -33,6 +34,7 @@ export type DeconfBaseContext = {
   sockets: Readonly<SocketService>
   store: Readonly<KeyValueService>
   url: Readonly<UrlService>
+  s3: Readonly<S3Service>
 
   // Repositories
   attendanceRepo: Readonly<AttendanceRepository>

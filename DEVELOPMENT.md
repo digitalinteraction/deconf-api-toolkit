@@ -288,7 +288,7 @@ _misc conventions_
   - TODO this might be better as an `example.com`
 - `jess@exmaple.com` is used for an interpreter
 - `tim@exmaple.com` is used for new registrations
-- `list@exmaple.com` is used for listening to interpretation
+- `lisa@exmaple.com` is used for listening to interpretation
 
 ---
 

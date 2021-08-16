@@ -12,7 +12,11 @@ export function createEnv(processEnv = process.env) {
       'JWT_SECRET',
       'DATABASE_URL',
       'SELF_URL',
-      'CLIENT_URL'
+      'CLIENT_URL',
+      'S3_ENDPOINT',
+      'S3_ACCESS_KEY',
+      'S3_SECRET_KEY',
+      'S3_BUCKET_NAME'
     ),
     NODE_ENV,
   })
@@ -26,5 +30,9 @@ export function createTestingEnv(): DeconfEnv {
     DATABASE_URL: 'postgresql://user:secret@127.0.0.1/user',
     SELF_URL: 'http://localhost:3000',
     CLIENT_URL: 'http://localhost:8080',
+    S3_ENDPOINT: 's3.amazonaws.com',
+    S3_ACCESS_KEY: 'abcdef',
+    S3_SECRET_KEY: 'uvwxyz',
+    S3_BUCKET_NAME: 'deconf',
   }
 }

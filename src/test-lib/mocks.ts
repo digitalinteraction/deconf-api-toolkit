@@ -9,6 +9,7 @@ import { EmailService } from '../lib/email-service'
 import { I18nService } from '../lib/i18n-service'
 import { JwtService } from '../lib/jwt-service'
 import { KeyValueService } from '../lib/key-value-service'
+import { S3Service } from '../lib/s3-service'
 import { SemaphoreService } from '../lib/semaphore-service'
 import { SocketService } from '../lib/socket-service'
 import { UrlService } from '../lib/url-service'
@@ -204,6 +205,12 @@ export function mockSemaphore(): Readonly<SemaphoreService> {
     aquire: jest.fn(),
     hasLock: jest.fn(),
     release: jest.fn(),
+  }
+}
+
+export function mockS3Service(): Readonly<S3Service> {
+  return {
+    uploadFile: jest.fn(),
   }
 }
 

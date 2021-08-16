@@ -4,9 +4,8 @@ import { ApiError } from './api-error'
 //
 // Messages
 //
-interface SocketMessage<Name, Parameters> {
-  name: Name
-  parameters: Parameters
+interface SocketMessage<Name, Parameters extends unknown[]> {
+  emitParams: [Name, ...Parameters]
 }
 
 type SocketError = SocketMessage<'socket-error', [ApiError]>
@@ -25,6 +24,10 @@ type InterpreterMessage = SocketMessage<
   [Interpreter, string]
 >
 type InterpreterStarted = SocketMessage<'interpreter-started', [Interpreter]>
+type InterpreterRequested = SocketMessage<
+  'interpreter-requested',
+  [Interpreter, number]
+>
 type InterpreterTakeover = SocketMessage<'interpreter-takeover', [Interpreter]>
 type InterpreterStopped = SocketMessage<'interpreter-stopped', [Interpreter]>
 
@@ -39,18 +42,15 @@ type SocketMessages =
   | InterpreterLeft
   | InterpreterMessage
   | InterpreterStarted
+  | InterpreterRequested
   | InterpreterTakeover
   | InterpreterStopped
 
 export interface SocketService {
-  emitToEveryone<T extends SocketMessages>(
-    name: T['name'],
-    ...parameters: T['parameters']
-  ): void
+  emitToEveryone<T extends SocketMessages>(...parameters: T['emitParams']): void
   emitTo<T extends SocketMessages>(
     roomNameOrId: string,
-    name: T['name'],
-    ...parameters: T['parameters']
+    ...parameters: T['emitParams']
   ): void
 
   getRoomSize(roomName: string): Promise<number>
