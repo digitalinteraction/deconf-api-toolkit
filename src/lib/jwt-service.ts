@@ -15,7 +15,6 @@ import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
 import { AuthToken, EmailLoginToken, Interpreter } from '@openlab/deconf-shared'
 
-// TODO: move to config
 export const JWT_ISSUER = 'deconf-app'
 const debug = createDebug('deconf:lib:jwt')
 export const bearerRegex = () => /^bearer\s+/i

@@ -1,7 +1,7 @@
 import { RegisterRequest, Registration } from '@openlab/deconf-shared/dist'
 import { DeconfBaseContext } from '../lib/context'
 
-// TODO: these queries could be optimised to suite registration-routes more
+// TODO: these queries could be optimised to suit registration-routes more
 
 type Context = Pick<DeconfBaseContext, 'postgres'>
 

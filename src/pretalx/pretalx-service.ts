@@ -13,6 +13,8 @@ import {
 } from '@openlab/deconf-shared'
 import createDebug from 'debug'
 
+// TODO: review with respect to multi-language
+
 import got, { PaginationOptions, Got } from 'got'
 import { Infer } from 'superstruct'
 import { DeconfBaseContext } from '../lib/context'
@@ -262,7 +264,6 @@ export class PretalxService {
     return tags.map((tag) => ({
       id: tag.tag,
       title: {
-        // TODO: handle translations
         en: this.delocalise(tag.description, tag.tag),
       },
     }))

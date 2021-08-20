@@ -13,10 +13,7 @@ export interface Migration {
 }
 
 //
-// NOTE: this is non-standard Repository and only takes a Postgres client
-// not a context
-//
-// TODO: come up with a better suffix than "Repository" for this
+// NOTE: this is non-standard Repository and only takes a Postgres client not a context
 //
 export class MigrateRepository {
   #client: PostgresClient

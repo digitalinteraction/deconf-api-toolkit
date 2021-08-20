@@ -100,7 +100,6 @@ export class InterpreterSockets {
   // Interpret
   //
 
-  // TODO: this might not be needed
   async acceptInterpret(socketId: string, booth: InterpretBooth) {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,

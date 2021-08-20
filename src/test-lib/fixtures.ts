@@ -17,6 +17,8 @@ import {
 import { SocketAuth } from '../lib/jwt-service'
 import { VerifyToken } from '../registration/registration-routes'
 
+// IDEA: move to toolkit-shared?
+
 function makeFixture<T>(base: T) {
   return (options: Partial<T> = {}): T => {
     return { ...base, ...options }
