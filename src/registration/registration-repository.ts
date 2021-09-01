@@ -15,8 +15,7 @@ export class RegistrationRepository {
     this.#context = context
   }
 
-  // TODO: rename to getRegistrations
-  findRegistrations(email: string): Promise<Registration[]> {
+  getRegistrations(email: string): Promise<Registration[]> {
     return this.#postgres.run((client) => {
       return client.sql`
         SELECT id, created, name, email, language, country, affiliation, verified, consented

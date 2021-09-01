@@ -54,7 +54,7 @@ describe('RegistrationRoutes', () => {
   describe('#startEmailLogin', () => {
     it('should send a login email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      mocked(registrationRepo.findRegistrations).mockResolvedValue([
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
         mockRegistration({ email: 'geoff@example.com', verified: true }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_token')
@@ -116,7 +116,7 @@ describe('RegistrationRoutes', () => {
   describe('#startRegister', () => {
     it('should send a verification email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      mocked(registrationRepo.findRegistrations).mockResolvedValue([
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
         mockRegistration({ email: 'tim@example.com' }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_verify_token')
@@ -136,7 +136,7 @@ describe('RegistrationRoutes', () => {
     })
     it('should register the user', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      mocked(registrationRepo.findRegistrations).mockResolvedValue([
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
         mockRegistration({ email: 'tim@example.com' }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_verify_token')

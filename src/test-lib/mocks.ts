@@ -106,7 +106,7 @@ export function mockMigrateRepository(): Readonly<MigrateRepository> {
 //
 export function mockRegistrationRepository(): Readonly<RegistrationRepository> {
   return {
-    findRegistrations: jest.fn(),
+    getRegistrations: jest.fn(),
     getVerifiedRegistration: jest.fn(),
     register: jest.fn(),
     unregister: jest.fn(),

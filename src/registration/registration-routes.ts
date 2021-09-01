@@ -122,7 +122,7 @@ export class RegistrationRoutes {
 
     // Make sure they have a verified record
     // TODO: a query for registations based on email not just id
-    const allRegistrations = await this.#registrationRepo.findRegistrations(
+    const allRegistrations = await this.#registrationRepo.getRegistrations(
       body.email
     )
     const registration = allRegistrations.find((r) => r.verified)
@@ -160,7 +160,7 @@ export class RegistrationRoutes {
     if (!is(body, RegisterBodyStruct)) throw ApiError.badRequest()
 
     await this.#registrationRepo.register(body)
-    const allRegistrations = await this.#registrationRepo.findRegistrations(
+    const allRegistrations = await this.#registrationRepo.getRegistrations(
       body.email
     )
     const registration = allRegistrations[allRegistrations.length - 1]
