@@ -1,265 +1,293 @@
-import express = require('express')
-import dotenv = require('dotenv')
-import { checkEnvObject, pluck } from 'valid-env'
+import path from 'path'
+import express from 'express'
+import dotenv from 'dotenv'
 
-import * as lib from '../src'
+import {
+  createEnv,
+  loadConfig,
+  DeconfConfigStruct,
+  AttendanceRepository,
+  PostgresService,
+  CarbonRepository,
+  createMemoryStore,
+  MigrateService,
+  DECONF_MIGRATIONS,
+  AttendanceRoutes,
+  ConferenceRepository,
+  RegistrationRepository,
+  CarbonRoutes,
+  ConferenceRoutes,
+  UrlService,
+  RegistrationRoutes,
+  EmailService,
+  I18nService,
+  JwtService,
+  ApiError,
+  loadResources,
+  ConfigSettingsStruct,
+  PretalxConfigStruct,
+} from '../src/module'
 
-//
-// Construct a typed environment object from process.env
-//
-type EnvRecord = ReturnType<typeof createEnv>
-function createEnv(env = process.env) {
-  dotenv.config({ path: 'examples/.env' })
+import { MigrateRepository } from '../src/database/migrate-repository'
+import { object, assign } from 'superstruct'
 
-  return checkEnvObject(
-    pluck(
-      env,
-      'REDIS_URL',
-      'JWT_SECRET',
-      'POSTGRES_URL',
-      'API_URL',
-      'WEBSITE_URL'
-    )
-  )
+const AppConfigStruct = assign(
+  DeconfConfigStruct,
+  object({
+    conference: ConfigSettingsStruct,
+    pretalx: PretalxConfigStruct,
+  })
+)
+
+function runMigrations(postgres: PostgresService) {
+  return postgres.run(async (client) => {
+    const migrateRepo = new MigrateRepository(client)
+    const migrate = new MigrateService({ migrateRepo })
+    migrate.runMigrations(DECONF_MIGRATIONS)
+  })
 }
 
-//
-// Fake locations to calculate carbon distance from
-//
-const carbonLocations: lib.CountryLocation[] = [
-  {
-    code: 'EN',
-    name: 'United Kingdom',
-    location: { lat: 1, lng: 2 },
-  },
-  {
-    code: 'FR',
-    name: 'France',
-    location: { lat: 46.227638, lng: 2.213749 },
-  },
-]
-
-//
-// Translation locales
-//
-const locales = {
-  en: {
-    message: 'Hello, world!',
-  },
-}
-
-//
-// Create library services
-// -> Here you can swap modules in and out to customise the server
-//
-async function createServices(env: EnvRecord) {
-  const i18n = await lib.createI18nService(locales)
-  const jwt = lib.createJwtService(env.JWT_SECRET)
-  const pg = lib.createPostgresService(env.POSTGRES_URL)
-  const redis = lib.createRedisService(env.REDIS_URL)
-  const url = lib.createUrlService(env.API_URL, env.WEBSITE_URL)
-  const query = lib.createQueryService(pg)
-  const email: lib.EmailService = {
-    async sendLoginEmail(emailAddress, loginToken, locale) {
-      throw new Error('Not implemented')
-    },
-  }
-
-  const conference = lib.createConferenceService((key, fallback) =>
-    redis.getJson(key, fallback)
-  )
-  const auth = lib.createAuthenticationService(
-    (key) => redis.getJson(key, null),
-    (token) => jwt.verify(token)
-  )
-
-  return { i18n, jwt, pg, redis, conference, url, query, auth, email }
-}
-
-//
-// This is a utility to wrap a module into an express route handler.
-// With a generic to type the request's parameters (i.e. /:id)
-// TODO: this could be moved into the lib - "toExpressRoute" perhaps?
-//
-function wrapper<Params = Record<string, string>>(
-  block: (
-    ...args: Parameters<express.RequestHandler<Params>>
-  ) => Promise<lib.HttpResponse>
-): express.RequestHandler<Params> {
+function errorHandler(block: express.RequestHandler): express.RequestHandler {
+  // A middleware to catch ApiErrors and handle them ...
   return async (req, res, next) => {
-    const { status, body, headers } = await block(req, res, next)
-    res.status(status)
-    res.set(headers)
-    res.send(body)
+    try {
+      await block(req, res, next)
+    } catch (error) {
+      if (error instanceof ApiError) {
+        res.status(error.status).send({
+          message: error.message,
+          codes: error.codes,
+        })
+      } else {
+        console.error(error)
+        res.status(500).send(error.message)
+      }
+    }
   }
 }
 
-//
-// The entrypoint of the example app
-//
 async function main() {
-  console.log('Starting')
+  dotenv.config({
+    path: path.join(__dirname, 'app.env'),
+  })
+
   const env = createEnv()
+  const config = await loadConfig(
+    path.join(__dirname, 'app-config.json'),
+    AppConfigStruct
+  )
+  const resources = await loadResources(path.join(__dirname, 'res'))
+  const store = createMemoryStore()
+  const postgres = new PostgresService({ env })
+  const url = new UrlService({ env })
+  const email = new EmailService({ env, config })
+  const jwt = new JwtService({ env, store })
+
+  const locales = await I18nService.loadLocales(path.join(__dirname, 'i18n'))
+  const i18n = new I18nService(locales)
+
+  const attendanceRepo = new AttendanceRepository({ postgres })
+  const carbonRepo = new CarbonRepository({ postgres })
+  const conferenceRepo = new ConferenceRepository({ store })
+  const registrationRepo = new RegistrationRepository({ postgres })
+
+  const baseContext = {
+    env,
+    config,
+    resources,
+    store,
+    postgres,
+    url,
+    email,
+    jwt,
+    i18n,
+    attendanceRepo,
+    carbonRepo,
+    conferenceRepo,
+    registrationRepo,
+  }
+
+  console.log('Starting')
   const app = express()
 
-  console.log('Creating services')
-  const services = await createServices(env)
-
-  /** A utility to grab an authentication from an express request */
-  function getToken(req: express.Request) {
-    return services.auth.fromRequestHeaders(req.headers)
-  }
-
-  //
-  // Run migrations
-  //
   console.log('Running migrations')
-  const migrate = lib.createMigrateModule(services)
-  await migrate.runAll()
+  await runMigrations(postgres)
 
-  //
-  // Setup express routes
-  //
   app.get('/', (req, res) => {
     res.send({ message: 'ok' })
   })
 
   //
-  // Setup the accounts module
+  // Add attendance routes
   //
-  const accounts = lib.createAccountsModule(services)
-  app.get(
-    '/accounts/me',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return accounts.getRegistration(token)
+  const attendanceRoutes = new AttendanceRoutes(baseContext)
+
+  app.post(
+    '/attend/:sessionId',
+    errorHandler(async (req, res) => {
+      const authToken = jwt.getRequestAuth(req.headers)
+      await attendanceRoutes.attend(authToken, req.params.sessionId)
+      res.send('ok')
     })
   )
   app.post(
-    '/accounts/login',
-    wrapper((req) => accounts.startEmailLogin(req.body?.email))
+    '/unattend/:sessionId',
+    errorHandler(async (req, res) => {
+      const authToken = jwt.getRequestAuth(req.headers)
+      await attendanceRoutes.unattend(authToken, req.params.sessionId)
+      res.send('ok')
+    })
   )
   app.get(
-    '/accounts/login/callback',
-    wrapper((req) => accounts.finishEmailLogin(req.query.token))
-  )
-  app.post<{ name: string }>(
-    '/accounts/register',
-    wrapper((req) => accounts.startRegister(req.body))
+    '/attendance/:sessionId',
+    errorHandler(async (req, res) => {
+      res.send(
+        await attendanceRoutes.getSessionAttendance(
+          jwt.getRequestAuth(req.headers),
+          req.params.sessionId
+        )
+      )
+    })
   )
   app.get(
-    '/accounts/register/callback',
-    wrapper((req) => accounts.finishRegister(req.query.token))
+    '/getUserAttendance',
+    errorHandler(async (req, res) => {
+      res.send({
+        attendance: await attendanceRoutes.getUserAttendance(
+          jwt.getRequestAuth(req.headers)
+        ),
+      })
+    })
   )
+
+  //
+  // Add carbon routes
+  //
+  const carbonRoutes = new CarbonRoutes(baseContext)
+
+  app.get(
+    '/carbon',
+    errorHandler(async (req, res) => {
+      res.send(await carbonRoutes.getCarbon())
+    })
+  )
+
+  //
+  // Add registration routes
+  //
+  const registrationRoutes = new RegistrationRoutes({
+    ...baseContext,
+    mailer: {
+      async sendLoginEmail(registration, token) {
+        console.log(
+          'Send login email \nregistration=%o\ntoken=%o',
+          registration,
+          token
+        )
+      },
+      async sendVerifyEmail(registration, token) {
+        console.log(
+          'Send verify email \nregistration=%o\ntoken=%o',
+          registration,
+          token
+        )
+      },
+    },
+  })
+
+  app.get(
+    '/auth/me',
+    errorHandler(async (req, res) => {
+      const authToken = jwt.getRequestAuth(req.headers)
+      return {
+        registration: await registrationRoutes.getRegistration(authToken),
+      }
+    })
+  )
+
+  app.post(
+    '/auth/login',
+    errorHandler(async (req, res) => {
+      await registrationRoutes.startEmailLogin(req.body.email)
+      res.send('ok')
+    })
+  )
+
+  app.get(
+    '/auth/login/:token',
+    errorHandler(async (req, res) => {
+      const token = await registrationRoutes.finishEmailLogin(req.params.token)
+      res.send({ token })
+    })
+  )
+
+  app.post(
+    '/auth/register',
+    errorHandler(async (req, res) => {
+      await registrationRoutes.startRegister(req.body)
+      res.send('ok')
+    })
+  )
+
+  app.get(
+    '/auth/register/:token',
+    errorHandler(async (req, res) => {
+      const token = await registrationRoutes.finishRegister(req.params.token)
+      res.send({ token })
+    })
+  )
+
   app.delete(
-    '/accounts/unregister',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return accounts.unregister(token)
+    '/auth/me',
+    errorHandler(async (req, res) => {
+      const authToken = jwt.getRequestAuth(req.headers)
+      await registrationRoutes.unregister(authToken)
+      res.send('ok')
     })
   )
 
   //
-  // Setup the attendance module
+  // Add Conference routes
   //
-  type SessionIdParam = { session_id: string }
+  const conferenceRoutes = new ConferenceRoutes(baseContext)
 
-  const attendance = lib.createAttendanceModule(services)
-
-  app.post<SessionIdParam>(
-    '/attendance/attend/:session_id',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return attendance.attend(token, req.params.session_id)
-    })
-  )
-  app.post<SessionIdParam>(
-    '/attendance/unattend/:session_id',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return attendance.unattend(token, req.params.session_id)
-    })
-  )
-  app.get<SessionIdParam>(
-    '/attendance/:session_id',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return attendance.getAttendance(token, req.params.session_id)
-    })
-  )
-
-  //
-  // Setup the carbon module
-  //
-  const carbon = lib.createCarbonModule({
-    ...services,
-    countryOfOrigin: 'EN',
-    locations: carbonLocations,
-  })
-
-  app.get(
-    '/carbon/count',
-    wrapper((req) => carbon.getCarbon())
-  )
-
-  //
-  // Setup the schedule module
-  //
-  const schedule = lib.createScheduleModule({
-    ...services,
-    organiser: { name: 'Evil Corp', email: 'support@example.com' },
-  })
-
-  app.get<{ session_id: string }>(
-    '/schedule/ics/:session_id',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return schedule.generateIcs(token, req.params.session_id)
-    })
-  )
   app.get(
     '/schedule/sessions',
-    wrapper(async (req) => {
-      const token = await getToken(req)
-      return schedule.getSessions(token)
+    errorHandler(async (req, res) => {
+      res.send(await conferenceRoutes.getSchedule())
     })
   )
+
   app.get(
-    '/schedule/settings',
-    wrapper(() => schedule.getSettings())
+    '/schedule/ics/:sessionId',
+    errorHandler(async (req, res) => {
+      const { sessionId } = req.params
+      const authToken = jwt.getRequestAuth(req.headers)
+      const locale = authToken?.user_lang ?? 'en'
+      res.set('content-type', 'text/calendar')
+      res.set('content-disposition', `attachment; filename="${sessionId}.ics`)
+      res.send(await conferenceRoutes.generateIcs(locale, sessionId))
+    })
   )
+
   app.get(
-    '/schedule/slots',
-    wrapper(() => schedule.getSlots())
-  )
-  app.get(
-    '/schedule/speakers',
-    wrapper(() => schedule.getSpeakers())
-  )
-  app.get(
-    '/schedule/themes',
-    wrapper(() => schedule.getThemes())
-  )
-  app.get(
-    '/schedule/tracks',
-    wrapper(() => schedule.getTracks())
-  )
-  app.get(
-    '/schedule/types',
-    wrapper(() => schedule.getTypes())
+    '/schedule/:sessionId/links',
+    errorHandler(async (req, res) => {
+      const authToken = jwt.getRequestAuth(req.headers)
+      res.send({
+        links: await conferenceRoutes.getLinks(authToken, req.params.sessionId),
+      })
+    })
   )
 
   //
-  // Start the express server
+  // Run the server
   //
   app.listen(3000, () => {
     console.log('Listening on http://localhost:3000')
   })
 }
 
-//
-// Run the entrypoint and make errors exit the process
-//
 main().catch((error) => {
   console.error(error)
   process.exit(1)
