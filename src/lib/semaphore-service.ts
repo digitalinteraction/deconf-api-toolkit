@@ -33,7 +33,8 @@ export class SemaphoreService {
 
       return true
     } catch (error) {
-      throw new Error(`Failed to check lock: ${error.message}`)
+      const message = error instanceof Error ? error.message : 'Unknown reason'
+      throw new Error(`Failed to check lock: ${message}`)
     }
   }
 
