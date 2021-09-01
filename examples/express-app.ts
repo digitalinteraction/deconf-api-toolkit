@@ -24,7 +24,7 @@ import {
   JwtService,
   ApiError,
   loadResources,
-  ConfigSettingsStruct,
+  ConferenceConfigStruct,
   PretalxConfigStruct,
 } from '../src/module'
 
@@ -34,7 +34,7 @@ import { object, assign } from 'superstruct'
 const AppConfigStruct = assign(
   DeconfConfigStruct,
   object({
-    conference: ConfigSettingsStruct,
+    conference: ConferenceConfigStruct,
     pretalx: PretalxConfigStruct,
   })
 )
