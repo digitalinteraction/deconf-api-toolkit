@@ -31,7 +31,7 @@ type InterpreterRequested = SocketMessage<
 type InterpreterTakeover = SocketMessage<'interpreter-takeover', [Interpreter]>
 type InterpreterStopped = SocketMessage<'interpreter-stopped', [Interpreter]>
 
-type SocketMessages =
+export type SocketMessages =
   | SiteVisitors
   | ChannelOccupancy
   | ChannelStarted
