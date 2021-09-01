@@ -138,7 +138,7 @@ npm test
 
 ```bash
 # manually run prettier (auto-runs on git-stage)
-npm run prettier
+npm run format
 
 # manually lint typescript
 npm run lint
@@ -161,15 +161,18 @@ npm run build
 # -> Redis is on redis://localhost:6379
 # -> Postgres is on postgres://user:secret@localhost:5432/user
 # -> Server runs on http://localhost:3000
-docker-compose -f examples/docker-compose.yml
+docker-compose up -f examples/docker-compose.yml
 ```
 
 ### releasing
 
+Git commits to this repo **must** follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+which lets us auto-generate the [CHANGELOG.md](/CHANGELOG.md)
+and decide the next version of the package.
+
 ```bash
 # generate a new version and publish it
-npm version # major | minor | patch | --help
-npm publish
+npm release
 ```
 
 ---
