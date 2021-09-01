@@ -1,12 +1,9 @@
-// import * as services from './services/index'
-// import * as modules from './modules/index'
-
 export * from './attendance/module'
 export * from './carbon/module'
 export * from './conference/module'
 export * from './database/module'
 export * from './interpret/module'
 export * from './lib/module'
+export * from './metrics/module'
 export * from './pretalx/module'
 export * from './registration/module'
-export * from './metrics/module'

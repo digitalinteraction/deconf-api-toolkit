@@ -2,6 +2,10 @@
 
 This file documents changes
 
+## 3.0.0
+
+Everything has changed, WIP
+
 ## 2.2.0
 
 **Features**

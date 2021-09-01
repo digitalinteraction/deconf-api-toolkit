@@ -90,8 +90,8 @@
       "git add"
     ]
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.js",
+  "main": "dist/module.js",
+  "types": "dist/module.d.js",
   "files": [
     "dist"
   ]
