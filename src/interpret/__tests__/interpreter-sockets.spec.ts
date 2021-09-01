@@ -1,8 +1,6 @@
 import { mocked } from 'ts-jest/utils'
 import {
-  mockAuthToken,
   mockInterpreter,
-  mockRegistration,
   mockSession,
   mockSocketAuth,
 } from '../../test-lib/fixtures'

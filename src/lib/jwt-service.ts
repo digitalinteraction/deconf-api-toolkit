@@ -13,7 +13,7 @@ import {
 
 import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
-import { AuthToken, EmailLoginToken, Interpreter } from '@openlab/deconf-shared'
+import { AuthToken, Interpreter } from '@openlab/deconf-shared'
 
 export const JWT_ISSUER = 'deconf-app'
 const debug = createDebug('deconf:lib:jwt')
@@ -41,6 +41,11 @@ export const EmailLoginTokenStruct = type({
   kind: literal('email-login'),
   sub: number(),
   user_roles: array(string()),
+})
+
+export const VerifyTokenStruct = type({
+  kind: literal('verify'),
+  sub: number(),
 })
 
 //

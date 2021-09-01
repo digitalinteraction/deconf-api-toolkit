@@ -1,4 +1,5 @@
-import { DeconfConfig } from './config'
+import { DeconfConfig } from '@openlab/deconf-shared'
+
 import { DeconfEnv } from './env'
 import { ResourcesMap } from './resources'
 
@@ -48,6 +49,7 @@ export type DeconfBaseContext = {
 // IDEA: Provide a super-class to reduce boilerplate code
 // - I don't want to introduce inheritance though
 // - protected fields mess up the generated interface
+// - can't use es-private fields as subclass' don't get access
 export class Contextual<Keys extends keyof DeconfBaseContext> {
   constructor(protected context: Pick<DeconfBaseContext, Keys>) {
     this.setup()

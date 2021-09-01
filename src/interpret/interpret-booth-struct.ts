@@ -1,8 +1,7 @@
-import { enums, Infer, object, string } from 'superstruct'
+import { Describe, object, string } from 'superstruct'
+import { InterpretBooth } from '@openlab/deconf-shared'
 
-export type InterpretBooth = Infer<typeof InterpretBoothStruct>
-
-export const InterpretBoothStruct = object({
+export const InterpretBoothStruct: Describe<InterpretBooth> = object({
   sessionId: string(),
-  channel: enums(['en', 'fr', 'es', 'ar']),
+  channel: string(),
 })

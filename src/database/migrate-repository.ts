@@ -1,4 +1,3 @@
-import { DeconfBaseContext } from '../lib/context'
 import { PostgresClient } from './postgres-service'
 
 export interface MigrationRecord {

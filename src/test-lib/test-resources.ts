@@ -1,18 +1,9 @@
 import dedent from 'dedent'
 
 import { RESOURCE_CARBON_LOCATIONS } from '../carbon/carbon-routes'
-import { RESOURCE_LOGIN_EMAIL } from '../registration/registration-routes'
 
 export function createTestingResources() {
   const resources = new Map<string, Buffer>()
-
-  resources.set(
-    RESOURCE_LOGIN_EMAIL,
-    Buffer.from(dedent`
-      Locale: {{ locale }}
-      Link: {{ token }}
-    `)
-  )
 
   resources.set(
     RESOURCE_CARBON_LOCATIONS,

@@ -1,9 +1,5 @@
 import { DeconfBaseContext } from './context'
 
-// export interface UrlService {
-//   getSessionLink(sessionId: string): URL
-// }
-
 export type Context = Pick<DeconfBaseContext, 'env'>
 
 export class UrlService {

@@ -1,5 +1,5 @@
 import {
-  ConfigSettings,
+  ConferenceConfig,
   Interpreter,
   Session,
   SessionSlot,
@@ -60,7 +60,7 @@ export class ConferenceRepository {
   }
 
   getSettings() {
-    return this.#get<ConfigSettings | null>('schedule.settings', null)
+    return this.#get<ConferenceConfig | null>('schedule.settings', null)
   }
 
   getInterpreters(): Promise<Interpreter[]> {

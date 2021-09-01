@@ -1,7 +1,7 @@
 import {
   Attendance,
   AuthToken,
-  ConfigSettings,
+  ConferenceConfig,
   EmailLoginToken,
   Interpreter,
   Registration,
@@ -13,9 +13,9 @@ import {
   Speaker,
   Theme,
   Track,
+  VerifyToken,
 } from '@openlab/deconf-shared'
 import { SocketAuth } from '../lib/jwt-service'
-import { VerifyToken } from '../registration/registration-routes'
 
 // IDEA: move to toolkit-shared?
 
@@ -128,7 +128,7 @@ export const mockInterpreter = makeFixture<Interpreter>({
   email: 'jess@example.com',
 })
 
-export const mockSettings = makeFixture<ConfigSettings>({
+export const mockSettings = makeFixture<ConferenceConfig>({
   atrium: { enabled: true, visible: true },
   whatsOn: { enabled: true, visible: true },
   schedule: { enabled: true, visible: true },

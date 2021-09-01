@@ -1,20 +1,8 @@
 import createDebug from 'debug'
-import { DeconfBaseContext } from '../lib/context'
 import { MigrateRepository, Migration } from './migrate-repository'
-import { PostgresClient, PostgresService } from './postgres-service'
+import { PostgresClient } from './postgres-service'
 
 const debug = createDebug('deconf:module:migrate')
-
-// export interface MigrationRecord {
-//   id: number
-//   name: string
-//   created: Date
-// }
-
-// export interface Migration {
-//   id: string
-//   run(client: PostgresClient): Promise<void>
-// }
 
 export const DECONF_MIGRATIONS: Migration[] = [
   { id: 'add-attendees', run: addAttendees },
@@ -26,7 +14,7 @@ export const DECONF_MIGRATIONS: Migration[] = [
 // Service
 //
 
-// NOTE: this is non-standard Repository and only takes a Postgres client
+// NOTE: this is non-standard DI context and only takes a Postgres client
 // not a context
 type Context = { migrateRepo: Readonly<MigrateRepository> }
 

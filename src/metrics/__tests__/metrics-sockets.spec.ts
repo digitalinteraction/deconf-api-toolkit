@@ -1,6 +1,5 @@
 import { mocked } from 'ts-jest/utils'
 import {
-  mockAuthToken,
   mockJwtService,
   mockMetricsRepository,
   mockSemaphore,

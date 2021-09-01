@@ -1,6 +1,6 @@
+export * from './conference-config-struct'
 export * from './conference-repository'
 export * from './conference-routes'
-export * from './config-struct'
 export * from './link-struct'
 export * from './localised-struct'
 export * from './session-struct'

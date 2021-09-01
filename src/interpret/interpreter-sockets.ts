@@ -1,17 +1,10 @@
-import { Interpreter } from '@openlab/deconf-shared'
+import {
+  InterpretBooth,
+  ActiveBooth,
+  ActiveInterpreter,
+} from '@openlab/deconf-shared'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
-import { InterpretBooth } from './interpret-booth-struct'
-
-export interface ActiveBooth {
-  socketId: string
-  attendee: number
-  interpreter: Interpreter
-}
-
-export interface ActiveInterpreter {
-  booth: InterpretBooth
-}
 
 type Context = Pick<
   DeconfBaseContext,

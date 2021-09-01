@@ -1,8 +1,8 @@
-import { Interpreter } from '@openlab/deconf-shared'
-import { enums, is, object, string } from 'superstruct'
+import { is } from 'superstruct'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
-import { InterpretBooth, InterpretBoothStruct } from './interpret-booth-struct'
+import { InterpretBoothStruct } from './interpret-booth-struct'
+import { InterpretBooth } from '@openlab/deconf-shared'
 
 type Context = Pick<
   DeconfBaseContext,

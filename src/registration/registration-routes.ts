@@ -2,39 +2,21 @@ import {
   AuthToken,
   EmailLoginToken,
   Registration,
+  VerifyToken,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
-import { is, literal, number, object, refine, string } from 'superstruct'
+import { is, object, refine, string } from 'superstruct'
 
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
-import { EmailLoginTokenStruct } from '../lib/jwt-service'
-
-export const RESOURCE_LOGIN_EMAIL = 'auth/login-email.mustache'
-const LOGIN_EMAIL_SUBJECT = 'auth.loginEmailSubject'
-
-interface NewRegistration {
-  name: string
-  email: string
-  language: string
-  country: string
-  affiliation: string
-}
-
-// TODO: move to deconf-shared
-export interface VerifyToken {
-  kind: 'verify'
-  sub: number
-}
+import {
+  ApiError,
+  DeconfBaseContext,
+  EmailLoginTokenStruct,
+  VerifyTokenStruct,
+} from '../lib/module'
 
 export interface RegistrationMailer {
   sendLoginEmail(registration: Registration, token: string): Promise<void>
   sendVerifyEmail(registration: Registration, token: string): Promise<void>
-}
-
-export enum LoginResponse {
-  badRequest,
-  unauthorized,
 }
 
 const LoginBodyStruct = object({
@@ -47,11 +29,6 @@ const RegisterBodyStruct = object({
   language: string(),
   country: string(),
   affiliation: string(),
-})
-
-const VerifyTokenStruct = object({
-  kind: literal('verify'),
-  sub: number(),
 })
 
 //
@@ -87,10 +64,6 @@ export class RegistrationRoutes {
   #context: Context
   constructor(context: Context) {
     this.#context = context
-
-    // if (this.#loginTemplate) {
-    //   throw new Error(`Missing resource: ${RESOURCE_LOGIN_EMAIL}`)
-    // }
   }
 
   async #getRoles(registration: Registration) {

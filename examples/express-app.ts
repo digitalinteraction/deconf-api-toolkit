@@ -24,10 +24,20 @@ import {
   JwtService,
   ApiError,
   loadResources,
-} from '../src'
+  ConfigSettingsStruct,
+  PretalxConfigStruct,
+} from '../src/module'
 
 import { MigrateRepository } from '../src/database/migrate-repository'
-import { create } from 'superstruct'
+import { object, assign } from 'superstruct'
+
+const AppConfigStruct = assign(
+  DeconfConfigStruct,
+  object({
+    conference: ConfigSettingsStruct,
+    pretalx: PretalxConfigStruct,
+  })
+)
 
 function runMigrations(postgres: PostgresService) {
   return postgres.run(async (client) => {
@@ -64,7 +74,7 @@ async function main() {
   const env = createEnv()
   const config = await loadConfig(
     path.join(__dirname, 'app-config.json'),
-    DeconfConfigStruct
+    AppConfigStruct
   )
   const resources = await loadResources(path.join(__dirname, 'res'))
   const store = createMemoryStore()
@@ -165,7 +175,25 @@ async function main() {
   //
   // Add registration routes
   //
-  const registrationRoutes = new RegistrationRoutes(baseContext)
+  const registrationRoutes = new RegistrationRoutes({
+    ...baseContext,
+    mailer: {
+      async sendLoginEmail(registration, token) {
+        console.log(
+          'Send login email \nregistration=%o\ntoken=%o',
+          registration,
+          token
+        )
+      },
+      async sendVerifyEmail(registration, token) {
+        console.log(
+          'Send verify email \nregistration=%o\ntoken=%o',
+          registration,
+          token
+        )
+      },
+    },
+  })
 
   app.get(
     '/auth/me',

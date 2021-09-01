@@ -1,11 +1,12 @@
 import fs from 'fs/promises'
-import { object, string, Infer, create, array, Struct } from 'superstruct'
+import { object, string, Describe, create, array, Struct } from 'superstruct'
+import { DeconfConfig } from '@openlab/deconf-shared'
 
 // function jsonDate() {
 //   return coerce(date(), string(), (value) => new Date(value))
 // }
 
-export const DeconfConfigStruct = object({
+export const DeconfConfigStruct: Describe<DeconfConfig> = object({
   admins: array(
     object({
       email: string(),
@@ -24,12 +25,11 @@ export const DeconfConfigStruct = object({
   }),
 })
 
-export type DeconfConfig = Infer<typeof DeconfConfigStruct>
-
-export async function loadConfig<T extends Struct<DeconfConfig>>(
+/** Load a json file and validate against a structure */
+export async function loadConfig<T extends unknown>(
   path: string,
-  struct: T
-) {
+  struct: Struct<T>
+): Promise<T> {
   const rawConfig = JSON.parse(await fs.readFile(path, 'utf8'))
 
   const config = create(rawConfig, struct)

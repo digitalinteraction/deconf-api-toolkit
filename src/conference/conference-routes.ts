@@ -43,7 +43,12 @@ export class ConferenceRoutes {
 
   // GET /ics/:session_id
   async generateIcs(locale: string, sessionId: string) {
-    const localise = (obj: Record<string, string>) => obj[locale]
+    const localise = (
+      obj: Record<string, string | undefined>,
+      fallback: string
+    ) => {
+      return obj[locale] ?? obj.en ?? fallback
+    }
 
     const session = await this.#conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
@@ -59,8 +64,8 @@ export class ConferenceRoutes {
       startInputType: 'utc',
       end: getIcsDate(slot.end),
       endInputType: 'utc',
-      title: localise(session.title),
-      description: localise(session.content),
+      title: localise(session.title, 'Session'),
+      description: localise(session.content, ''),
       location: webUrl.toString(),
       organizer: { ...this.#config.organiser },
     })

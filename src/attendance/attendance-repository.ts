@@ -1,10 +1,5 @@
-import { Attendance } from '@openlab/deconf-shared'
+import { Attendance, SessionAttendance } from '@openlab/deconf-shared'
 import { DeconfBaseContext } from '../lib/context'
-
-interface SessionAttendance {
-  session: string
-  count: number
-}
 
 type Context = Pick<DeconfBaseContext, 'postgres'>
 

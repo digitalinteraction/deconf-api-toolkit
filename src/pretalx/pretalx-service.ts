@@ -5,7 +5,7 @@ import {
   SessionLink,
   Session,
   SessionVisibility,
-  ConfigSettings,
+  ConferenceConfig,
   SessionState,
   SessionType,
   Theme,
@@ -149,7 +149,7 @@ export class PretalxService {
     const speakers = this.getDeconfSpeakers(pretalx.speakers)
     const themes = this.getDeconfThemes(pretalx.tags)
     const sessions = this.getSessions(pretalx.talks)
-    const settings: ConfigSettings = {
+    const settings: ConferenceConfig = {
       atrium: { enabled: true, visible: true },
       whatsOn: { enabled: false, visible: false },
       schedule: { enabled: true, visible: true },
@@ -228,7 +228,7 @@ export class PretalxService {
   //
   // Conversions
   //
-  getDeconfSlots(talks: PretalxTalk[]) {
+  getDeconfSlots(talks: PretalxTalk[]): SessionSlot[] {
     const slotMap = new Map<string, SessionSlot>()
     for (const talk of talks) {
       if (!talk.slot) continue
@@ -248,7 +248,7 @@ export class PretalxService {
     )
     return deconfSlots
   }
-  getDeconfSpeakers(speakers: PretalxSpeaker[]) {
+  getDeconfSpeakers(speakers: PretalxSpeaker[]): Speaker[] {
     const affiliationQuestion = this.#config.questions.affiliation
     return speakers.map((speaker) => ({
       id: speaker.code,
@@ -260,7 +260,7 @@ export class PretalxService {
       headshot: speaker.avatar ?? '',
     }))
   }
-  getDeconfThemes(tags: PretalxTax[]) {
+  getDeconfThemes(tags: PretalxTax[]): Theme[] {
     return tags.map((tag) => ({
       id: tag.tag,
       title: {
@@ -268,7 +268,7 @@ export class PretalxService {
       },
     }))
   }
-  getSessionLinks(talk: PretalxTalk) {
+  getSessionLinks(talk: PretalxTalk): SessionLink[] {
     const text = this.#config.questions.links
       .map((questionId) => this.findAnswer(questionId, talk.answers))
       .filter((answer) => Boolean(answer))
@@ -318,7 +318,7 @@ export class PretalxService {
 
     return participantCap
   }
-  getSessions(talks: PretalxTalk[]) {
+  getSessions(talks: PretalxTalk[]): Session[] {
     return talks.map((talk) => {
       const slot = talk.slot ? this.getSlotId(talk.slot) : undefined
       const type = this.getSlug(

@@ -1,36 +1,16 @@
 import distance from 'haversine-distance'
-import { array, is, number, object, string } from 'superstruct'
-import { ApiError } from '../lib/api-error'
+import { array, is } from 'superstruct'
 import { DeconfBaseContext } from '../lib/context'
+import { CountryLocationStruct } from './country-location-struct'
+import { CarbonCalculation, CountryLocation } from '@openlab/deconf-shared'
+
+// TODO: move away from using resources and RESOURCE_CARBON_LOCATIONS
 
 // The kg of carbon emitted for a 1km of flight
 // https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2019
 export const CARBON_FACTOR = 0.195
 export const CARBON_CACHE_KEY = 'c02'
 export const RESOURCE_CARBON_LOCATIONS = 'carbon/countries.json'
-
-interface CarbonResult {
-  totalDistance: number
-  carbonNotEmitted: number
-}
-
-interface CountryLocation {
-  code: string
-  name: string
-  location: {
-    lat: number
-    lng: number
-  }
-}
-
-const CountryLocationStruct = object({
-  code: string(),
-  name: string(),
-  location: object({
-    lat: number(),
-    lng: number(),
-  }),
-})
 
 //
 // Routes
@@ -81,7 +61,7 @@ export class CarbonRoutes {
 
   // GET /carbon
   async getCarbon() {
-    const cached = await this.#store.retrieve<CarbonResult | null>(
+    const cached = await this.#store.retrieve<CarbonCalculation | null>(
       CARBON_CACHE_KEY
     )
     if (cached) return cached
@@ -104,7 +84,7 @@ export class CarbonRoutes {
     // At 0.85 kg of CO2 per kilometer
     const carbonNotEmitted = (totalMeters * CARBON_FACTOR) / 1000
 
-    const response: CarbonResult = {
+    const response: CarbonCalculation = {
       totalDistance: totalMeters,
       carbonNotEmitted,
     }

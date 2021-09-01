@@ -1,8 +1,3 @@
-import {
-  AuthToken,
-  Interpreter,
-  Registration,
-} from '@openlab/deconf-shared/dist'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
 import { AuthTokenStruct, SocketAuth } from '../lib/jwt-service'

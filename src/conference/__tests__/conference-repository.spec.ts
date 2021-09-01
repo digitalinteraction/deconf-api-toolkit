@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockInterpreter,
   mockKeyValueStore,
