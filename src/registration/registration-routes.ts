@@ -4,7 +4,6 @@ import {
   Registration,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
-import mustache from 'mustache'
 import { is, literal, number, object, refine, string } from 'superstruct'
 
 import { ApiError } from '../lib/api-error'
