@@ -13,6 +13,8 @@ export const SITE_VISITORS_ROOM = 'site-visitors'
 const SITE_VISITORS_MAX_LOCK = ms('15s')
 const SITE_VISITORS_TIMEOUT = ms('5s')
 
+// TODO: eventName and payload validation
+
 export class MetricsSockets {
   get #sockets() {
     return this.#context.sockets
