@@ -39,6 +39,7 @@ describe('MetricsSockets', () => {
   describe('#cameOnline', () => {
     it('should add the socket to the room', async () => {
       const { metrics, sockets } = setup()
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
 
       await metrics.cameOnline('socket-a')
 
@@ -46,15 +47,23 @@ describe('MetricsSockets', () => {
     })
     it('should emit the current visitors to the socket', async () => {
       const { metrics, sockets } = setup()
-      mocked(sockets.getRoomSize).mockResolvedValue(7)
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([
+        'socket-a',
+        'socket-b',
+        'socket-c',
+      ])
 
       await metrics.cameOnline('socket-a')
 
-      expect(sockets.emitTo).toBeCalledWith('socket-a', 'site-visitors', 7)
+      expect(sockets.emitTo).toBeCalledWith('socket-a', 'site-visitors', 3)
     })
     it('should broadcast the site visitors to everyone', async () => {
       const { metrics, semaphore, sockets } = setup()
-      mocked(sockets.getRoomSize).mockResolvedValue(7)
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([
+        'socket-a',
+        'socket-b',
+        'socket-c',
+      ])
       mocked(semaphore.aquire).mockResolvedValue(true)
       mocked(semaphore.hasLock).mockResolvedValue(true)
 
@@ -63,7 +72,7 @@ describe('MetricsSockets', () => {
       expect(sockets.emitTo).toBeCalledWith(
         SITE_VISITORS_ROOM,
         'site-visitors',
-        7
+        3
       )
     })
   })
@@ -71,7 +80,11 @@ describe('MetricsSockets', () => {
   describe('#wentOffilne', () => {
     it('should broadcast the site visitors to everyone', async () => {
       const { metrics, semaphore, sockets } = setup()
-      mocked(sockets.getRoomSize).mockResolvedValue(7)
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([
+        'socket-a',
+        'socket-b',
+        'socket-c',
+      ])
       mocked(semaphore.aquire).mockResolvedValue(true)
       mocked(semaphore.hasLock).mockResolvedValue(true)
 
@@ -80,7 +93,7 @@ describe('MetricsSockets', () => {
       expect(sockets.emitTo).toBeCalledWith(
         SITE_VISITORS_ROOM,
         'site-visitors',
-        7
+        3
       )
     })
   })

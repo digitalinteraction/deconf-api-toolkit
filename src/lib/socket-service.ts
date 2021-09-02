@@ -53,11 +53,10 @@ export interface SocketService {
     ...parameters: T['emitParams']
   ): void
 
-  getRoomSize(roomName: string): Promise<number>
-  getRoomSockets(roomName: string): Promise<string[]>
   joinRoom(socketId: string, roomName: string): void
   leaveRoom(socketId: string, roomName: string): void
-  getSocketRooms(socketId: string): Promise<Set<string>>
+  getRoomsOfSocket(socketId: string): Promise<Set<string>>
+  getSocketsInRoom(roomName: string): Promise<string[]>
 
   sendError(error: ApiError): void
 }

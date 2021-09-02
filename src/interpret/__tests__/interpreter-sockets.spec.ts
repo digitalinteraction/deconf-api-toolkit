@@ -182,7 +182,7 @@ describe('InterpreterSockets', () => {
   describe('#joinBooth', () => {
     it('should emit the rooms occupants to the joiner', async () => {
       const { interpreter, sockets, jwt, interpreterRepo } = setup()
-      mocked(sockets.getRoomSockets).mockResolvedValue(['socket-b'])
+      mocked(sockets.getSocketsInRoom).mockResolvedValue(['socket-b'])
       mocked(jwt.getSocketAuth).mockResolvedValueOnce(
         mockSocketAuth({ id: 1, email: 'geoff@example.com', interpreter: true })
       )
@@ -203,7 +203,7 @@ describe('InterpreterSockets', () => {
     })
     it('should emit the active interpreter to the joiner', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(sockets.getRoomSockets).mockResolvedValue([])
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
       mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
         mockPrep(1, 'jess@example.com', 'session-a', 'en')
       )
@@ -226,7 +226,7 @@ describe('InterpreterSockets', () => {
     })
     it('should join the interpret room', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(sockets.getRoomSockets).mockResolvedValue([])
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
       mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
         mockPrep(1, 'jess@example.com', 'session-a', 'en')
       )
@@ -243,7 +243,7 @@ describe('InterpreterSockets', () => {
     })
     it('should emit the joining to the room', async () => {
       const { interpreter, sockets, interpreterRepo } = setup()
-      mocked(sockets.getRoomSockets).mockResolvedValue([])
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
       mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
         mockPrep(1, 'jess@example.com', 'session-a', 'en')
       )
@@ -263,7 +263,7 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, sockets, interpreterRepo, metricsRepo } = setup()
-      mocked(sockets.getRoomSockets).mockResolvedValue([])
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
       mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
         mockPrep(1, 'jess@example.com', 'session-a', 'en')
       )

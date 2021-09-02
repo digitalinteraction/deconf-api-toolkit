@@ -72,7 +72,7 @@ describe('ChannelSockets', () => {
   describe('#leaveChannel', () => {
     it('should remove the user from the room', async () => {
       const { sockets, channel, jwt } = setup()
-      mocked(sockets.getSocketRooms).mockResolvedValue(
+      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
         new Set(['channel/session-a/en'])
       )
       mocked(jwt.getSocketAuth).mockResolvedValue({
@@ -93,7 +93,7 @@ describe('ChannelSockets', () => {
     })
     it('should log a leave-channel event', async () => {
       const { sockets, channel, metricsRepo, jwt } = setup()
-      mocked(sockets.getSocketRooms).mockResolvedValue(
+      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
         new Set(['channel/session-a/en'])
       )
       mocked(jwt.getSocketAuth).mockResolvedValue({

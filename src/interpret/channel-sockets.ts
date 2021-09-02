@@ -55,7 +55,7 @@ export class ChannelSockets {
     if (!is(booth, InterpretBoothStruct)) throw ApiError.badRequest()
 
     const auth = await this.#jwt.getSocketAuth(socketId)
-    const socketRooms = await this.#sockets.getSocketRooms(socketId)
+    const socketRooms = await this.#sockets.getRoomsOfSocket(socketId)
 
     const room = this.#getChannelRoom(booth)
 

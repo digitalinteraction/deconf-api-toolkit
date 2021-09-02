@@ -53,8 +53,8 @@ export class MetricsSockets {
     }
 
     // If we got to this point, broadcast the site visitor count
-    const visitors = await this.#sockets.getRoomSize(SITE_VISITORS_ROOM)
-    this.#sockets.emitTo(SITE_VISITORS_ROOM, 'site-visitors', visitors)
+    const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
+    this.#sockets.emitTo(SITE_VISITORS_ROOM, 'site-visitors', visitors.length)
     debug('emit site-visitors %o', visitors)
   }
 
@@ -62,8 +62,8 @@ export class MetricsSockets {
     this.#sockets.joinRoom(socketId, SITE_VISITORS_ROOM)
 
     // Let the joining-socket know instantly
-    const visitors = await this.#sockets.getRoomSize(SITE_VISITORS_ROOM)
-    this.#sockets.emitTo(socketId, 'site-visitors', visitors)
+    const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
+    this.#sockets.emitTo(socketId, 'site-visitors', visitors.length)
 
     await this.#triggerVisitors()
   }

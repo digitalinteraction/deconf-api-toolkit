@@ -120,7 +120,7 @@ export class InterpreterSockets {
     )
 
     // 1. emit the current room's occupants to the joiner
-    const occupants = await this.#sockets.getRoomSockets(interpretRoom)
+    const occupants = await this.#sockets.getSocketsInRoom(interpretRoom)
     for (const id of occupants) {
       const other = await this.#jwt.getSocketAuth(id).catch(() => null)
       if (!other || !other.interpreter) continue

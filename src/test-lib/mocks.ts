@@ -191,12 +191,11 @@ export function mockSocketService(): Readonly<SocketService> {
   return {
     emitToEveryone: jest.fn(),
     emitTo: jest.fn(),
-    getRoomSize: jest.fn(),
     joinRoom: jest.fn(),
     leaveRoom: jest.fn(),
     sendError: jest.fn(),
-    getSocketRooms: jest.fn(),
-    getRoomSockets: jest.fn(),
+    getRoomsOfSocket: jest.fn(),
+    getSocketsInRoom: jest.fn(),
   }
 }
 
