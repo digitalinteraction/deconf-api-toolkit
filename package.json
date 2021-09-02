@@ -1,7 +1,7 @@
 {
   "name": "@openlab/deconf-api-toolkit",
   "description": "A library for running decentralised virtual conferences",
-  "version": "3.0.0",
+  "version": "3.0.1-next.0",
   "repository": "digitalinteraction/deconf-api-toolkit",
   "author": "robb-j",
   "license": "MIT",
