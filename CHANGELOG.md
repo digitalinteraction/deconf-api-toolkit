@@ -2,6 +2,14 @@
 
 This file documents changes
 
+## 4.0.0 (next)
+
+**SocketService**
+
+- remove use of `getRoomSize`
+- **breaking** rename `getSocketRooms` to `getRoomsOfSocket`
+- **breaking** rename `getRoomSockets` to `getSocketsInRoom`
+
 ## 3.0.0
 
 Everything has changed, WIP
