@@ -57,7 +57,11 @@ export class MetricsSockets {
     // If we got to this point, broadcast the site visitor count
     const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
     this.#sockets.emitTo(SITE_VISITORS_ROOM, 'site-visitors', visitors.length)
-    debug('emit site-visitors %o', visitors)
+    debug('emit site-visitors %o', visitors.length)
+  }
+
+  #getAuth(socketId: string) {
+    return this.#jwt.getSocketAuth(socketId).catch(() => null)
   }
 
   async cameOnline(socketId: string) {
@@ -67,7 +71,10 @@ export class MetricsSockets {
     const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
     this.#sockets.emitTo(socketId, 'site-visitors', visitors.length)
 
-    await this.#triggerVisitors()
+    this.#triggerVisitors().catch((error) => {
+      console.error('Failed to emit site-visitors')
+      process.exit(1)
+    })
   }
 
   async wentOffline(socketId: string) {
@@ -77,7 +84,7 @@ export class MetricsSockets {
   }
 
   async event(socketId: string, eventName: string, payload: any) {
-    const authToken = await this.#jwt.getSocketAuth(socketId)
+    const authToken = await this.#getAuth(socketId)
     await this.#metricsRepo.trackEvent(eventName, payload, {
       attendee: authToken?.authToken.sub,
       socket: socketId,
@@ -85,7 +92,7 @@ export class MetricsSockets {
   }
 
   async error(socketId: string, error: Error) {
-    const authToken = await this.#jwt.getSocketAuth(socketId)
+    const authToken = await this.#getAuth(socketId)
     const payload = {
       message: error.message,
       stack: error.stack,
