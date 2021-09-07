@@ -1,4 +1,4 @@
-import Minio from 'minio'
+import * as Minio from 'minio'
 import { DeconfBaseContext } from './context'
 
 type Context = Pick<DeconfBaseContext, 'env'>
