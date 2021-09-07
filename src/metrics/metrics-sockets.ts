@@ -1,13 +1,19 @@
 import { DeconfBaseContext } from '../lib/context'
 import ms from 'ms'
 import createDebug from 'debug'
+import { is, Struct } from 'superstruct'
+import { ApiError } from '../module'
 
 const debug = createDebug('deconf:metrics:sockets')
+
+export type MetricsSocketsStructs = Map<string, Struct<any>>
 
 type Context = Pick<
   DeconfBaseContext,
   'sockets' | 'metricsRepo' | 'jwt' | 'semaphore'
->
+> & {
+  eventStructs: MetricsSocketsStructs
+}
 
 export const SITE_VISITORS_ROOM = 'site-visitors'
 const SITE_VISITORS_MAX_LOCK = ms('15s')
@@ -27,6 +33,9 @@ export class MetricsSockets {
   }
   get #semaphore() {
     return this.#context.semaphore
+  }
+  get #eventStructs() {
+    return this.#context.eventStructs
   }
 
   #context: Context
@@ -84,6 +93,13 @@ export class MetricsSockets {
   }
 
   async event(socketId: string, eventName: string, payload: any) {
+    const struct = this.#eventStructs.get(eventName)
+
+    if (!struct || !is(payload, struct)) {
+      this.#sockets.sendError(socketId, new ApiError(400, ['metrics.badEvent']))
+      return
+    }
+
     const authToken = await this.#getAuth(socketId)
     await this.#metricsRepo.trackEvent(eventName, payload, {
       attendee: authToken?.authToken.sub,

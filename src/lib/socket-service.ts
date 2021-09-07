@@ -61,5 +61,5 @@ export interface SocketService {
   getSocketsInRoom(roomName: string): Promise<string[]>
 
   // TODO: TBR
-  sendError(error: ApiError): void
+  sendError(socketId: string, error: ApiError): void
 }

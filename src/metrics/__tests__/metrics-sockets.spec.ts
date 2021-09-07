@@ -1,4 +1,6 @@
+import { object, string } from 'superstruct'
 import { mocked } from 'ts-jest/utils'
+import { ApiError } from '../../module'
 import {
   mockJwtService,
   mockMetricsRepository,
@@ -20,6 +22,7 @@ function setup() {
     metricsRepo,
     semaphore,
     jwt,
+    eventStructs: new Map([['page-view', object({ path: string() })]]),
   })
   return { metrics, sockets, metricsRepo, semaphore, jwt }
 }
@@ -69,11 +72,8 @@ describe('MetricsSockets', () => {
 
       await waitForAsyncTimers(metrics.cameOnline('socket-a'))
 
-      expect(sockets.emitTo).toBeCalledWith(
-        SITE_VISITORS_ROOM,
-        'site-visitors',
-        3
-      )
+      expect(sockets.sendError).not.toBeCalled()
+      expect(sockets.emitTo).toBeCalledWith('socket-a', SITE_VISITORS_ROOM, 3)
     })
   })
 
@@ -101,17 +101,47 @@ describe('MetricsSockets', () => {
   describe('#event', () => {
     it('should store an event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
+      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+
+      await metrics.event('socket-a', 'page-view', { path: '/about' })
+
+      expect(metricsRepo.trackEvent).toBeCalledWith(
+        'page-view',
+        { path: '/about' },
+        { socket: 'socket-a', attendee: undefined }
+      )
+    })
+    it('should store an authenticated event', async () => {
+      const { metrics, metricsRepo, jwt } = setup()
       mocked(jwt.getSocketAuth).mockResolvedValue(
         mockSocketAuth({ id: 1, email: 'geoff@example.com' })
       )
 
-      await metrics.event('socket-a', 'test-event', { name: 'Geoff' })
+      await metrics.event('socket-a', 'page-view', { path: '/about' })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'test-event',
-        { name: 'Geoff' },
+        'page-view',
+        { path: '/about' },
         { socket: 'socket-a', attendee: 1 }
       )
+    })
+    it('should send a client error for unknown events', async () => {
+      const { metrics, metricsRepo, jwt, sockets } = setup()
+      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+
+      await metrics.event('socket-a', 'page-reload', {})
+
+      expect(metricsRepo.trackEvent).not.toBeCalled()
+      expect(sockets.sendError).toBeCalledWith('socket-a', expect.any(ApiError))
+    })
+    it('should send a client error for bac payloads', async () => {
+      const { metrics, metricsRepo, jwt, sockets } = setup()
+      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+
+      await metrics.event('socket-a', 'page-view', {})
+
+      expect(metricsRepo.trackEvent).not.toBeCalled()
+      expect(sockets.sendError).toBeCalledWith('socket-a', expect.any(ApiError))
     })
   })
 
