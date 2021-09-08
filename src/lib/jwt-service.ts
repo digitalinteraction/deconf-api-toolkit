@@ -14,6 +14,7 @@ import {
 import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
 import { AuthToken, Interpreter } from '@openlab/deconf-shared'
+import { assertStruct } from './structs'
 
 export const JWT_ISSUER = 'deconf-app'
 const debug = createDebug('deconf:lib:jwt')
@@ -89,7 +90,7 @@ export class JwtService {
         issuer: JWT_ISSUER,
       })
 
-      if (!is(result, struct)) throw new ApiError(401, ['auth.badToken'])
+      assertStruct(result, struct)
 
       return result
     } catch (error) {

@@ -1,8 +1,8 @@
 import { DeconfBaseContext } from '../lib/context'
 import ms from 'ms'
 import createDebug from 'debug'
-import { is, Struct } from 'superstruct'
-import { ApiError } from '../module'
+import { Struct, validate } from 'superstruct'
+import { ApiError, StructApiError, validateStruct } from '../lib/module'
 
 const debug = createDebug('deconf:metrics:sockets')
 
@@ -95,13 +95,19 @@ export class MetricsSockets {
   async event(socketId: string, eventName: string, payload: any) {
     const struct = this.#eventStructs.get(eventName)
 
-    if (!struct || !is(payload, struct)) {
+    if (!struct) {
       this.#sockets.sendError(socketId, new ApiError(400, ['metrics.badEvent']))
       return
     }
 
+    const validation = validate(payload, struct)
+    if (validation[0]) {
+      this.#sockets.sendError(socketId, new StructApiError(validation[0]))
+      return
+    }
+
     const authToken = await this.#getAuth(socketId)
-    await this.#metricsRepo.trackEvent(eventName, payload, {
+    await this.#metricsRepo.trackEvent(eventName, validation[1], {
       attendee: authToken?.authToken.sub,
       socket: socketId,
     })

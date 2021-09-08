@@ -1,8 +1,8 @@
-import { is } from 'superstruct'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
 import { InterpretBoothStruct } from './interpret-booth-struct'
 import { InterpretBooth } from '@openlab/deconf-shared'
+import { assertStruct } from '../module'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -33,8 +33,8 @@ export class ChannelSockets {
   }
 
   // Channels
-  async joinChannel(socketId: string, booth: InterpretBooth) {
-    if (!is(booth, InterpretBoothStruct)) throw ApiError.badRequest()
+  async joinChannel(socketId: string, booth: unknown) {
+    assertStruct(booth, InterpretBoothStruct)
 
     const auth = await this.#jwt.getSocketAuth(socketId)
     const session = await this.#conferenceRepo.findSession(booth.sessionId)
@@ -51,8 +51,8 @@ export class ChannelSockets {
     })
   }
 
-  async leaveChannel(socketId: string, booth: InterpretBooth) {
-    if (!is(booth, InterpretBoothStruct)) throw ApiError.badRequest()
+  async leaveChannel(socketId: string, booth: unknown) {
+    assertStruct(booth, InterpretBoothStruct)
 
     const auth = await this.#jwt.getSocketAuth(socketId)
     const socketRooms = await this.#sockets.getRoomsOfSocket(socketId)

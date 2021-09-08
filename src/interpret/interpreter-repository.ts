@@ -2,6 +2,7 @@ import { InterpretBooth } from '@openlab/deconf-shared'
 import { is } from 'superstruct'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
+import { assertStruct } from '../lib/module'
 import { InterpretBoothStruct } from './interpret-booth-struct'
 
 type Context = Pick<DeconfBaseContext, 'jwt' | 'conferenceRepo'>
@@ -19,8 +20,8 @@ export class InterpreterRepository {
     this.#context = context
   }
 
-  async prepInterpreter(socketId: string, booth: InterpretBooth) {
-    if (!is(booth, InterpretBoothStruct)) throw ApiError.badRequest()
+  async prepInterpreter(socketId: string, booth: unknown) {
+    assertStruct(booth, InterpretBoothStruct)
 
     const { authToken, email, interpreter } = await this.#jwt.getSocketAuth(
       socketId

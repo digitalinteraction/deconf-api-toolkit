@@ -5,10 +5,11 @@ import {
   VerifyToken,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
-import { is, object, refine, string } from 'superstruct'
+import { object, refine, string } from 'superstruct'
 
 import {
   ApiError,
+  assertStruct,
   DeconfBaseContext,
   EmailLoginTokenStruct,
   VerifyTokenStruct,
@@ -89,8 +90,8 @@ export class RegistrationRoutes {
     return user
   }
 
-  async startEmailLogin(body: any) {
-    if (!is(body, LoginBodyStruct)) throw ApiError.badRequest()
+  async startEmailLogin(body: unknown) {
+    assertStruct(body, LoginBodyStruct)
 
     // Make sure they have a verified record
     // TODO: a query for registations based on email not just id
@@ -128,8 +129,8 @@ export class RegistrationRoutes {
     return this.#url.getClientLoginLink(this.#jwt.signToken(authToken))
   }
 
-  async startRegister(body: any) {
-    if (!is(body, RegisterBodyStruct)) throw ApiError.badRequest()
+  async startRegister(body: unknown) {
+    assertStruct(body, RegisterBodyStruct)
 
     await this.#registrationRepo.register(body)
     const allRegistrations = await this.#registrationRepo.getRegistrations(
