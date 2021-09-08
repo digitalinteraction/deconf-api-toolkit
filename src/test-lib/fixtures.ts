@@ -65,6 +65,7 @@ export const mockRegistration = makeFixture<Registration>({
   affiliation: 'Open Lab',
   verified: true,
   consented: new Date(),
+  userData: {},
 })
 
 export const mockAuthToken = makeFixture<AuthToken>({

@@ -1,4 +1,4 @@
-import { RegisterRequest, Registration } from '@openlab/deconf-shared/dist'
+import { RegisterRequest, Registration } from '@openlab/deconf-shared'
 import { DeconfBaseContext } from '../lib/context'
 
 // TODO: these queries could be optimised to suit registration-routes more
@@ -18,7 +18,7 @@ export class RegistrationRepository {
   getRegistrations(email: string): Promise<Registration[]> {
     return this.#postgres.run((client) => {
       return client.sql`
-        SELECT id, created, name, email, language, country, affiliation, verified, consented
+        SELECT id, created, name, email, language, country, affiliation, verified, consented, userData
         FROM attendees
         WHERE email = ${email.toLowerCase()}
         ORDER BY created DESC
@@ -30,7 +30,7 @@ export class RegistrationRepository {
     return this.#postgres.run(async (client) => {
       // get all registrations for that email, newest first
       const matches = await client.sql<Registration>`
-        SELECT id, created, name, email, language, country, affiliation, verified, consented
+        SELECT id, created, name, email, language, country, affiliation, verified, consented, userData
         FROM attendees
         WHERE id = ${id} AND verified = ${true}
         ORDER BY created DESC
@@ -40,11 +40,11 @@ export class RegistrationRepository {
   }
 
   register(request: RegisterRequest): Promise<void> {
-    const { name, email, language, country, affiliation } = request
+    const { name, email, language, country, affiliation, userData } = request
     return this.#postgres.run(async (client) => {
       await client.sql`
-        INSERT INTO attendees (name, email, language, country, affiliation)
-        VALUES (${name}, ${email.toLowerCase()}, ${language}, ${country}, ${affiliation})
+        INSERT INTO attendees (name, email, language, country, affiliation, userData)
+        VALUES (${name}, ${email.toLowerCase()}, ${language}, ${country}, ${affiliation}, ${userData})
       `
     })
   }

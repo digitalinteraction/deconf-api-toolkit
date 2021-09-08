@@ -29,7 +29,7 @@ import {
 } from '../src/module'
 
 import { MigrateRepository } from '../src/database/migrate-repository'
-import { object, assign } from 'superstruct'
+import { object, assign, string } from 'superstruct'
 
 const AppConfigStruct = assign(
   DeconfConfigStruct,
@@ -193,6 +193,9 @@ async function main() {
         )
       },
     },
+    userDataStruct: object({
+      favourtiePizza: string(),
+    }),
   })
 
   app.get(

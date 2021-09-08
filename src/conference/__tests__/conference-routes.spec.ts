@@ -1,4 +1,4 @@
-import { SessionLink, SessionState } from '@openlab/deconf-shared/dist'
+import { SessionLink, SessionState } from '@openlab/deconf-shared'
 import { mocked } from 'ts-jest/utils'
 import { ApiError } from '../../lib/api-error'
 import { createTestingDeconfConfig } from '../../lib/config'

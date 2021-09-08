@@ -5,7 +5,7 @@ import {
   VerifyToken,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
-import { object, refine, string } from 'superstruct'
+import { object, refine, string, Describe, assign } from 'superstruct'
 
 import {
   ApiError,
@@ -35,14 +35,15 @@ const RegisterBodyStruct = object({
 //
 // NOTE - this is a non-standard DI context
 //
-type Context = Pick<
+type Context<T extends Record<string, unknown>> = Pick<
   DeconfBaseContext,
   'jwt' | 'registrationRepo' | 'conferenceRepo' | 'config' | 'url'
 > & {
   mailer: RegistrationMailer
+  userDataStruct: Describe<T>
 }
 
-export class RegistrationRoutes {
+export class RegistrationRoutes<T extends Record<string, unknown>> {
   get #jwt() {
     return this.#context.jwt
   }
@@ -61,9 +62,12 @@ export class RegistrationRoutes {
   get #mailer() {
     return this.#context.mailer
   }
+  get #userDataStruct() {
+    return this.#context.userDataStruct
+  }
 
-  #context: Context
-  constructor(context: Context) {
+  #context: Context<T>
+  constructor(context: Context<T>) {
     this.#context = context
   }
 
@@ -129,8 +133,13 @@ export class RegistrationRoutes {
     return this.#url.getClientLoginLink(this.#jwt.signToken(authToken))
   }
 
-  async startRegister(body: unknown) {
-    assertStruct(body, RegisterBodyStruct)
+  async startRegister(rawBody: Record<string, unknown>) {
+    // A bit of a hack to assert two structs
+    // I couldn't get it to work with superstruct#assign
+    const { userData, ...rest } = rawBody
+    assertStruct(rest, RegisterBodyStruct)
+    assertStruct(userData, this.#userDataStruct)
+    const body = { ...rest, userData }
 
     await this.#registrationRepo.register(body)
     const allRegistrations = await this.#registrationRepo.getRegistrations(

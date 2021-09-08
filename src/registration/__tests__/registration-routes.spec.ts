@@ -14,6 +14,7 @@ import {
   mockUrlService,
 } from '../../test-lib/mocks'
 import { RegistrationRoutes } from '../registration-routes'
+import { object, string } from 'superstruct'
 
 function setup() {
   const url = mockUrlService()
@@ -25,6 +26,9 @@ function setup() {
     sendLoginEmail: jest.fn(),
     sendVerifyEmail: jest.fn(),
   }
+  const userDataStruct = object({
+    favouritePizza: string(),
+  })
   const routes = new RegistrationRoutes({
     conferenceRepo,
     config,
@@ -32,6 +36,7 @@ function setup() {
     registrationRepo,
     url,
     mailer,
+    userDataStruct,
   })
   return { routes, conferenceRepo, config, jwt, registrationRepo, url, mailer }
 }
@@ -127,6 +132,9 @@ describe('RegistrationRoutes', () => {
         language: 'fr',
         country: 'FR',
         affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
       })
 
       expect(mailer.sendVerifyEmail).toBeCalledWith(
@@ -147,6 +155,9 @@ describe('RegistrationRoutes', () => {
         language: 'fr',
         country: 'FR',
         affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
       })
 
       expect(registrationRepo.register).toBeCalledWith({
@@ -155,6 +166,9 @@ describe('RegistrationRoutes', () => {
         language: 'fr',
         country: 'FR',
         affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
       })
     })
   })
