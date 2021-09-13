@@ -6,6 +6,7 @@ import {
   mockInterpreter,
   mockRegistration,
   mockVerifyToken,
+  VOID_RESPONSE,
 } from '../../test-lib/module'
 import {
   mockConferenceRepository,
@@ -52,7 +53,11 @@ describe('RegistrationRoutes', () => {
 
       const result = await routes.getRegistration(authToken)
 
-      expect(result?.email).toEqual('geoff@example.com')
+      expect(result).toEqual({
+        registration: expect.objectContaining({
+          email: 'geoff@example.com',
+        }),
+      })
     })
   })
 
@@ -64,7 +69,7 @@ describe('RegistrationRoutes', () => {
       ])
       mocked(jwt.signToken).mockReturnValue('mock_token')
 
-      const result = await routes.startEmailLogin({
+      await routes.startEmailLogin({
         email: 'geoff@example.com',
       })
 
@@ -72,6 +77,19 @@ describe('RegistrationRoutes', () => {
         expect.objectContaining({ email: 'geoff@example.com' }),
         'mock_token'
       )
+    })
+    it('should return a VOID_RESPONSE', async () => {
+      const { routes, registrationRepo, jwt, mailer } = setup()
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'geoff@example.com', verified: true }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_token')
+
+      const result = await routes.startEmailLogin({
+        email: 'geoff@example.com',
+      })
+
+      expect(result).toEqual(VOID_RESPONSE)
     })
   })
 
@@ -171,6 +189,26 @@ describe('RegistrationRoutes', () => {
         },
       })
     })
+    it('should return a VOID_RESPONSE', async () => {
+      const { routes, registrationRepo, jwt, mailer } = setup()
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com' }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+
+      const result = await routes.startRegister({
+        name: 'Tim Smith',
+        email: 'tim@example.com',
+        language: 'fr',
+        country: 'FR',
+        affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
+      })
+
+      expect(result).toEqual(VOID_RESPONSE)
+    })
   })
 
   describe('#finishRegister', () => {
@@ -220,6 +258,17 @@ describe('RegistrationRoutes', () => {
       await routes.unregister(authToken)
 
       expect(registrationRepo.unregister).toBeCalledWith('tim@example.com')
+    })
+    it('should return a VOID_RESPONSE', async () => {
+      const { routes, registrationRepo } = setup()
+      const authToken = mockAuthToken()
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'tim@example.com' })
+      )
+
+      const result = await routes.unregister(authToken)
+
+      expect(result).toEqual(VOID_RESPONSE)
     })
   })
 })

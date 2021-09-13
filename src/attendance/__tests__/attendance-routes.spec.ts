@@ -7,6 +7,7 @@ import {
   mockRegistration,
   mockRegistrationRepository,
   mockSession,
+  VOID_RESPONSE,
 } from '../../test-lib/module'
 import { AttendanceRoutes } from '../attendance-routes'
 
@@ -38,6 +39,28 @@ function setup() {
 
 describe('AttendanceRoutes', () => {
   describe('#attend', () => {
+    it('should return a VOID_RESPONSE', async () => {
+      const {
+        conferenceRepo,
+        registrationRepo,
+        routes,
+        attendanceRepo,
+        token,
+        session,
+        registration,
+      } = setup()
+      mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        registration
+      )
+      mocked(attendanceRepo.getSessionAttendance).mockResolvedValue(
+        new Map([[SESSION_ID, 10]])
+      )
+
+      const result = await routes.attend(token, SESSION_ID)
+
+      expect(result).toEqual(VOID_RESPONSE)
+    })
     it('should request to attend', async () => {
       const {
         conferenceRepo,
@@ -63,6 +86,25 @@ describe('AttendanceRoutes', () => {
   })
 
   describe('#unattend', () => {
+    it('should return a VOID_RESPONSE', async () => {
+      const {
+        conferenceRepo,
+        registrationRepo,
+        routes,
+        session,
+        registration,
+        token,
+      } = setup()
+
+      mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        registration
+      )
+
+      const result = await routes.unattend(token, SESSION_ID)
+
+      expect(result).toEqual(VOID_RESPONSE)
+    })
     it('should request to unattend', async () => {
       const {
         conferenceRepo,
@@ -136,11 +178,13 @@ describe('AttendanceRoutes', () => {
 
       const result = await routes.getUserAttendance(token)
 
-      expect(result).toEqual([
-        expect.objectContaining({ session: 'session-a' }),
-        expect.objectContaining({ session: 'session-b' }),
-        expect.objectContaining({ session: 'session-c' }),
-      ])
+      expect(result).toEqual({
+        attendance: [
+          expect.objectContaining({ session: 'session-a' }),
+          expect.objectContaining({ session: 'session-b' }),
+          expect.objectContaining({ session: 'session-c' }),
+        ],
+      })
     })
   })
 })

@@ -1,7 +1,5 @@
 import { AuthToken } from '@openlab/deconf-shared'
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
-import { VOID_RESPONSE } from '../lib/module'
+import { VOID_RESPONSE, DeconfBaseContext, ApiError } from '../lib/module'
 
 type Context = Pick<
   DeconfBaseContext,

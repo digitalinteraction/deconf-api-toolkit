@@ -139,9 +139,9 @@ describe('ConferenceRoutes', () => {
 
       const result = await routes.getLinks(authToken, 'session-a')
 
-      expect(result).toEqual([
-        { type: 'video', url: 'https://youtu.be', language: 'en' },
-      ])
+      expect(result).toEqual({
+        links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
+      })
     })
     it('should return links to registered attendees when there is a cap', async () => {
       const { routes, conferenceRepo, attendanceRepo } = setup()
@@ -163,9 +163,9 @@ describe('ConferenceRoutes', () => {
 
       const result = await routes.getLinks(authToken, 'session-a')
 
-      expect(result).toEqual([
-        { type: 'video', url: 'https://youtu.be', language: 'en' },
-      ])
+      expect(result).toEqual({
+        links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
+      })
     })
     it('should always return links to admins', async () => {
       const { routes, conferenceRepo } = setup()
@@ -184,9 +184,9 @@ describe('ConferenceRoutes', () => {
 
       const result = await routes.getLinks(authToken, 'session-a')
 
-      expect(result).toEqual([
-        { type: 'video', url: 'https://youtu.be', language: 'en' },
-      ])
+      expect(result).toEqual({
+        links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
+      })
     })
     it('should not return links 30m before the session', async () => {
       const { routes, conferenceRepo, attendanceRepo } = setup()

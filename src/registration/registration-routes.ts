@@ -5,7 +5,7 @@ import {
   VerifyToken,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
-import { object, refine, string, Describe, assign } from 'superstruct'
+import { object, refine, string, Describe } from 'superstruct'
 
 import {
   ApiError,
