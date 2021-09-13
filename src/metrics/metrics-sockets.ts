@@ -16,6 +16,7 @@ type Context = Pick<
 }
 
 export const SITE_VISITORS_ROOM = 'site-visitors'
+const SITE_VISITORS_LOCK_KEY = 'site_visitors'
 const SITE_VISITORS_MAX_LOCK = ms('15s')
 const SITE_VISITORS_TIMEOUT = ms('5s')
 
@@ -47,7 +48,7 @@ export class MetricsSockets {
     // Try to aquire a lock to broadcast
     // If we don't get it, someone else will do it first
     const hasLock = await this.#semaphore.aquire(
-      'site_visitors',
+      SITE_VISITORS_LOCK_KEY,
       SITE_VISITORS_MAX_LOCK
     )
     debug('triggerVisitors hasLock=%o', hasLock)
@@ -57,11 +58,14 @@ export class MetricsSockets {
     await new Promise((resolve) => setTimeout(resolve, SITE_VISITORS_TIMEOUT))
 
     // Make sure we still have the lock
-    const stillHasLock = await this.#semaphore.hasLock('site_visitors')
+    const stillHasLock = await this.#semaphore.hasLock(SITE_VISITORS_LOCK_KEY)
     if (!stillHasLock) {
       debug('triggerVisitors lost lock')
       return
     }
+
+    // Release the lock
+    await this.#semaphore.release(SITE_VISITORS_LOCK_KEY)
 
     // If we got to this point, broadcast the site visitor count
     const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)

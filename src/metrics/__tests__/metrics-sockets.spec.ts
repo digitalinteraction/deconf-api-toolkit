@@ -32,10 +32,12 @@ function setup() {
  * and allow the whole thing to be awaited.
  * */
 function waitForAsyncTimers<T>(promise: Promise<T>) {
-  process.nextTick(() => {
-    jest.runAllTimers()
-  })
-  return promise
+  return new Promise<void>((resolve, reject) => {
+    process.nextTick(() => {
+      jest.runAllTimers()
+      resolve()
+    })
+  }).then(() => promise)
 }
 
 describe('MetricsSockets', () => {
@@ -74,6 +76,20 @@ describe('MetricsSockets', () => {
 
       expect(sockets.sendError).not.toBeCalled()
       expect(sockets.emitTo).toBeCalledWith('socket-a', SITE_VISITORS_ROOM, 3)
+    })
+    it('should release the lock', async () => {
+      const { metrics, semaphore, sockets } = setup()
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([
+        'socket-a',
+        'socket-b',
+        'socket-c',
+      ])
+      mocked(semaphore.aquire).mockResolvedValue(true)
+      mocked(semaphore.hasLock).mockResolvedValue(true)
+
+      await waitForAsyncTimers(metrics.cameOnline('socket-a'))
+
+      expect(semaphore.release).toBeCalledWith('site_visitors')
     })
   })
 
