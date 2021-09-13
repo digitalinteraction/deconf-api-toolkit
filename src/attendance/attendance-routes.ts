@@ -67,13 +67,15 @@ export class AttendanceRoutes {
   async getSessionAttendance(authToken: AuthToken | null, sessionId: string) {
     const { attendee } = await this.#setup(authToken, sessionId)
 
-    const attendance = await this.#attendanceRepo.getUserAttendance(attendee.id)
+    const userAttendance = await this.#attendanceRepo.getUserAttendance(
+      attendee.id
+    )
 
-    const sessionAttendance = attendance.find((a) => a.session === sessionId)
+    const sessionAttendance = await this.#attendanceRepo.getSessionAttendance()
 
     return {
-      isAttending: Boolean(sessionAttendance),
-      attendance: sessionAttendance || null,
+      isAttending: userAttendance.some((a) => a.session === sessionId),
+      sessionCount: sessionAttendance.get(sessionId) ?? 0,
     }
   }
 

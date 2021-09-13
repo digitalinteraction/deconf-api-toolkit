@@ -146,15 +146,15 @@ describe('AttendanceRoutes', () => {
       mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
         mockAttendance({ attendee: ATTENDEE_ID, session: SESSION_ID }),
       ])
+      mocked(attendanceRepo.getSessionAttendance).mockResolvedValue(
+        new Map([[SESSION_ID, 42]])
+      )
 
       const result = await routes.getSessionAttendance(token, SESSION_ID)
 
       expect(result).toEqual({
         isAttending: true,
-        attendance: expect.objectContaining({
-          attendee: ATTENDEE_ID,
-          session: SESSION_ID,
-        }),
+        sessionCount: 42,
       })
     })
   })
