@@ -13,6 +13,7 @@ import {
   DeconfBaseContext,
   EmailLoginTokenStruct,
   VerifyTokenStruct,
+  VOID_RESPONSE,
 } from '../lib/module'
 
 export interface RegistrationMailer {
@@ -89,9 +90,12 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
   async getRegistration(authToken: AuthToken | null) {
     if (!authToken) throw ApiError.unauthorized()
 
-    const user = this.#registrationRepo.getVerifiedRegistration(authToken.sub)
+    const user = await this.#registrationRepo.getVerifiedRegistration(
+      authToken.sub
+    )
     if (!user) throw ApiError.unauthorized()
-    return user
+
+    return { registration: user }
   }
 
   async startEmailLogin(body: unknown) {
@@ -113,6 +117,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
 
     // Email the user their login token
     await this.#mailer.sendLoginEmail(registration, signedToken)
+
+    return VOID_RESPONSE
   }
 
   async finishEmailLogin(rawToken: any) {
@@ -155,6 +161,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     })
 
     await this.#mailer.sendVerifyEmail(registration, verifyToken)
+
+    return VOID_RESPONSE
   }
 
   async finishRegister(rawToken: any) {
@@ -193,5 +201,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     if (!registration) throw ApiError.unauthorized()
 
     await this.#registrationRepo.unregister(registration.email)
+
+    return VOID_RESPONSE
   }
 }

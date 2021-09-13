@@ -137,7 +137,9 @@ export class ConferenceRoutes {
     }
 
     // If they reached here they can have the links
-    return session.links
+    return {
+      links: session.links,
+    }
   }
 
   async lintSessions() {

@@ -1,6 +1,7 @@
 import { AuthToken } from '@openlab/deconf-shared'
 import { ApiError } from '../lib/api-error'
 import { DeconfBaseContext } from '../lib/context'
+import { VOID_RESPONSE } from '../lib/module'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -51,6 +52,8 @@ export class AttendanceRoutes {
     }
 
     await this.#attendanceRepo.attend(attendee.id, sessionId)
+
+    return VOID_RESPONSE
   }
 
   // POST /unattend/:session_id
@@ -58,6 +61,8 @@ export class AttendanceRoutes {
     const { session, attendee } = await this.#setup(authToken, sessionId)
 
     await this.#attendanceRepo.unattend(attendee.id, sessionId)
+
+    return VOID_RESPONSE
   }
 
   // GET /attendance/:session_id
@@ -78,6 +83,8 @@ export class AttendanceRoutes {
   async getUserAttendance(authToken: AuthToken | null) {
     if (!authToken) throw ApiError.unauthorized()
 
-    return this.#attendanceRepo.getUserAttendance(authToken.sub)
+    return {
+      attendance: await this.#attendanceRepo.getUserAttendance(authToken.sub),
+    }
   }
 }

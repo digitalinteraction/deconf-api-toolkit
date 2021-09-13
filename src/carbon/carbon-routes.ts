@@ -84,15 +84,15 @@ export class CarbonRoutes {
     // At 0.85 kg of CO2 per kilometer
     const carbonNotEmitted = (totalMeters * CARBON_FACTOR) / 1000
 
-    const response: CarbonCalculation = {
+    const calculation: CarbonCalculation = {
       totalDistance: totalMeters,
       carbonNotEmitted,
     }
 
     // Cache the response for 5 minutes
-    this.#store.put(CARBON_CACHE_KEY, response)
+    this.#store.put(CARBON_CACHE_KEY, calculation)
     this.#store.setExpiry(CARBON_CACHE_KEY, 5 * 60)
 
-    return response
+    return calculation
   }
 }

@@ -17,6 +17,7 @@ and enable good unit-testing:
 
 - **Routes** provide the logic for a http route.
   File ending `...-routes.ts`.
+  **Must** return an object that is exactly what should be in the HTTP body.
 - **Sockets** provide the logic for socket.io endpoint.
   File ending `...-sockets.ts`.
 - **Repositories** are responsible for accessing and mutating data.
