@@ -20,10 +20,10 @@
     "lint": "tsc --noEmit",
     "format": "prettier --write '**/*.{js,json,css,md,ts,tsx}'",
     "preversion": "npm run test -s && npm run build",
-    "postversion": "git push --follow-tags",
     "readme-toc": "md-toc -i",
     "express-example": "ts-node -r dotenv/config examples/express-app.ts",
-    "release": "standard-version"
+    "release": "npm run preversion && standard-version",
+    "release:beta": "npm run preversion && standard-version --prerelease=beta"
   },
   "dependencies": {
     "@openlab/deconf-shared": "^3.3.0",
