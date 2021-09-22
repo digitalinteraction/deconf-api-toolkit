@@ -131,7 +131,7 @@ export class MetricsSockets {
       message: error.message,
       stack: error.stack,
     }
-    await this.#metricsRepo.trackEvent('client-error', payload, {
+    await this.#metricsRepo.trackEvent('general/clientError', payload, {
       attendee: authToken?.authToken.sub,
       socket: socketId,
     })
