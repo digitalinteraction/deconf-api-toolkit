@@ -1,6 +1,16 @@
-# CHANGELOG
+# Changelog
 
-This file documents changes
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [4.0.0-beta.6](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.5...v4.0.0-beta.6) (2021-09-22)
+
+### ⚠ BREAKING CHANGES
+
+- **metrics:** add small delay before emiting site-visitors back
+
+### Features
+
+- **metrics:** add small delay before emiting site-visitors back ([d68cd09](https://github.com/digitalinteraction/deconf-api-toolkit/commit/d68cd095325434eca842b74ec805cf71c817e07c))
 
 ## 4.0.0 (next)
 
