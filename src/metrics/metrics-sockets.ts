@@ -13,6 +13,7 @@ type Context = Pick<
   'sockets' | 'metricsRepo' | 'jwt' | 'semaphore'
 > & {
   eventStructs: MetricsSocketsStructs
+  pause: (ms: number) => Promise<void>
 }
 
 export const SITE_VISITORS_ROOM = 'site-visitors'
@@ -38,6 +39,9 @@ export class MetricsSockets {
   get #eventStructs() {
     return this.#context.eventStructs
   }
+  get #pause() {
+    return this.#context.pause
+  }
 
   #context: Context
   constructor(context: Context) {
@@ -55,7 +59,7 @@ export class MetricsSockets {
     if (!hasLock) return
 
     // Wait a little bit for multiple calls to bundle up
-    await new Promise((resolve) => setTimeout(resolve, SITE_VISITORS_TIMEOUT))
+    await this.#pause(SITE_VISITORS_TIMEOUT)
 
     // Make sure we still have the lock
     const stillHasLock = await this.#semaphore.hasLock(SITE_VISITORS_LOCK_KEY)
@@ -80,14 +84,18 @@ export class MetricsSockets {
   async cameOnline(socketId: string) {
     this.#sockets.joinRoom(socketId, SITE_VISITORS_ROOM)
 
-    // Let the joining-socket know instantly
-    const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
-    this.#sockets.emitTo(socketId, 'site-visitors', visitors.length)
-
     this.#triggerVisitors().catch((error) => {
       console.error('Failed to emit site-visitors')
       process.exit(1)
     })
+
+    // TODO: (hack) wait a little bit so that they are in the room when
+    //              the count is sent
+    await this.#pause(500)
+
+    // Let the joining-socket know instantly
+    const visitors = await this.#sockets.getSocketsInRoom(SITE_VISITORS_ROOM)
+    this.#sockets.emitTo(socketId, 'site-visitors', visitors.length)
   }
 
   async wentOffline(socketId: string) {
