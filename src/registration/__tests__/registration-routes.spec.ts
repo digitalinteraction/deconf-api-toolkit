@@ -26,6 +26,7 @@ function setup() {
   const mailer = {
     sendLoginEmail: jest.fn(),
     sendVerifyEmail: jest.fn(),
+    sendAlreadyRegisteredEmail: jest.fn(),
   }
   const userDataStruct = object({
     favouritePizza: string(),
@@ -140,7 +141,7 @@ describe('RegistrationRoutes', () => {
     it('should send a verification email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
       mocked(registrationRepo.getRegistrations).mockResolvedValue([
-        mockRegistration({ email: 'tim@example.com' }),
+        mockRegistration({ email: 'tim@example.com', verified: false }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
@@ -163,7 +164,7 @@ describe('RegistrationRoutes', () => {
     it('should register the user', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
       mocked(registrationRepo.getRegistrations).mockResolvedValue([
-        mockRegistration({ email: 'tim@example.com' }),
+        mockRegistration({ email: 'tim@example.com', verified: false }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
@@ -192,7 +193,7 @@ describe('RegistrationRoutes', () => {
     it('should return a VOID_RESPONSE', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
       mocked(registrationRepo.getRegistrations).mockResolvedValue([
-        mockRegistration({ email: 'tim@example.com' }),
+        mockRegistration({ email: 'tim@example.com', verified: false }),
       ])
       mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
@@ -208,6 +209,49 @@ describe('RegistrationRoutes', () => {
       })
 
       expect(result).toEqual(VOID_RESPONSE)
+    })
+    it('should do nothing if already registered', async () => {
+      const { routes, registrationRepo, jwt, mailer } = setup()
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com' }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+
+      await routes.startRegister({
+        name: 'Tim Smith',
+        email: 'tim@example.com',
+        language: 'fr',
+        country: 'FR',
+        affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
+      })
+
+      expect(mailer.sendVerifyEmail).not.toBeCalled()
+    })
+    it('should send an "alreadyVerified" email', async () => {
+      const { routes, registrationRepo, jwt, mailer } = setup()
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com' }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_auth_token')
+
+      await routes.startRegister({
+        name: 'Tim Smith',
+        email: 'tim@example.com',
+        language: 'fr',
+        country: 'FR',
+        affiliation: 'Open Lab',
+        userData: {
+          favouritePizza: 'Pepperoni',
+        },
+      })
+
+      expect(mailer.sendAlreadyRegisteredEmail).toBeCalledWith(
+        expect.objectContaining({ email: 'tim@example.com' }),
+        'mock_auth_token'
+      )
     })
   })
 

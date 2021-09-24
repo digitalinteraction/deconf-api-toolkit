@@ -19,6 +19,10 @@ import {
 export interface RegistrationMailer {
   sendLoginEmail(registration: Registration, token: string): Promise<void>
   sendVerifyEmail(registration: Registration, token: string): Promise<void>
+  sendAlreadyRegisteredEmail(
+    registration: Registration,
+    token: string
+  ): Promise<void>
 }
 
 const LoginBodyStruct = object({
@@ -147,10 +151,24 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     assertStruct(userData, this.#userDataStruct)
     const body = { ...rest, userData }
 
-    await this.#registrationRepo.register(body)
-    const allRegistrations = await this.#registrationRepo.getRegistrations(
+    let allRegistrations = await this.#registrationRepo.getRegistrations(
       body.email
     )
+
+    if (allRegistrations.some((r) => r.verified)) {
+      const verified = allRegistrations.find((r) => r.verified) as Registration
+      const authToken = this.#jwt.signToken<AuthToken>({
+        kind: 'auth',
+        sub: verified.id,
+        user_lang: verified.language,
+        user_roles: await this.#getRoles(verified),
+      })
+      await this.#mailer.sendAlreadyRegisteredEmail(verified, authToken)
+      return VOID_RESPONSE
+    }
+
+    await this.#registrationRepo.register(body)
+    allRegistrations = await this.#registrationRepo.getRegistrations(body.email)
     const registration = allRegistrations[allRegistrations.length - 1]
     if (!registration) throw ApiError.internalServerError()
 
@@ -172,7 +190,9 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     const previousReg = await this.#registrationRepo.getVerifiedRegistration(
       token.sub
     )
-    if (previousReg) throw ApiError.badRequest()
+    if (previousReg) {
+      throw new ApiError(400, ['registration.alreadyVerified'])
+    }
 
     // Verify the user
     await this.#registrationRepo.verifyRegistration(token.sub)
