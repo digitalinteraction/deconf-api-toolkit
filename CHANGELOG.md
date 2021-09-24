@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta.7](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.6...v4.0.0-beta.7) (2021-09-24)
+
+### Bug Fixes
+
+- **metrics:** normalise error eventName ([813d053](https://github.com/digitalinteraction/deconf-api-toolkit/commit/813d053b859b5b92b855fd136e2a63cb9d87df09))
+- registration sends "already verified" emails and returns custom errors ([cfa1713](https://github.com/digitalinteraction/deconf-api-toolkit/commit/cfa171314161ec6ad8d387d805bb2c8c257a42e1))
+
 ## [4.0.0-beta.6](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.5...v4.0.0-beta.6) (2021-09-22)
 
 ### ⚠ BREAKING CHANGES
