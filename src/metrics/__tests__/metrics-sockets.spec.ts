@@ -158,7 +158,7 @@ describe('MetricsSockets', () => {
       await metrics.error('socket-a', new Error('Test Error'))
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'client-error',
+        'general/clientError',
         { message: 'Test Error', stack: expect.any(String) },
         { socket: 'socket-a', attendee: 1 }
       )
