@@ -180,6 +180,24 @@ describe('InterpreterSockets', () => {
   })
 
   describe('#joinBooth', () => {
+    it('should emit the interpreter to the socket', async () => {
+      const { interpreter, sockets, interpreterRepo, store } = setup()
+      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
+        mockPrep(1, 'jess@example.com', 'session-a', 'en')
+      )
+
+      await interpreter.joinBooth('socket-a', {
+        sessionId: 'session-a',
+        channel: 'en',
+      })
+
+      expect(sockets.emitTo).toBeCalledWith(
+        'socket-a',
+        'interpreter-self',
+        expect.objectContaining({ email: 'jess@example.com' })
+      )
+    })
     it('should emit the rooms occupants to the joiner', async () => {
       const { interpreter, sockets, jwt, interpreterRepo } = setup()
       mocked(sockets.getSocketsInRoom).mockResolvedValue(['socket-b'])

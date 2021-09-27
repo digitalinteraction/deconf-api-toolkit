@@ -16,6 +16,7 @@ type ChannelStarted = SocketMessage<'channel-started', []>
 type ChannelData = SocketMessage<'channel-data', [Buffer]>
 type ChannelStopped = SocketMessage<'channel-stopped', []>
 
+type InterpreterSelf = SocketMessage<'interpreter-self', [Interpreter]>
 type InterpreterAccepted = SocketMessage<'interpreter-accepted', [Interpreter]>
 type InterpreterJoined = SocketMessage<'interpreter-joined', [Interpreter]>
 type InterpreterLeft = SocketMessage<'interpreter-left', [Interpreter]>
@@ -37,6 +38,7 @@ export type SocketMessages =
   | ChannelStarted
   | ChannelData
   | ChannelStopped
+  | InterpreterSelf
   | InterpreterAccepted
   | InterpreterJoined
   | InterpreterLeft

@@ -119,7 +119,10 @@ export class InterpreterSockets {
       booth
     )
 
-    // 1. emit the current room's occupants to the joiner
+    // 1. emit the interpreter to the socket
+    this.#sockets.emitTo(socketId, 'interpreter-self', auth.interpreter)
+
+    // 2. emit the current room's occupants to the joiner
     const occupants = await this.#sockets.getSocketsInRoom(interpretRoom)
     for (const id of occupants) {
       const other = await this.#jwt.getSocketAuth(id).catch(() => null)
@@ -127,7 +130,7 @@ export class InterpreterSockets {
       this.#sockets.emitTo(socketId, 'interpreter-joined', other.interpreter)
     }
 
-    // 2. emit the active interpreter to the joiner
+    // 3. emit the active interpreter to the joiner
     const activeBooth = await this.#getActiveBooth(booth)
     if (activeBooth) {
       this.#sockets.emitTo(
@@ -137,13 +140,13 @@ export class InterpreterSockets {
       )
     }
 
-    // 3. join the interpret room
+    // 4. join the interpret room
     this.#sockets.joinRoom(socketId, interpretRoom)
 
-    // 4. emit the join to the booth
+    // 5. emit the join to the booth
     this.#sockets.emitTo(interpretRoom, 'interpreter-joined', auth.interpreter)
 
-    // 5. log an event
+    // 6. log an event
     await this.#metricsRepo.trackEvent('interpreter-joined', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
