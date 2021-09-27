@@ -195,7 +195,7 @@ export class InterpreterSockets {
       interpretRoom,
       'interpreter-message',
       auth.interpreter,
-      'Test Message'
+      message
     )
   }
 
