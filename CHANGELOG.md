@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta.9](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.8...v4.0.0-beta.9) (2021-09-27)
+
+### Features
+
+- **interpret:** send the interpreter their self record on join ([34068cb](https://github.com/digitalinteraction/deconf-api-toolkit/commit/34068cb3c768be133d7a4ffaf8ae59dc2c4b6b76))
+
 ## [4.0.0-beta.8](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.7...v4.0.0-beta.8) (2021-09-27)
 
 ### Bug Fixes
