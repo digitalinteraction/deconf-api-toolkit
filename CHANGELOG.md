@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta.11](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.10...v4.0.0-beta.11) (2021-09-28)
+
+### Bug Fixes
+
+- **interpret:** tell channel joiners if the session has already started ([0577722](https://github.com/digitalinteraction/deconf-api-toolkit/commit/0577722bdda306f5d4a80122c7e752d01908ca70))
+- normalise socket metrics naming ([97cd30c](https://github.com/digitalinteraction/deconf-api-toolkit/commit/97cd30c99c0e3a3cabfab1adddff378ba980e473))
+
 ## [4.0.0-beta.10](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.9...v4.0.0-beta.10) (2021-09-28)
 
 ### Bug Fixes
