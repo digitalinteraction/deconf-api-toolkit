@@ -6,7 +6,7 @@ import { assertStruct } from '../module'
 
 type Context = Pick<
   DeconfBaseContext,
-  'sockets' | 'jwt' | 'conferenceRepo' | 'metricsRepo'
+  'sockets' | 'jwt' | 'conferenceRepo' | 'metricsRepo' | 'store'
 >
 
 export class ChannelSockets {
@@ -21,6 +21,9 @@ export class ChannelSockets {
   }
   get #metricsRepo() {
     return this.#context.metricsRepo
+  }
+  get #store() {
+    return this.#context.store
   }
 
   #context: Context
@@ -45,7 +48,13 @@ export class ChannelSockets {
 
     await this.#sockets.joinRoom(socketId, this.#getChannelRoom(booth))
 
-    // TODO: if already active - let them know ...
+    // If already active, tell the socket
+    const activeBooth = await this.#store.retrieve(
+      `active-booth/${booth.sessionId}/${booth.channel}`
+    )
+    if (activeBooth) {
+      this.#sockets.emitTo(socketId, 'channel-started')
+    }
 
     await this.#metricsRepo.trackEvent('session/joinChannel', booth, {
       attendee: auth.authToken.sub,

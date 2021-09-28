@@ -3,6 +3,7 @@ import { mockAuthToken, mockSession } from '../../test-lib/fixtures'
 import {
   mockConferenceRepository,
   mockJwtService,
+  mockKeyValueStore,
   mockMetricsRepository,
   mockSocketService,
 } from '../../test-lib/mocks'
@@ -13,13 +14,15 @@ function setup() {
   const sockets = mockSocketService()
   const conferenceRepo = mockConferenceRepository()
   const metricsRepo = mockMetricsRepository()
+  const store = mockKeyValueStore()
   const channel = new ChannelSockets({
     sockets,
     jwt,
     conferenceRepo,
     metricsRepo,
+    store,
   })
-  return { channel, sockets, jwt, conferenceRepo, metricsRepo }
+  return { channel, sockets, jwt, conferenceRepo, metricsRepo, store }
 }
 
 describe('ChannelSockets', () => {
@@ -66,6 +69,25 @@ describe('ChannelSockets', () => {
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
+    })
+    it('should emit channel-started if it has already started', async () => {
+      const { channel, sockets, jwt, conferenceRepo, store } = setup()
+      mocked(jwt.getSocketAuth).mockResolvedValue({
+        authToken: mockAuthToken(),
+        email: 'lisa@example.com',
+        interpreter: null,
+      })
+      mocked(conferenceRepo.findSession).mockResolvedValue(
+        mockSession({ enableInterpretation: true })
+      )
+      store.data.set('active-booth/session-a/en', { _: 'something non-null' })
+
+      await channel.joinChannel('socket-a', {
+        sessionId: 'session-a',
+        channel: 'en',
+      })
+
+      expect(sockets.emitTo).toBeCalledWith('socket-a', 'channel-started')
     })
   })
 
