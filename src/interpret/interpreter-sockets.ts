@@ -141,7 +141,7 @@ export class InterpreterSockets {
     }
 
     // 4. join the interpret room
-    this.#sockets.joinRoom(socketId, interpretRoom)
+    await this.#sockets.joinRoom(socketId, interpretRoom)
 
     // 5. emit the join to the booth
     this.#sockets.emitTo(interpretRoom, 'interpreter-joined', auth.interpreter)
@@ -161,7 +161,7 @@ export class InterpreterSockets {
     } = await this.#interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. leave the interpreter room
-    this.#sockets.leaveRoom(socketId, interpretRoom)
+    await this.#sockets.leaveRoom(socketId, interpretRoom)
 
     // 2. broadcast the leaving to the booth
     this.#sockets.emitTo(interpretRoom, 'interpreter-left', auth.interpreter)

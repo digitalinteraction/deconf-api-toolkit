@@ -55,8 +55,8 @@ export interface SocketService {
     ...parameters: T['emitParams']
   ): void
 
-  joinRoom(socketId: string, roomName: string): void
-  leaveRoom(socketId: string, roomName: string): void
+  joinRoom(socketId: string, roomName: string): Promise<void>
+  leaveRoom(socketId: string, roomName: string): Promise<void>
 
   // TODO: Normalise to be string[] or Set<string>
   getRoomsOfSocket(socketId: string): Promise<Set<string>>

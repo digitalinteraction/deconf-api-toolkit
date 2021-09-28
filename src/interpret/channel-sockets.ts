@@ -43,7 +43,7 @@ export class ChannelSockets {
       throw ApiError.badRequest()
     }
 
-    this.#sockets.joinRoom(socketId, this.#getChannelRoom(booth))
+    await this.#sockets.joinRoom(socketId, this.#getChannelRoom(booth))
 
     await this.#metricsRepo.trackEvent('join-channel', booth, {
       attendee: auth.authToken.sub,
@@ -60,7 +60,7 @@ export class ChannelSockets {
     const room = this.#getChannelRoom(booth)
 
     if (socketRooms.has(room)) {
-      this.#sockets.leaveRoom(socketId, room)
+      await this.#sockets.leaveRoom(socketId, room)
     }
 
     await this.#metricsRepo.trackEvent('leave-channel', booth, {

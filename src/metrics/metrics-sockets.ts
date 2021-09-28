@@ -82,7 +82,7 @@ export class MetricsSockets {
   }
 
   async cameOnline(socketId: string) {
-    this.#sockets.joinRoom(socketId, SITE_VISITORS_ROOM)
+    await this.#sockets.joinRoom(socketId, SITE_VISITORS_ROOM)
 
     this.#triggerVisitors().catch((error) => {
       console.error('Failed to emit site-visitors')
@@ -100,7 +100,7 @@ export class MetricsSockets {
 
   async wentOffline(socketId: string) {
     // Does it need to leave the room?
-    this.#sockets.leaveRoom(socketId, SITE_VISITORS_ROOM)
+    await this.#sockets.leaveRoom(socketId, SITE_VISITORS_ROOM)
     await this.#triggerVisitors()
   }
 
