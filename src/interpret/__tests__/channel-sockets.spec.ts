@@ -62,7 +62,7 @@ describe('ChannelSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'join-channel',
+        'session/joinChannel',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -108,7 +108,7 @@ describe('ChannelSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'leave-channel',
+        'session/leaveChannel',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )

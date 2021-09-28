@@ -172,7 +172,7 @@ describe('InterpreterSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-accepted',
+        'interpret/accepted',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -292,7 +292,7 @@ describe('InterpreterSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-joined',
+        'interpret/joined',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -384,7 +384,7 @@ describe('InterpreterSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-left',
+        'interpret/left',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -437,7 +437,7 @@ describe('InterpreterSockets', () => {
       await interpreter.requestInterpreter('socket-a', booth, 60)
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-requested',
+        'interpret/requested',
         { sessionId: 'session-a', channel: 'en', duration: 60 },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -577,7 +577,7 @@ describe('InterpreterSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-started',
+        'interpret/started',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )
@@ -656,7 +656,7 @@ describe('InterpreterSockets', () => {
       })
 
       expect(metricsRepo.trackEvent).toBeCalledWith(
-        'interpreter-stopped',
+        'interpret/stopped',
         { sessionId: 'session-a', channel: 'en' },
         { attendee: 1, socket: 'socket-a' }
       )

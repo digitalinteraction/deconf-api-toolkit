@@ -45,7 +45,9 @@ export class ChannelSockets {
 
     await this.#sockets.joinRoom(socketId, this.#getChannelRoom(booth))
 
-    await this.#metricsRepo.trackEvent('join-channel', booth, {
+    // TODO: if already active - let them know ...
+
+    await this.#metricsRepo.trackEvent('session/joinChannel', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
@@ -63,7 +65,7 @@ export class ChannelSockets {
       await this.#sockets.leaveRoom(socketId, room)
     }
 
-    await this.#metricsRepo.trackEvent('leave-channel', booth, {
+    await this.#metricsRepo.trackEvent('session/leaveChannel', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })

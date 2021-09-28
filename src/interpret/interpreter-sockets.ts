@@ -107,7 +107,7 @@ export class InterpreterSockets {
     )
 
     // 2. log the event
-    await this.#metricsRepo.trackEvent('interpreter-accepted', booth, {
+    await this.#metricsRepo.trackEvent('interpret/accepted', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
@@ -147,7 +147,7 @@ export class InterpreterSockets {
     this.#sockets.emitTo(interpretRoom, 'interpreter-joined', auth.interpreter)
 
     // 6. log an event
-    await this.#metricsRepo.trackEvent('interpreter-joined', booth, {
+    await this.#metricsRepo.trackEvent('interpret/joined', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
@@ -181,7 +181,7 @@ export class InterpreterSockets {
     await this.#store.delete(this.#activeInterpreterKey(socketId))
 
     // 5. log an event
-    await this.#metricsRepo.trackEvent('interpreter-left', booth, {
+    await this.#metricsRepo.trackEvent('interpret/left', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
@@ -222,7 +222,7 @@ export class InterpreterSockets {
 
     // 2. log an event
     await this.#metricsRepo.trackEvent(
-      'interpreter-requested',
+      'interpret/requested',
       { ...booth, duration },
       { socket: socketId, attendee: auth.authToken.sub }
     )
@@ -286,7 +286,7 @@ export class InterpreterSockets {
     this.#sockets.emitTo(channelRoom, 'channel-started')
 
     // 6. log an event
-    this.#metricsRepo.trackEvent('interpreter-started', booth, {
+    this.#metricsRepo.trackEvent('interpret/started', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
@@ -312,7 +312,7 @@ export class InterpreterSockets {
     this.#sockets.emitTo(channelRoom, 'channel-stopped')
 
     // 5. log an event
-    this.#metricsRepo.trackEvent('interpreter-stopped', booth, {
+    this.#metricsRepo.trackEvent('interpret/stopped', booth, {
       attendee: auth.authToken.sub,
       socket: socketId,
     })
