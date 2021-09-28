@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta.10](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.9...v4.0.0-beta.10) (2021-09-28)
+
+### Bug Fixes
+
+- made SocketService joinRoom and leaveRoom async ([d9ef8e2](https://github.com/digitalinteraction/deconf-api-toolkit/commit/d9ef8e2a52273a7d3757fe258277552abc3c4a27))
+
 ## [4.0.0-beta.9](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.8...v4.0.0-beta.9) (2021-09-27)
 
 ### Features
