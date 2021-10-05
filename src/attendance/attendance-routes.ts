@@ -83,6 +83,8 @@ export class AttendanceRoutes {
   async getUserAttendance(authToken: AuthToken | null) {
     if (!authToken) throw ApiError.unauthorized()
 
+    // TODO: normalise with api-module's userSessions
+    // - should it be an array of records or sessionIds ?
     return {
       attendance: await this.#attendanceRepo.getUserAttendance(authToken.sub),
     }
