@@ -6,8 +6,6 @@ import {
 } from '@openlab/deconf-shared'
 import createDebug from 'debug'
 
-// TODO: review with respect to multi-language
-
 import got, { PaginationOptions, Got } from 'got'
 import { DeconfBaseContext } from '../lib/context'
 import {
@@ -46,7 +44,6 @@ type Locales = Array<LocaleRecord>
 type Context = Pick<DeconfBaseContext, 'store'> & {
   env: Env
   config: Config
-  locales: Locales
 }
 
 export class PretalxService {
@@ -60,7 +57,6 @@ export class PretalxService {
   #context: Context
   #pretalx: Got
   #codeMap = new Map<string, number>()
-  #localeMap: Map<number, LocaleRecord>
   constructor(context: Context) {
     this.#context = context
 
@@ -71,8 +67,6 @@ export class PretalxService {
       },
       responseType: 'json',
     })
-
-    this.#localeMap = new Map(context.locales.map((l) => [l.id, l]))
   }
 
   /** Create a pretalx-specific paginator for `got` requests */
@@ -275,27 +269,6 @@ export class PretalxService {
       result.map((l) => l.url)
     )
     return result
-  }
-
-  /**
-   * Get a session's host languages based on a custom question
-   * TODO: rethink this
-   */
-  getSessionLocales(talk: PretalxTalk, localeQuestion: number) {
-    const localeAnswer = talk.answers.find(
-      (a) => a.question.id === localeQuestion
-    )
-
-    const locales = new Set<string>()
-    if (localeAnswer) {
-      for (const option of localeAnswer.options) {
-        const locale = this.#localeMap.get(option.id)?.locale
-        locales.add(locale ?? 'en')
-      }
-    }
-    if (locales.size === 0) locales.add('en')
-
-    return Array.from(locales)
   }
 
   /** Get a session's capacity answer */
