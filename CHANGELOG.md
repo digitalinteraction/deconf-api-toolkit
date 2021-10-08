@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta.12](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.11...v4.0.0-beta.12) (2021-10-08)
+
+### ⚠ BREAKING CHANGES
+
+- **pretalx:** remove getSessionLocales method
+
+### Features
+
+- **pretalx:** map pretalx Resources ([cd3d2a8](https://github.com/digitalinteraction/deconf-api-toolkit/commit/cd3d2a84cbb6f1b303d8862c844c4845304c6add))
+- **pretalx:** remove getSessionLocales method ([ecaf5a4](https://github.com/digitalinteraction/deconf-api-toolkit/commit/ecaf5a4ed2925b3e94413c9baf03958264cfc73c))
+
+### Bug Fixes
+
+- **pretalx:** improve id generation ([f0438c7](https://github.com/digitalinteraction/deconf-api-toolkit/commit/f0438c76e6b323ea3dc02e7454db76a45426b174))
+- **pretalx:** improve pretalx URL parsing ([98fc043](https://github.com/digitalinteraction/deconf-api-toolkit/commit/98fc04350e54bc61d1d0512ae08eba8641b6d96f))
+
 ## [4.0.0-beta.11](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.10...v4.0.0-beta.11) (2021-09-28)
 
 ### Bug Fixes
