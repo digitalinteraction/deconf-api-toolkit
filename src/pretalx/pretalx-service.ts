@@ -160,8 +160,8 @@ export class PretalxService {
   /** Decide wether a string is a URL or not */
   isUrl(input: string) {
     try {
-      new URL(input)
-      return true
+      const url = new URL(input)
+      return Boolean(url.hostname && url.pathname)
     } catch (error) {
       return false
     }
