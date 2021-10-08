@@ -105,7 +105,7 @@ export interface PretalxTalk {
   content_locale: string // en
   slot: PretalxSlot | null
   image: Unknown
-  resources: any[]
+  resources: PretalxResource[]
   created: string // 2021-01-26T12:29:58.965155+01:00
   answers: PretalxResponse[]
   tags?: string[]
@@ -115,4 +115,9 @@ export interface PretalxTax {
   tag: string
   description: Localised
   color: string
+}
+
+export interface PretalxResource {
+  resource: string
+  description: string
 }
