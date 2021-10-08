@@ -180,11 +180,11 @@ export class PretalxService {
 
   /** From a localised title, generate a slug-based id */
   getIdFromTitle(localised: Localised | null, fallback: string) {
-    return localised
-      ? this.getSlug(
-          this.#config.englishKeys.find((k) => localised[k]) ?? fallback
-        )
-      : fallback
+    if (!localised) return fallback
+    for (const key of this.#config.englishKeys) {
+      if (localised[key]) return this.getSlug(localised[key] as string)
+    }
+    return fallback
   }
 
   /** Convert a name with spaces and punctuation into a slug with '-'s */
