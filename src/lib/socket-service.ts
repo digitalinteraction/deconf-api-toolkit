@@ -58,11 +58,8 @@ export interface SocketService {
   joinRoom(socketId: string, roomName: string): Promise<void>
   leaveRoom(socketId: string, roomName: string): Promise<void>
 
-  // TODO: Normalise to be string[] or Set<string>
   getRoomsOfSocket(socketId: string): Promise<Set<string>>
   getSocketsInRoom(roomName: string): Promise<string[]>
 
-  // TODO: TBR
-  // Throw ApiErrors instead
   sendError(socketId: string, error: ApiError): void
 }

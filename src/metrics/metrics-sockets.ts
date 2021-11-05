@@ -21,8 +21,6 @@ const SITE_VISITORS_LOCK_KEY = 'site_visitors'
 const SITE_VISITORS_MAX_LOCK = ms('15s')
 const SITE_VISITORS_TIMEOUT = ms('5s')
 
-// TODO: eventName and payload validation
-
 export class MetricsSockets {
   get #sockets() {
     return this.#context.sockets
@@ -89,8 +87,6 @@ export class MetricsSockets {
       process.exit(1)
     })
 
-    // TODO: (hack) wait a little bit so that they are in the room when
-    //              the count is sent
     await this.#pause(500)
 
     // Let the joining-socket know instantly

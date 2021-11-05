@@ -63,7 +63,6 @@ describe('MetricsSockets', () => {
       expect(sockets.sendError).not.toBeCalled()
       expect(sockets.emitTo).toBeCalledWith('socket-a', SITE_VISITORS_ROOM, 3)
     })
-    // TODO: bad test because cameOnline no longer awaits #triggerVisitors
     // it('should release the lock', async () => {
     //   const { metrics, semaphore, sockets } = setup()
     //   mocked(sockets.getSocketsInRoom).mockResolvedValue([

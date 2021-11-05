@@ -4,8 +4,6 @@ import { DeconfBaseContext } from '../lib/context'
 import { CountryLocationStruct } from './country-location-struct'
 import { CarbonCalculation, CountryLocation } from '@openlab/deconf-shared'
 
-// TODO: move away from using resources and RESOURCE_CARBON_LOCATIONS
-
 // The kg of carbon emitted for a 1km of flight
 // https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2019
 export const CARBON_FACTOR = 0.195

@@ -2,9 +2,8 @@ import { RegisterRequest, Registration } from '@openlab/deconf-shared'
 import { DeconfBaseContext } from '../lib/context'
 
 //
-// TODO:
-// - these queries could be optimised to suit registration-routes more
-// - "userData" should never have been camel case, sorry
+// NOTES:
+// - "userData" must be quoted in queries
 //
 
 type Context = Pick<DeconfBaseContext, 'postgres'>

@@ -153,7 +153,6 @@ export class PretalxService {
 
   /** Create a unique id for a slot based on it's date */
   getSlotId(slot: PretalxSlot) {
-    // TODO: could simplify date -> "yyyy-mm-ddThh:mm"
     return `${slot.start}__${slot.end}`
   }
 

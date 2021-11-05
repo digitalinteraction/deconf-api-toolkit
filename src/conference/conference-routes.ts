@@ -79,9 +79,6 @@ export class ConferenceRoutes {
   async getSchedule() {
     const states = new Set([SessionState.confirmed])
 
-    // TODO: is this needed?
-    // const attendance = await this.#attendanceRepo.getSessionAttendance()
-
     const rawSessions = await this.#conferenceRepo.getSessions()
     const sessions = rawSessions
       .filter((s) => states.has(s.state))

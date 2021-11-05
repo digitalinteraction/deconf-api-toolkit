@@ -106,7 +106,6 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     assertStruct(body, LoginBodyStruct)
 
     // Make sure they have a verified record
-    // TODO: a query for registations based on email not just id
     const allRegistrations = await this.#registrationRepo.getRegistrations(
       body.email
     )

@@ -112,7 +112,6 @@ describe('RegistrationRoutes', () => {
       expect(result).toEqual(new URL('http://localhost#mock_login_token'))
     })
     it('should add interpret and admin roles', async () => {
-      // TODO: this relies on geoff@example.com being a config admin
       const { routes, registrationRepo, jwt, url, conferenceRepo } = setup()
       mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
         mockRegistration({ id: 1, email: 'geoff@example.com', language: 'fr' })

@@ -76,8 +76,6 @@ which provides easy import access to other bits of code that are needed.
 **Repository** code can be tested if it is possible but it is not required
 because unit-testing SQL queries is hard and visual inspection is the current standard.
 
-> TODO: setup integration testing to run those queries against a docker database.
-
 **Structs** should have simple tests to assert they validate the structure correctly.
 
 #### Test library
@@ -284,9 +282,7 @@ _misc conventions_
 
 - use `example.com` for domains and email addresses
 - use `http://localhost:3000` as the server url
-  - TODO this might be better as an `example.com`
 - use `http://localhost:8080` as the client url
-  - TODO this might be better as an `example.com`
 - `jess@exmaple.com` is used for an interpreter
 - `tim@exmaple.com` is used for new registrations
 - `lisa@exmaple.com` is used for listening to interpretation

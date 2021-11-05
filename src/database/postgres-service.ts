@@ -1,8 +1,6 @@
 import pg from 'pg'
 import { DeconfBaseContext } from '../lib/context'
 
-// TODO: add a healthcheck
-
 export interface PostgresClient {
   release(): void
   sql<T>(strings: TemplateStringsArray, ...args: any[]): Promise<T[]>
