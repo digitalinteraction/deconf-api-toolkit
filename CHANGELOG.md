@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.12...v4.0.0) (2021-11-05)
+
 ## [4.0.0-beta.12](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.11...v4.0.0-beta.12) (2021-10-08)
 
 ### ⚠ BREAKING CHANGES
