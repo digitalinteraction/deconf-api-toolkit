@@ -13,7 +13,7 @@ import {
   nullable,
   number,
 } from 'superstruct'
-import { SessionLinkStruct } from './link-struct'
+import { LocalisedLinkStruct } from './link-struct'
 import { LocalisedStruct } from './localised-struct'
 
 import {
@@ -31,7 +31,7 @@ export const SessionStruct: Describe<Session> = object({
   coverImage: optional(string()),
   title: LocalisedStruct,
   content: LocalisedStruct,
-  links: array(SessionLinkStruct),
+  links: array(LocalisedLinkStruct),
   hostLanguages: array(string()),
   enableInterpretation: boolean(),
   speakers: array(string()),

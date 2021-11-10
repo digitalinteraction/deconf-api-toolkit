@@ -1,7 +1,7 @@
 import {
   SessionSlot,
   Speaker,
-  SessionLink,
+  LocalisedLink,
   Theme,
 } from '@openlab/deconf-shared'
 import createDebug from 'debug'
@@ -247,13 +247,16 @@ export class PretalxService {
   }
 
   /** Parse out links from a set of pretalx questions */
-  getSessionLinks(talk: PretalxTalk, linksQuestions: number[]): SessionLink[] {
+  getSessionLinks(
+    talk: PretalxTalk,
+    linksQuestions: number[]
+  ): LocalisedLink[] {
     const text = linksQuestions
       .map((questionId) => this.findAnswer(questionId, talk.answers))
       .filter((answer) => Boolean(answer))
       .join('\n')
 
-    const result: SessionLink[] = text
+    const result: LocalisedLink[] = text
       .split(/\s+/)
       .filter((text) => this.isUrl(text))
       .map((link) => ({

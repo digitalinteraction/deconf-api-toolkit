@@ -1,4 +1,4 @@
-import { SessionLink, SessionState } from '@openlab/deconf-shared'
+import { LocalisedLink, SessionState } from '@openlab/deconf-shared'
 import { mocked } from 'ts-jest/utils'
 import { ApiError } from '../../lib/api-error'
 import { createTestingDeconfConfig } from '../../lib/config'
@@ -218,7 +218,7 @@ describe('ConferenceRoutes', () => {
   describe('#lintSessions', () => {
     it('should lint for links, types and themes', async () => {
       const { routes, conferenceRepo } = setup()
-      const links: SessionLink[] = [
+      const links: LocalisedLink[] = [
         { type: 'video', url: 'https://youtu.be', language: 'en' },
       ]
       mocked(conferenceRepo.getSessions).mockResolvedValue([
