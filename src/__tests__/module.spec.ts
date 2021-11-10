@@ -35,3 +35,7 @@ it('should export the pretalx module', () => {
 it('should export the registration module', () => {
   expect(index.RegistrationRoutes).toBeDefined()
 })
+
+it('should export the content module', async () => {
+  expect(index.ContentService).toBeDefined()
+})

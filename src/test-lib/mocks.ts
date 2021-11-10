@@ -1,6 +1,7 @@
 import { AttendanceRepository } from '../attendance/attendance-repository'
 import { CarbonRepository } from '../carbon/carbon-repository'
 import { ConferenceRepository } from '../conference/conference-repository'
+import { ContentRepository } from '../content/content-repository'
 import { MigrateRepository } from '../database/migrate-repository'
 import { MigrateService } from '../database/migrate-service'
 import { PostgresService, PostgresClient } from '../database/postgres-service'
@@ -220,5 +221,18 @@ export function mockS3Service(): Readonly<S3Service> {
 export function mockInterpreterRepository(): Readonly<InterpreterRepository> {
   return {
     prepInterpreter: jest.fn(),
+  }
+}
+
+//
+// Content
+//
+export function mockContentRepository(): Readonly<ContentRepository> {
+  return {
+    validateRemote: jest.fn(async () => true),
+    updateLocalRepo: jest.fn(),
+    cloneRepo: jest.fn(),
+    clearDirectory: jest.fn(),
+    makeTempDir: jest.fn(async () => 'test/fixtures'),
   }
 }
