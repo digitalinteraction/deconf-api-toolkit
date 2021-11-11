@@ -128,15 +128,18 @@ export function mockMetricsRepository(): Readonly<MetricsRepository> {
 // Library
 //
 interface EmailExtras {
-  outbox: Array<{ to: string; subject: string; html: string }>
+  outbox: Array<{ to: string; subject: string }>
 }
 
 export function mockEmailService(): Readonly<EmailService & EmailExtras> {
   const outbox: EmailExtras['outbox'] = []
   return {
     outbox,
-    sendEmail: jest.fn(async (to: string, subject: string, html: string) => {
-      outbox.push({ to, subject, html })
+    sendEmail: jest.fn(async (to, subject) => {
+      outbox.push({ to, subject })
+    }),
+    sendTransactional: jest.fn(async (to, subject) => {
+      outbox.push({ to, subject })
     }),
   }
 }

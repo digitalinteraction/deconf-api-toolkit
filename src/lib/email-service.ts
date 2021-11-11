@@ -11,32 +11,51 @@ const TRACKING_SETTINGS = {
   },
 }
 
-interface Context extends Pick<DeconfBaseContext, 'env' | 'config'> {}
+type Context = Pick<DeconfBaseContext, 'env' | 'config'>
 
 export class EmailService {
   get #env() {
     return this.#context.env
   }
-  get #mailConfig() {
-    return this.#context.config.mail
+  get #config() {
+    return this.#context.config
   }
 
-  #mail = new Sendgrid()
   #context: Context
-
+  #mail = new Sendgrid()
   constructor(context: Context) {
     this.#context = context
     this.#mail.setApiKey(this.#env.SENDGRID_API_KEY)
   }
 
-  async sendEmail(to: string, subject: string, html: string) {
+  async sendEmail(to: string, subject: string, html: string): Promise<void> {
     await this.#mail.send({
       to,
       subject,
       html,
-      replyTo: this.#mailConfig.replyToEmail,
-      from: this.#mailConfig.fromEmail,
+      replyTo: this.#config.mail.replyToEmail,
+      from: this.#config.mail.fromEmail,
       ...TRACKING_SETTINGS,
+    })
+  }
+
+  async sendTransactional(
+    to: string,
+    subject: string,
+    templateId: string,
+    data: Record<string, unknown>
+  ): Promise<void> {
+    await this.#mail.send({
+      to,
+      subject,
+      replyTo: this.#config.mail.replyToEmail,
+      from: this.#config.mail.fromEmail,
+      templateId: templateId,
+      dynamicTemplateData: {
+        subject,
+        ...data,
+      },
+      hideWarnings: true,
     })
   }
 }
