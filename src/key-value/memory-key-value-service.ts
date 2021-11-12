@@ -1,14 +1,9 @@
-export interface KeyValueService {
-  retrieve<T>(key: string): Promise<T | null>
-  put<T>(key: string, value: T): Promise<void>
-  checkHealth(): Promise<void>
-  setExpiry(key: string, duractionInSeconds: number): Promise<void>
-  delete(key: string): Promise<void>
-  close(): Promise<void>
-}
+import { KeyValueService } from './key-value-service'
 
+/** An in-memory key-value store, for development and testing */
 export function createMemoryStore(): KeyValueService {
   const data = new Map<string, any>()
+
   return {
     async retrieve(key) {
       return data.get(key)
@@ -17,7 +12,7 @@ export function createMemoryStore(): KeyValueService {
       data.set(key, value)
     },
     async checkHealth() {
-      // ...
+      // What could go wrong?
     },
     async setExpiry(key, duration) {
       // ...

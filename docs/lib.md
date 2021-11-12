@@ -63,9 +63,19 @@ await email.sendTransactional(
 
 > TODO
 
-## Key-value store
+## Redis
 
-> TODO
+### createRedisClient
+
+`createRedisClient` wraps creating a [redis](https://github.com/redis/node-redis) `RedisClient`.
+Its reason for being is to handle `rediss://` URLs which the library doesn't currently support.
+
+> https://stackoverflow.com/questions/61875554/
+
+### closeRedisClients
+
+`closeRedisClients` closes multiple `RedisClient` instances at once
+and resolves when are the clients are closed.
 
 ## Resources
 

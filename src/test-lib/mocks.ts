@@ -9,7 +9,7 @@ import { InterpreterRepository } from '../interpret/interpreter-repository'
 import { EmailService } from '../lib/email-service'
 import { I18nService } from '../lib/i18n-service'
 import { JwtService } from '../lib/jwt-service'
-import { KeyValueService } from '../lib/key-value-service'
+import { KeyValueService } from '../key-value/key-value-service'
 import { S3Service } from '../lib/s3-service'
 import { SemaphoreService } from '../lib/semaphore-service'
 import { SocketService } from '../lib/socket-service'
@@ -84,6 +84,7 @@ export function mockPostgresService(): Readonly<PostgresService> &
     run: jest.fn((block) => block(mockClient)),
     mockClient,
     mockSql: mockClient.sql as any,
+    checkHealth: jest.fn(),
   }
 }
 
