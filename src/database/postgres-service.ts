@@ -24,7 +24,9 @@ export function composeSql(strings: TemplateStringsArray, ...values: any[]) {
   }
 }
 
-type Context = Pick<DeconfBaseContext, 'env'>
+type Context = {
+  env: Pick<DeconfBaseContext['env'], 'DATABASE_URL'>
+}
 
 export class PostgresService {
   get #env() {
