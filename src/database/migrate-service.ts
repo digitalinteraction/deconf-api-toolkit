@@ -1,6 +1,5 @@
 import createDebug from 'debug'
 import { MigrateRepository, Migration } from './migrate-repository'
-import { PostgresClient } from './postgres-service'
 
 const debug = createDebug('deconf:module:migrate')
 
