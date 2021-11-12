@@ -1,6 +1,6 @@
-import { array, number, object, string } from 'superstruct'
+import { array, object, string } from 'superstruct'
 
 export const PretalxConfigStruct = object({
   eventSlug: string(),
-  localeKeys: array(string()),
+  englishKeys: array(string()),
 })

@@ -40,7 +40,7 @@ type Config = {
   eventSlug: string
   englishKeys: string[]
 }
-type Locales = Array<LocaleRecord>
+
 type Context = Pick<DeconfBaseContext, 'store'> & {
   env: Env
   config: Config
