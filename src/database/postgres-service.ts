@@ -56,6 +56,11 @@ export class PostgresService {
     return this.#pool.end()
   }
 
+  /** Check the health of the connection, or reject with an error */
+  async checkHealth(): Promise<void> {
+    await this.run((client) => client.sql`select 1;`)
+  }
+
   async run<T>(
     block: (client: PostgresClient) => Promise<T>,
     previousClient?: PostgresClient
