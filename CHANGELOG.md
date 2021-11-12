@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0...v4.1.0) (2021-11-12)
+
+### Features
+
+- add Content module [#14](https://github.com/digitalinteraction/deconf-api-toolkit/issues/14) ([666456e](https://github.com/digitalinteraction/deconf-api-toolkit/commit/666456e7cf35aa84b752c54fdc0afb12c5f7bf5d))
+- add DevAuthCommand to generate & output auth JWTs for development ([9250d89](https://github.com/digitalinteraction/deconf-api-toolkit/commit/9250d898711b53b35c5150bde9cf97b0b5ed602c))
+- add key-value module and RedisService ([ba0add7](https://github.com/digitalinteraction/deconf-api-toolkit/commit/ba0add78947fd74c405fc468de55b9600e35a863)), closes [#18](https://github.com/digitalinteraction/deconf-api-toolkit/issues/18)
+- add MockScheduleCommand to quickly generate a schedule and store it ([681fb73](https://github.com/digitalinteraction/deconf-api-toolkit/commit/681fb735c150207bb5c1ef5a5161c41cf8ff0c19))
+- add transational email support to EmailService ([0b59e84](https://github.com/digitalinteraction/deconf-api-toolkit/commit/0b59e84af7fa945fbc3e7174d96ca3c2809906d3)), closes [#16](https://github.com/digitalinteraction/deconf-api-toolkit/issues/16)
+- **database:** add postgres healthcheck ([33b980b](https://github.com/digitalinteraction/deconf-api-toolkit/commit/33b980bb57b4b341774bae08ad9732f35db99881))
+- **database:** reduce PostgresService's env requirement ([ad6918f](https://github.com/digitalinteraction/deconf-api-toolkit/commit/ad6918fd1e9668ddfa019b36acaec3ec4fa0e479))
+
+### Bug Fixes
+
+- remove use of SessionLink, add LocalisedLinkStruct and deprecate SessionLinkStruct ([d459618](https://github.com/digitalinteraction/deconf-api-toolkit/commit/d459618265a1db1b1dfbae19155cd8c5a65a1907))
+- update PertalxConfixStruct to match PretalxService's config ([878c1fc](https://github.com/digitalinteraction/deconf-api-toolkit/commit/878c1fcbf117dbd530b98ad2421695d2ed1bc8dc)), closes [#12](https://github.com/digitalinteraction/deconf-api-toolkit/issues/12)
+
 ## [4.0.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.12...v4.0.0) (2021-11-05)
 
 ## [4.0.0-beta.12](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0-beta.11...v4.0.0-beta.12) (2021-10-08)
