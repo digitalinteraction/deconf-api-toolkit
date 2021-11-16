@@ -1,6 +1,11 @@
 import { Attendance, SessionAttendance } from '@openlab/deconf-shared'
 import { DeconfBaseContext } from '../lib/context'
 
+interface RawSessionAttendance {
+  session: string
+  count: string
+}
+
 type Context = Pick<DeconfBaseContext, 'postgres'>
 
 export class AttendanceRepository {
@@ -40,15 +45,15 @@ export class AttendanceRepository {
 
   async getSessionAttendance(): Promise<Map<string, number>> {
     const records = await this.#postgres.run(async (client) => {
-      return client.sql<SessionAttendance>`
-        SELECT session, count(*) as count
+      return client.sql<RawSessionAttendance>`
+        SELECT session, CAST(count(*) as INT) as count
         FROM attendance
         GROUP BY session;
       `
     })
 
     // Return a map of { [session]: count }
-    return new Map(records.map((r) => [r.session, r.count]))
+    return new Map(records.map((r) => [r.session, parseInt(r.count, 10)]))
   }
 
   getUserAttendance(attendee: number): Promise<Attendance[]> {
