@@ -252,16 +252,19 @@ describe('ConferenceRoutes', () => {
 
       expect(result).toEqual([
         {
+          kind: 'bad-type',
           title: 'Bad type',
           subtitle: expect.any(String),
           messages: [expect.stringContaining('session-a')],
         },
         {
+          kind: 'bad-track',
           title: 'Bad track',
           subtitle: expect.any(String),
           messages: [expect.stringContaining('session-b')],
         },
         {
+          kind: 'no-links',
           title: 'No links',
           subtitle: expect.any(String),
           messages: [expect.stringContaining('session-c')],

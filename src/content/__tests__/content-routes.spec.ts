@@ -21,10 +21,12 @@ describe('ContentRoutes', () => {
       const result = await routes.getContent('about')
 
       expect(result).toEqual({
-        en: 'About',
-        fr: 'Environ',
-        es: 'Acerca de',
-        ar: 'عن',
+        content: {
+          en: 'About',
+          fr: 'Environ',
+          es: 'Acerca de',
+          ar: 'عن',
+        },
       })
     })
   })
