@@ -2,6 +2,7 @@ import {
   AuthToken,
   EmailLoginToken,
   Registration,
+  UserRegistration,
   VerifyToken,
 } from '@openlab/deconf-shared'
 import emailRegex from 'email-regex'
@@ -13,6 +14,7 @@ import {
   DeconfBaseContext,
   EmailLoginTokenStruct,
   VerifyTokenStruct,
+  VoidResponse,
   VOID_RESPONSE,
 } from '../lib/module'
 
@@ -91,7 +93,9 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return roles
   }
 
-  async getRegistration(authToken: AuthToken | null) {
+  async getRegistration(
+    authToken: AuthToken | null
+  ): Promise<UserRegistration> {
     if (!authToken) throw ApiError.unauthorized()
 
     const user = await this.#registrationRepo.getVerifiedRegistration(
@@ -102,7 +106,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return { registration: user }
   }
 
-  async startEmailLogin(body: unknown) {
+  async startEmailLogin(body: unknown): Promise<VoidResponse> {
     assertStruct(body, LoginBodyStruct)
 
     // Make sure they have a verified record
@@ -124,7 +128,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return VOID_RESPONSE
   }
 
-  async finishEmailLogin(rawToken: any) {
+  async finishEmailLogin(rawToken: any): Promise<URL> {
     const token = this.#jwt.verifyToken(rawToken, EmailLoginTokenStruct)
 
     const registration = await this.#registrationRepo.getVerifiedRegistration(
@@ -142,7 +146,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return this.#url.getClientLoginLink(this.#jwt.signToken(authToken))
   }
 
-  async startRegister(rawBody: Record<string, unknown>) {
+  async startRegister(rawBody: Record<string, unknown>): Promise<VoidResponse> {
     // A bit of a hack to assert two structs
     // I couldn't get it to work with superstruct#assign
     const { userData, ...rest } = rawBody
@@ -182,7 +186,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return VOID_RESPONSE
   }
 
-  async finishRegister(rawToken: any) {
+  async finishRegister(rawToken: any): Promise<URL> {
     const token = this.#jwt.verifyToken(rawToken, VerifyTokenStruct)
 
     // If already verified exit early
@@ -211,7 +215,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     return this.#url.getClientLoginLink(authToken)
   }
 
-  async unregister(authToken: AuthToken | null) {
+  async unregister(authToken: AuthToken | null): Promise<VoidResponse> {
     if (!authToken) throw ApiError.unauthorized()
 
     const registration = await this.#registrationRepo.getVerifiedRegistration(

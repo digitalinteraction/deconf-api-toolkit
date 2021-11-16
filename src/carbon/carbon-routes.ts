@@ -58,7 +58,7 @@ export class CarbonRoutes {
   }
 
   // GET /carbon
-  async getCarbon() {
+  async getCarbon(): Promise<CarbonCalculation> {
     const cached = await this.#store.retrieve<CarbonCalculation | null>(
       CARBON_CACHE_KEY
     )

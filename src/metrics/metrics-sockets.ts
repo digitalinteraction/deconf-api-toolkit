@@ -2,7 +2,7 @@ import { DeconfBaseContext } from '../lib/context'
 import ms from 'ms'
 import createDebug from 'debug'
 import { Struct, validate } from 'superstruct'
-import { ApiError, StructApiError, validateStruct } from '../lib/module'
+import { ApiError, StructApiError } from '../lib/module'
 
 const debug = createDebug('deconf:metrics:sockets')
 
@@ -79,7 +79,7 @@ export class MetricsSockets {
     return this.#jwt.getSocketAuth(socketId).catch(() => null)
   }
 
-  async cameOnline(socketId: string) {
+  async cameOnline(socketId: string): Promise<void> {
     await this.#sockets.joinRoom(socketId, SITE_VISITORS_ROOM)
 
     this.#triggerVisitors().catch((error) => {
@@ -94,13 +94,17 @@ export class MetricsSockets {
     this.#sockets.emitTo(socketId, 'site-visitors', visitors.length)
   }
 
-  async wentOffline(socketId: string) {
+  async wentOffline(socketId: string): Promise<void> {
     // Does it need to leave the room?
     await this.#sockets.leaveRoom(socketId, SITE_VISITORS_ROOM)
     await this.#triggerVisitors()
   }
 
-  async event(socketId: string, eventName: string, payload: any) {
+  async event(
+    socketId: string,
+    eventName: string,
+    payload: any
+  ): Promise<void> {
     const struct = this.#eventStructs.get(eventName)
 
     if (!struct) {
@@ -121,7 +125,7 @@ export class MetricsSockets {
     })
   }
 
-  async error(socketId: string, error: Error) {
+  async error(socketId: string, error: Error): Promise<void> {
     const authToken = await this.#getAuth(socketId)
     const payload = {
       message: error.message,

@@ -26,7 +26,7 @@ export class AuthSockets {
     this.#context = context
   }
 
-  async auth(socketId: string, authToken: string) {
+  async auth(socketId: string, authToken: string): Promise<void> {
     const token = this.#jwt.verifyToken(authToken, AuthTokenStruct)
 
     const registration = await this.#registrationRepo.getVerifiedRegistration(
@@ -45,7 +45,7 @@ export class AuthSockets {
     })
   }
 
-  async deauth(socketId: string) {
+  async deauth(socketId: string): Promise<void> {
     const authKey = `auth/${socketId}`
 
     const hasToken = await this.#store.retrieve<SocketAuth>(authKey)

@@ -1,4 +1,10 @@
-import { AuthToken, SessionState } from '@openlab/deconf-shared'
+import {
+  AuthToken,
+  ScheduleRecord,
+  SessionLinks,
+  SessionLintResult,
+  SessionState,
+} from '@openlab/deconf-shared'
 import * as ics from 'ics'
 
 import { ApiError } from '../lib/api-error'
@@ -42,7 +48,7 @@ export class ConferenceRoutes {
   }
 
   // GET /ics/:session_id
-  async generateIcs(locale: string, sessionId: string) {
+  async generateIcs(locale: string, sessionId: string): Promise<string> {
     const localise = (
       obj: Record<string, string | undefined>,
       fallback: string
@@ -70,14 +76,17 @@ export class ConferenceRoutes {
       organizer: { ...this.#config.organiser },
     })
 
-    if (!icsFile.value) throw ApiError.badRequest()
+    if (!icsFile.value) throw ApiError.internalServerError()
 
     return icsFile.value
   }
 
   // GET /sessions
-  async getSchedule() {
+  async getSchedule(): Promise<ScheduleRecord> {
     const states = new Set([SessionState.confirmed])
+
+    const settings = await this.#conferenceRepo.getSettings()
+    if (!settings) throw ApiError.internalServerError()
 
     const rawSessions = await this.#conferenceRepo.getSessions()
     const sessions = rawSessions
@@ -90,17 +99,20 @@ export class ConferenceRoutes {
 
     return {
       slots: await this.#conferenceRepo.getSlots(),
-      settings: await this.#conferenceRepo.getSettings(),
       themes: await this.#conferenceRepo.getThemes(),
       tracks: await this.#conferenceRepo.getTracks(),
       types: await this.#conferenceRepo.getTypes(),
       speakers: await this.#conferenceRepo.getSpeakers(),
+      settings: settings,
       sessions: sessions,
     }
   }
 
   // GET /links
-  async getLinks(authToken: AuthToken | null, sessionId: string) {
+  async getLinks(
+    authToken: AuthToken | null,
+    sessionId: string
+  ): Promise<SessionLinks> {
     // Make sure they are authorized first
     if (!authToken) throw ApiError.unauthorized()
 
@@ -139,7 +151,7 @@ export class ConferenceRoutes {
     }
   }
 
-  async lintSessions() {
+  async lintSessions(): Promise<SessionLintResult> {
     const sessions = await this.#conferenceRepo.getSessions()
     const types = await this.#conferenceRepo.getTypes()
     const tracks = await this.#conferenceRepo.getTracks()
@@ -153,6 +165,7 @@ export class ConferenceRoutes {
 
     return [
       {
+        kind: 'bad-type',
         title: 'Bad type',
         subtitle: 'e.g. it is not mapped to a schedule type or is unset',
         messages: noType.map(
@@ -160,6 +173,7 @@ export class ConferenceRoutes {
         ),
       },
       {
+        kind: 'bad-track',
         title: 'Bad track',
         subtitle: 'e.g. it is not mapped to a schedule track or is unset',
         messages: noTrack.map(
@@ -167,6 +181,7 @@ export class ConferenceRoutes {
         ),
       },
       {
+        kind: 'no-links',
         title: 'No links',
         subtitle: 'i.e. it has no links attached to it',
         messages: noLinks.map((s) => `Session '${s.id}' - has no links`),

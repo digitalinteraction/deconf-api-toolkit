@@ -1,5 +1,14 @@
-import { AuthToken } from '@openlab/deconf-shared'
-import { VOID_RESPONSE, DeconfBaseContext, ApiError } from '../lib/module'
+import {
+  AuthToken,
+  UserAttendance,
+  UserSessionAttendance,
+} from '@openlab/deconf-shared'
+import {
+  VOID_RESPONSE,
+  DeconfBaseContext,
+  ApiError,
+  VoidResponse,
+} from '../lib/module'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -37,7 +46,10 @@ export class AttendanceRoutes {
   }
 
   // POST /attend/:session_id
-  async attend(authToken: AuthToken | null, sessionId: string) {
+  async attend(
+    authToken: AuthToken | null,
+    sessionId: string
+  ): Promise<VoidResponse> {
     const { session, attendee } = await this.#setup(authToken, sessionId)
 
     if (session.participantCap !== null) {
@@ -55,8 +67,11 @@ export class AttendanceRoutes {
   }
 
   // POST /unattend/:session_id
-  async unattend(authToken: AuthToken | null, sessionId: string) {
-    const { session, attendee } = await this.#setup(authToken, sessionId)
+  async unattend(
+    authToken: AuthToken | null,
+    sessionId: string
+  ): Promise<VoidResponse> {
+    const { attendee } = await this.#setup(authToken, sessionId)
 
     await this.#attendanceRepo.unattend(attendee.id, sessionId)
 
@@ -64,7 +79,10 @@ export class AttendanceRoutes {
   }
 
   // GET /attendance/:session_id
-  async getSessionAttendance(authToken: AuthToken | null, sessionId: string) {
+  async getSessionAttendance(
+    authToken: AuthToken | null,
+    sessionId: string
+  ): Promise<UserSessionAttendance> {
     const { attendee } = await this.#setup(authToken, sessionId)
 
     const userAttendance = await this.#attendanceRepo.getUserAttendance(
@@ -80,11 +98,14 @@ export class AttendanceRoutes {
   }
 
   // GET /attendance/me
-  async getUserAttendance(authToken: AuthToken | null) {
+  async getUserAttendance(
+    authToken: AuthToken | null
+  ): Promise<UserAttendance> {
     if (!authToken) throw ApiError.unauthorized()
 
-    return {
-      attendance: await this.#attendanceRepo.getUserAttendance(authToken.sub),
-    }
+    const attendance = await this.#attendanceRepo.getUserAttendance(
+      authToken.sub
+    )
+    return { attendance }
   }
 }

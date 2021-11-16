@@ -55,7 +55,7 @@ export class InterpreterSockets {
   // Events
   //
 
-  async socketDisconnected(socketId: string) {
+  async socketDisconnected(socketId: string): Promise<void> {
     // 1. remove the active-interpreter if set
     const activeInterpreter = await this.#getActiveInterpreter(socketId)
     if (!activeInterpreter) return
@@ -93,7 +93,10 @@ export class InterpreterSockets {
   // Interpret
   //
 
-  async acceptInterpret(socketId: string, booth: InterpretBooth) {
+  async acceptInterpret(
+    socketId: string,
+    booth: InterpretBooth
+  ): Promise<void> {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,
       booth
@@ -113,7 +116,7 @@ export class InterpreterSockets {
     })
   }
 
-  async joinBooth(socketId: string, booth: InterpretBooth) {
+  async joinBooth(socketId: string, booth: InterpretBooth): Promise<void> {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,
       booth
@@ -153,7 +156,7 @@ export class InterpreterSockets {
     })
   }
 
-  async leaveBooth(socketId: string, booth: InterpretBooth) {
+  async leaveBooth(socketId: string, booth: InterpretBooth): Promise<void> {
     const {
       auth,
       interpretRoom,
@@ -187,7 +190,11 @@ export class InterpreterSockets {
     })
   }
 
-  async messageBooth(socketId: string, booth: InterpretBooth, message: string) {
+  async messageBooth(
+    socketId: string,
+    booth: InterpretBooth,
+    message: string
+  ): Promise<void> {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,
       booth
@@ -206,7 +213,7 @@ export class InterpreterSockets {
     socketId: string,
     booth: InterpretBooth,
     duration: number
-  ) {
+  ): Promise<void> {
     const { auth, interpretRoom } = await this.#interpreterRepo.prepInterpreter(
       socketId,
       booth
@@ -228,7 +235,7 @@ export class InterpreterSockets {
     )
   }
 
-  async sendAudio(socketId: string, rawData: Buffer) {
+  async sendAudio(socketId: string, rawData: Buffer): Promise<void> {
     const activeInterpreter = await this.#getActiveInterpreter(socketId)
     if (!activeInterpreter) throw ApiError.unauthorized()
     const { sessionId, channel } = activeInterpreter.booth
@@ -249,7 +256,7 @@ export class InterpreterSockets {
     )
   }
 
-  async startInterpret(socketId: string, booth: InterpretBooth) {
+  async startInterpret(socketId: string, booth: InterpretBooth): Promise<void> {
     const {
       auth,
       interpretRoom,
@@ -292,7 +299,7 @@ export class InterpreterSockets {
     })
   }
 
-  async stopInterpret(socketId: string, booth: InterpretBooth) {
+  async stopInterpret(socketId: string, booth: InterpretBooth): Promise<void> {
     const {
       auth,
       interpretRoom,
