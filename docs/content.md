@@ -178,7 +178,9 @@ where each key you passed to `languages` above is present.
 
 ```json
 {
-  "en": "<p> The English text </p>",
-  "fr": "<p> The French text </p>"
+  "content": {
+    "en": "<p> The English text </p>",
+    "fr": "<p> The French text </p>"
+  }
 }
 ```

@@ -1,7 +1,9 @@
-import { Localised } from '@openlab/deconf-shared'
-import { DeconfBaseContext } from '../lib/module'
+import { Localised, LocalisedContent } from '@openlab/deconf-shared'
+import { ApiError, DeconfBaseContext } from '../lib/module'
 
 type Context = Pick<DeconfBaseContext, 'store'>
+
+// TODO: seperate commit
 
 export class ContentRoutes {
   #context: Context
@@ -11,7 +13,11 @@ export class ContentRoutes {
   }
 
   // GET /content/:slug
-  async getContent(slug: string) {
-    return this.#context.store.retrieve<Localised>(`content.${slug}`)
+  async getContent(slug: string): Promise<LocalisedContent> {
+    const content = await this.#context.store.retrieve<Localised>(
+      `content.${slug}`
+    )
+    if (!content) throw ApiError.notFound()
+    return { content }
   }
 }
