@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.1.0...v4.2.0) (2021-11-18)
+
+### Features
+
+- use explicit return types for sockets & routes to help client usage ([eddfb90](https://github.com/digitalinteraction/deconf-api-toolkit/commit/eddfb906f45c460015ce91ad1ccf93c4d1a19f8a))
+
+### Bug Fixes
+
+- **attendance:** getSessionAttendance now returns count as a number ([6be116d](https://github.com/digitalinteraction/deconf-api-toolkit/commit/6be116dd257ce0c4ded1bd5a11691c2d8a4c9edb))
+- **content:** fix broken ContentRoutes return ([e94d003](https://github.com/digitalinteraction/deconf-api-toolkit/commit/e94d00301869b4fb61856727a96b32ec992aba8a))
+
 ## [4.1.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.0.0...v4.1.0) (2021-11-12)
 
 ### Features
