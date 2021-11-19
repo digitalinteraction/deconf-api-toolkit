@@ -75,7 +75,7 @@ const store = new RedisStore('redis://127.0.0.1')
 const contentRepo = new ContentRepository({ store })
 const contentService = new ContentSerive({ store, contentRepo })
 
-await contentService.processRepo({
+await contentService.processRepository({
   // The remote of the git repository
   remote: 'git@github.com:username/repo.git',
 
