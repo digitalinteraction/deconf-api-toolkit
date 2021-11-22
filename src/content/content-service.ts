@@ -18,7 +18,7 @@ export interface ProcessRepoOptions {
 }
 
 export interface ProcessRepoCallback {
-  (): AsyncGenerator<unknown, unknown, AsyncGenerator>
+  (directory: string): AsyncGenerator<unknown, unknown, AsyncGenerator>
 }
 
 type Context = Pick<DeconfBaseContext, 'store'> & {
@@ -68,7 +68,7 @@ export class ContentService {
       }
 
       // Allow the caller to validate and process the directory
-      const custom = callback?.()
+      const custom = callback?.(directory)
       if (custom) await custom.next()
 
       // Create an generator to process the content and run markdown validation
