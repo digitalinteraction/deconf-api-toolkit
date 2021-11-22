@@ -3,8 +3,6 @@ import { ApiError, DeconfBaseContext } from '../lib/module'
 
 type Context = Pick<DeconfBaseContext, 'store'>
 
-// TODO: seperate commit
-
 export class ContentRoutes {
   #context: Context
 
