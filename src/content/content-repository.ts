@@ -15,7 +15,7 @@ export class ContentRepository {
 
   async validateRemote(remoteUrl: string) {
     const { stderr } = await exec(`git ls-remote ${remoteUrl}`)
-    return Boolean(stderr)
+    return !Boolean(stderr)
   }
 
   async updateLocalRepo(directory: string, remoteUrl: string, branch: string) {
