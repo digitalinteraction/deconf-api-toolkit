@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.2.0...v4.2.1) (2021-11-22)
+
+### Bug Fixes
+
+- **content:** fix directory not passed to callback ([db589cf](https://github.com/digitalinteraction/deconf-api-toolkit/commit/db589cfa4d7f8da55c037d036fa5bab2d1a0a4f7))
+- **content:** fix remote validation not working ([e25df2b](https://github.com/digitalinteraction/deconf-api-toolkit/commit/e25df2bb1c73404f69e023425c198b44d4c8e4bb))
+
 ## [4.2.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.1.0...v4.2.0) (2021-11-18)
 
 ### Features
