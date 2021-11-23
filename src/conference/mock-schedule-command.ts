@@ -1,6 +1,7 @@
 import {
   ConferenceConfig,
   Interpreter,
+  ScheduleRecord,
   Session,
   SessionSlot,
   SessionState,
@@ -16,7 +17,8 @@ import { DeconfBaseContext } from '../lib/module'
 const debug = createDebug('deconf:conference:mock-schedule')
 
 export interface MockScheduleCommandOptions {
-  interpreterEmails: string[]
+  interpreterEmails?: string[]
+  exclude?: Array<keyof ScheduleRecord>
 }
 
 type Context = Pick<DeconfBaseContext, 'store'>
@@ -32,28 +34,24 @@ export class MockScheduleCommand {
   }
 
   async process(options: MockScheduleCommandOptions) {
-    debug('Generate interpreters')
-    const interpreters = options.interpreterEmails.map((email, i) =>
-      mockInterpreter({
-        id: `interpreter-${i + 1}`,
-        email,
-      })
-    )
+    if (options.interpreterEmails) {
+      debug('generating interpreters %o', options.interpreterEmails)
+      const interpreters = options.interpreterEmails.map((email, i) =>
+        mockInterpreter({
+          id: `interpreter-${i + 1}`,
+          email,
+        })
+      )
 
-    debug('Create schedule')
+      await this.#store.put('schedule.interpreters', interpreters)
+    }
+
+    debug('generating schedule')
     const schedule = getFakeSchedule()
-
-    debug('Save to redis')
-    await Promise.all([
-      this.#store.put('schedule.slots', schedule.slots),
-      this.#store.put('schedule.sessions', schedule.sessions),
-      this.#store.put('schedule.tracks', schedule.tracks),
-      this.#store.put('schedule.themes', schedule.themes),
-      this.#store.put('schedule.speakers', schedule.speakers),
-      this.#store.put('schedule.types', schedule.types),
-      this.#store.put('schedule.settings', schedule.settings),
-      this.#store.put('schedule.interpreters', interpreters),
-    ])
+    for (const [key, value] of Object.entries(schedule)) {
+      if (options.exclude?.includes(key as any)) continue
+      await this.#store.put(`schedule.${key}`, value)
+    }
   }
 }
 
