@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.2.1...v4.3.0) (2021-12-01)
+
+### Features
+
+- add metrics structs for validating metrics payloads ([3fb0d74](https://github.com/digitalinteraction/deconf-api-toolkit/commit/3fb0d74dd78dfcdd46dfcad2401795f1ddab99ef)), closes [#27](https://github.com/digitalinteraction/deconf-api-toolkit/issues/27)
+- **conference:** add mock-schedule configuration and make interpreters optional ([094943f](https://github.com/digitalinteraction/deconf-api-toolkit/commit/094943f9840f958fed4d19d3fa71f1bb5ee5cd22))
+- **lib:** add debug message to `loadConfig` to help debug dev crashes ([7cec2f8](https://github.com/digitalinteraction/deconf-api-toolkit/commit/7cec2f87e01d07d2d78bc5e61549bf1c2a766e61)), closes [#25](https://github.com/digitalinteraction/deconf-api-toolkit/issues/25)
+
 ### [4.2.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.2.0...v4.2.1) (2021-11-22)
 
 ### Bug Fixes
