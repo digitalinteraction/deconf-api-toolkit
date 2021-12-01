@@ -1,6 +1,9 @@
 import fs from 'fs/promises'
 import { object, string, Describe, create, array, Struct } from 'superstruct'
 import { DeconfConfig } from '@openlab/deconf-shared'
+import createDebug from 'debug'
+
+const debug = createDebug('deconf:lib:config')
 
 // function jsonDate() {
 //   return coerce(date(), string(), (value) => new Date(value))
@@ -30,6 +33,7 @@ export async function loadConfig<T extends unknown>(
   path: string,
   struct: Struct<T>
 ): Promise<T> {
+  debug('loadConfig %o', path)
   const rawConfig = JSON.parse(await fs.readFile(path, 'utf8'))
 
   const config = create(rawConfig, struct)
