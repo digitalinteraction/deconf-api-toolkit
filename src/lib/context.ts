@@ -1,5 +1,4 @@
-import { DeconfConfig } from '@openlab/deconf-shared'
-
+import { DeconfConfig } from './config'
 import { DeconfEnv } from './env'
 import { ResourcesMap } from './resources'
 

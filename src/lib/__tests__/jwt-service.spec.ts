@@ -8,9 +8,9 @@ import {
   AuthzHeadersStruct,
   EmailLoginTokenStruct,
   JwtService,
-  JWT_ISSUER,
 } from '../jwt-service'
 import { ApiError } from '../api-error'
+import { createTestingDeconfConfig } from '../config'
 
 describe('AuthzHeadersStruct', () => {
   it('should validate auth headers', () => {
@@ -48,7 +48,8 @@ describe('JwtService', () => {
   function setup() {
     const env = createTestingEnv()
     const store = mockKeyValueStore()
-    const service = new JwtService({ env, store })
+    const config = createTestingDeconfConfig()
+    const service = new JwtService({ env, store, config })
     return { service, env, store }
   }
 
@@ -70,7 +71,7 @@ describe('JwtService', () => {
         sub: 1,
         user_roles: ['admin'],
         user_lang: 'en',
-        iss: JWT_ISSUER,
+        iss: 'deconf-test-app',
         iat: expect.any(Number),
       })
     })
@@ -83,7 +84,7 @@ describe('JwtService', () => {
         {
           kind: 'test_token',
           sub: 1,
-          iss: JWT_ISSUER,
+          iss: 'deconf-test-app',
         },
         env.JWT_SECRET
       )
@@ -101,7 +102,7 @@ describe('JwtService', () => {
       const token = jsonwebtoken.sign(
         {
           kind: 'test_token',
-          iss: JWT_ISSUER,
+          iss: 'deconf-test-app',
         },
         env.JWT_SECRET
       )
@@ -136,7 +137,7 @@ describe('JwtService', () => {
           sub: 1,
           user_roles: ['admin'],
           user_lang: 'en',
-          iss: JWT_ISSUER,
+          iss: 'deconf-test-app',
         },
         env.JWT_SECRET
       )
@@ -150,7 +151,7 @@ describe('JwtService', () => {
         sub: 1,
         user_roles: ['admin'],
         user_lang: 'en',
-        iss: JWT_ISSUER,
+        iss: 'deconf-test-app',
         iat: expect.any(Number),
       })
     })

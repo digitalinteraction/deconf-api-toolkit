@@ -1,6 +1,14 @@
 import fs from 'fs/promises'
-import { object, string, Describe, create, array, Struct } from 'superstruct'
-import { DeconfConfig } from '@openlab/deconf-shared'
+import {
+  object,
+  string,
+  Describe,
+  create,
+  array,
+  Struct,
+  Infer,
+  optional,
+} from 'superstruct'
 import createDebug from 'debug'
 
 const debug = createDebug('deconf:lib:config')
@@ -9,7 +17,7 @@ const debug = createDebug('deconf:lib:config')
 //   return coerce(date(), string(), (value) => new Date(value))
 // }
 
-export const DeconfConfigStruct: Describe<DeconfConfig> = object({
+export const DeconfConfigStruct = object({
   admins: array(
     object({
       email: string(),
@@ -26,7 +34,14 @@ export const DeconfConfigStruct: Describe<DeconfConfig> = object({
   carbon: object({
     originCountry: string(),
   }),
+  jwt: optional(
+    object({
+      issuer: string(),
+    })
+  ),
 })
+
+export type DeconfConfig = Infer<typeof DeconfConfigStruct>
 
 /** Load a json file and validate against a structure */
 export async function loadConfig<T extends unknown>(
@@ -54,6 +69,9 @@ export function createTestingDeconfConfig(): DeconfConfig {
     },
     carbon: {
       originCountry: 'GB',
+    },
+    jwt: {
+      issuer: 'deconf-test-app',
     },
   }
 }
