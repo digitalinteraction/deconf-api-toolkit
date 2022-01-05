@@ -1,0 +1,9 @@
+{
+  "actions" : {
+    "run" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/sh\nnpm run release\ngit push --follow-tags origin main"
+    }
+  },
+  "identifier" : "5731BD2E-D70F-4EE5-9C83-7E0CDC91899E"
+}
