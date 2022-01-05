@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.3.0...v4.4.0) (2022-01-05)
+
+### Features
+
+- add optional `jwt` config to customise the JWT issuer + jwt docs ([88b520e](https://github.com/digitalinteraction/deconf-api-toolkit/commit/88b520e622459c23d54b2696f80789ca86f27d87))
+
 ## [4.3.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.2.1...v4.3.0) (2021-12-01)
 
 ### Features
