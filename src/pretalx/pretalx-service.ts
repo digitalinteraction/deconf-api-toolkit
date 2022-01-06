@@ -233,7 +233,7 @@ export class PretalxService {
       role: {
         en: this.findAnswer(affiliationQuestion, speaker.answers) ?? '',
       },
-      bio: { en: speaker.bio ?? '' },
+      bio: { en: speaker.biography ?? '' },
       headshot: speaker.avatar ?? '',
     }))
   }

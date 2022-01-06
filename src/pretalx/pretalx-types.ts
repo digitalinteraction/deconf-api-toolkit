@@ -24,7 +24,7 @@ export interface PretalxEvent {
 export interface PretalxSpeaker {
   code: string
   name: string
-  bio: string | null
+  biography: string | null
   submissions: Unknown[]
   availabilities: Unknown[]
   avatar: string | null
