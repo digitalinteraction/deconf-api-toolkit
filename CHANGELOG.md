@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.4.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.4.0...v4.4.1) (2022-01-06)
+
+### Bug Fixes
+
+- **pretalx:** fix speaker bio not being pulled through ([4a12bc0](https://github.com/digitalinteraction/deconf-api-toolkit/commit/4a12bc031270ce1f9c86d1034ff1bd3819f10251))
+
 ## [4.4.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.3.0...v4.4.0) (2022-01-05)
 
 ### Features
