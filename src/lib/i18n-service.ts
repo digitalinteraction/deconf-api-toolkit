@@ -26,6 +26,14 @@ export function getI18nKeys(object: any, segments: string[] = []) {
   return keys
 }
 
+export function localise(
+  locale: string,
+  obj: Record<string, string | undefined>,
+  fallback: string
+): string {
+  return obj[locale] ?? obj.en ?? fallback
+}
+
 export class I18nService {
   #locales: I18nDictionary
 
