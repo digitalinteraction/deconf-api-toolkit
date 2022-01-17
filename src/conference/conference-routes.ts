@@ -162,6 +162,9 @@ export class ConferenceRoutes {
     const noType = sessions.filter((s) => !typeIds.has(s.type))
     const noTrack = sessions.filter((s) => !trackIds.has(s.track))
     const noLinks = sessions.filter((s) => s.links.length === 0)
+    const unscheduled = sessions.filter(
+      (s) => s.state === SessionState.confirmed && !s.slot
+    )
 
     return [
       {
@@ -185,6 +188,13 @@ export class ConferenceRoutes {
         title: 'No links',
         subtitle: 'i.e. it has no links attached to it',
         messages: noLinks.map((s) => `Session '${s.id}' - has no links`),
+      },
+      {
+        kind: 'no-slot',
+        title: 'Not scheduled',
+        subtitle:
+          'e.g. it is confirmed but has no start/end time associated set',
+        messages: unscheduled.map((s) => `Session '${s.id}' is not scheduled`),
       },
     ]
   }

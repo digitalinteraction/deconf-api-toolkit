@@ -226,19 +226,29 @@ describe('ConferenceRoutes', () => {
           id: 'session-a',
           type: 'unknown',
           track: 'track-a',
+          slot: 'slot-a',
           links,
         }),
         mockSession({
           id: 'session-b',
           type: 'type-a',
           track: 'unknown',
+          slot: 'slot-a',
           links,
         }),
         mockSession({
           id: 'session-c',
           type: 'type-a',
           track: 'track-a',
+          slot: 'slot-a',
           links: [],
+        }),
+        mockSession({
+          id: 'session-d',
+          type: 'type-a',
+          track: 'track-a',
+          state: SessionState.confirmed,
+          slot: undefined,
         }),
       ])
       mocked(conferenceRepo.getTypes).mockResolvedValue([
@@ -268,6 +278,12 @@ describe('ConferenceRoutes', () => {
           title: 'No links',
           subtitle: expect.any(String),
           messages: [expect.stringContaining('session-c')],
+        },
+        {
+          kind: 'no-slot',
+          title: 'Not scheduled',
+          subtitle: expect.any(String),
+          messages: [expect.stringContaining('session-d')],
         },
       ])
     })
