@@ -192,8 +192,7 @@ export class ConferenceRoutes {
       {
         kind: 'no-slot',
         title: 'Not scheduled',
-        subtitle:
-          'e.g. it is confirmed but has no start/end time associated set',
+        subtitle: 'e.g. it is confirmed but has no start/end time set',
         messages: unscheduled.map((s) => `Session '${s.id}' is not scheduled`),
       },
     ]
