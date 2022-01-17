@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.4.1...v4.5.0) (2022-01-17)
+
+### Features
+
+- add lint rule for unscheduled confirmed sessions ([d223f34](https://github.com/digitalinteraction/deconf-api-toolkit/commit/d223f34ae8f424eadf32cc62cdd681c74ff214de))
+
 ### [4.4.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.4.0...v4.4.1) (2022-01-06)
 
 ### Bug Fixes
