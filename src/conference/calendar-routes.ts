@@ -1,6 +1,11 @@
 import { AuthToken, Session, SessionSlot } from '@openlab/deconf-shared'
 import { createEvent, createEvents, EventAttributes } from 'ics'
-import { ApiError, DeconfBaseContext, localise } from '../lib/module'
+import {
+  ApiError,
+  DeconfBaseContext,
+  localise,
+  UserICalToken,
+} from '../lib/module'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -36,7 +41,7 @@ export function getGoogleDate(input: Date) {
   ].join('')
 }
 
-export function getSessionIcs(
+export function getSessionIcsAttributes(
   locale: string,
   session: Session,
   slot: SessionSlot,
@@ -76,7 +81,12 @@ export class CalendarRoutes {
     if (!slot) throw ApiError.notFound()
 
     const icsFile = createEvent(
-      getSessionIcs(locale, session, slot, this.#url.getSessionLink(session.id))
+      getSessionIcsAttributes(
+        locale,
+        session,
+        slot,
+        this.#url.getSessionLink(session.id)
+      )
     )
 
     if (!icsFile.value) throw ApiError.internalServerError()
@@ -109,8 +119,8 @@ export class CalendarRoutes {
   }
 
   /** Generate an ical file for a user, filled with the sessions they are attending */
-  async getUserIcs(authToken?: AuthToken) {
-    if (!authToken) throw ApiError.unauthorized()
+  async getUserIcs(icalToken?: UserICalToken) {
+    if (!icalToken) throw ApiError.unauthorized()
 
     // Grab slots and index them by key
     const slots = await this.#conferenceRepo.getSlots()
@@ -122,7 +132,7 @@ export class CalendarRoutes {
 
     // Get the sessions the user is attending
     const attending = await this.#context.attendanceRepo.getUserAttendance(
-      authToken.sub
+      icalToken.sub
     )
 
     // Convert the user's sessions into ics parameters to create ical events
@@ -134,8 +144,8 @@ export class CalendarRoutes {
       })
       .filter((s) => s.session && s.slot)
       .map(({ session, slot }) =>
-        getSessionIcs(
-          authToken.user_lang,
+        getSessionIcsAttributes(
+          icalToken.user_lang,
           session,
           slot,
           this.#url.getSessionLink(session.id)
