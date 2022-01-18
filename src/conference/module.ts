@@ -1,3 +1,4 @@
+export * from './calendar-routes'
 export * from './conference-config-struct'
 export * from './conference-repository'
 export * from './conference-routes'

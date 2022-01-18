@@ -7,21 +7,11 @@ import {
 } from '@openlab/deconf-shared'
 import * as ics from 'ics'
 
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
+import { ApiError, DeconfBaseContext } from '../lib/module'
+import { getIcsDate } from './calendar-routes'
 
 // 30 minutes
 const LINKS_GRACE_MS = 30 * 60 * 1000
-
-export function getIcsDate(date: Date) {
-  return [
-    date.getUTCFullYear(),
-    date.getUTCMonth() + 1,
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-  ] as [number, number, number, number, number]
-}
 
 type Context = Pick<
   DeconfBaseContext,
@@ -48,6 +38,7 @@ export class ConferenceRoutes {
   }
 
   // GET /ics/:session_id
+  /** @deprecated use `CalendarRoutes#getSessionIcsFile` */
   async generateIcs(locale: string, sessionId: string): Promise<string> {
     const localise = (
       obj: Record<string, string | undefined>,
@@ -81,7 +72,7 @@ export class ConferenceRoutes {
     return icsFile.value
   }
 
-  // GET /sessions
+  // GET /schedule
   async getSchedule(): Promise<ScheduleRecord> {
     const states = new Set([SessionState.confirmed])
 

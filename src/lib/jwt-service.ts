@@ -52,6 +52,12 @@ export const VerifyTokenStruct = type({
   sub: number(),
 })
 
+export const UserICalTokenStruct = type({
+  kind: literal('user-ical'),
+  sub: number(),
+  user_lang: string(),
+})
+
 //
 // Types
 //
@@ -65,6 +71,12 @@ export interface SocketAuth {
   interpreter: Interpreter | null
 
   // Not including Registration because json & dates
+}
+
+export interface UserICalToken {
+  kind: 'user-ical'
+  sub: number
+  user_lang: string
 }
 
 //
