@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.5.0...v4.6.0) (2022-01-18)
+
+### Features
+
+- add CalendarRoutes + deprecate `ConferenceRoutes#generateIcs` ([4a8d8c3](https://github.com/digitalinteraction/deconf-api-toolkit/commit/4a8d8c315496ea04a8080ea5dff6b24f9e2d79d1))
+- **conference:** add CalendarRoutes ([#35](https://github.com/digitalinteraction/deconf-api-toolkit/issues/35)) ([6bb5155](https://github.com/digitalinteraction/deconf-api-toolkit/commit/6bb5155cf741c76c24f471ad2ace4a13d3c9a36b))
+- **lib:** add `localise` method to get a translation from localised content ([5958274](https://github.com/digitalinteraction/deconf-api-toolkit/commit/595827458613fca8bc106e3130709d9073316621))
+
+### Bug Fixes
+
+- add missing CalendarRoutes export ([1a863db](https://github.com/digitalinteraction/deconf-api-toolkit/commit/1a863dbdd3447fa9aa13f996a9b67ca5e6fc81ea))
+- **conference:** fix lint typo ([393ce95](https://github.com/digitalinteraction/deconf-api-toolkit/commit/393ce9570c790025ee28844e98cc2da54e0bb0c1))
+
 ## [4.5.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.4.1...v4.5.0) (2022-01-17)
 
 ### Features
