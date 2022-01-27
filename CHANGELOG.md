@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.6.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.6.0...v4.6.1) (2022-01-27)
+
+### Bug Fixes
+
+- auth packets in redis expire after 24h ([a165f5c](https://github.com/digitalinteraction/deconf-api-toolkit/commit/a165f5c97e6dbd437189f458c5390b2a00071c85))
+
 ## [4.6.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.5.0...v4.6.0) (2022-01-18)
 
 ### Features
