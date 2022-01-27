@@ -57,6 +57,19 @@ describe('AuthSockets', () => {
         interpreter: expect.objectContaining({ email: 'jess@example.com' }),
       })
     })
+    it('should set the their auth to expire after a day', async () => {
+      const { auth, jwt, registrationRepo, store, conferenceRepo } = setup()
+      const authToken = mockAuthToken({ sub: 1 })
+      mocked(jwt.verifyToken).mockReturnValue(authToken)
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'geoff@example.com' })
+      )
+      mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
+
+      await auth.auth('socket-a', 'fake_jwt')
+
+      expect(store.setExpiry).toBeCalledWith('auth/socket-a', 24 * 60 * 60)
+    })
   })
 
   describe('#deauth', () => {

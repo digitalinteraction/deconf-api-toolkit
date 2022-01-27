@@ -43,6 +43,8 @@ export class AuthSockets {
       email: registration.email,
       interpreter,
     })
+
+    await this.#store.setExpiry(`auth/${socketId}`, 24 * 60 * 60)
   }
 
   async deauth(socketId: string): Promise<void> {
