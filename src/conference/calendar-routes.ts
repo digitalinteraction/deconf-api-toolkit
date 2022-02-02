@@ -45,7 +45,8 @@ export function getSessionIcsAttributes(
   locale: string,
   session: Session,
   slot: SessionSlot,
-  url: URL
+  url: URL,
+  options: CalendarOptions = {}
 ): EventAttributes {
   return {
     start: getIcsDate(slot.start),
@@ -55,7 +56,12 @@ export function getSessionIcsAttributes(
     title: localise(locale, session.title, 'Session'),
     description: localise(locale, session.content, ''),
     location: url.toString(),
+    calName: options.calName,
   }
+}
+
+export interface CalendarOptions {
+  calName?: string
 }
 
 export class CalendarRoutes {
@@ -72,7 +78,11 @@ export class CalendarRoutes {
   }
 
   /** Generate an ics file for a Session */
-  async getSessionIcsFile(locale: string, sessionId: string): Promise<string> {
+  async getSessionIcsFile(
+    locale: string,
+    sessionId: string,
+    options: CalendarOptions = {}
+  ): Promise<string> {
     const session = await this.#conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
@@ -85,7 +95,8 @@ export class CalendarRoutes {
         locale,
         session,
         slot,
-        this.#url.getSessionLink(session.id)
+        this.#url.getSessionLink(session.id),
+        options
       )
     )
 
@@ -119,7 +130,7 @@ export class CalendarRoutes {
   }
 
   /** Generate an ical file for a user, filled with the sessions they are attending */
-  async getUserIcs(icalToken?: UserICalToken) {
+  async getUserIcs(icalToken?: UserICalToken, options: CalendarOptions = {}) {
     if (!icalToken) throw ApiError.unauthorized()
 
     // Grab slots and index them by key
@@ -148,7 +159,8 @@ export class CalendarRoutes {
           icalToken.user_lang,
           session,
           slot,
-          this.#url.getSessionLink(session.id)
+          this.#url.getSessionLink(session.id),
+          options
         )
       )
 
