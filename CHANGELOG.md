@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.7.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.6.1...v4.7.0) (2022-02-07)
+
+### Features
+
+- **calendar:** allow 'calName' option to be set when creating events ([a49523f](https://github.com/digitalinteraction/deconf-api-toolkit/commit/a49523fb20f49894707f740b185bb21d4249d4f3))
+
 ### [4.6.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.6.0...v4.6.1) (2022-01-27)
 
 ### Bug Fixes
