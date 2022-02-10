@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.7.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.7.0...v4.7.1) (2022-02-10)
+
+### Bug Fixes
+
+- **conference:** improve calendar errors ([222ae83](https://github.com/digitalinteraction/deconf-api-toolkit/commit/222ae832fa23e7e3033a3ec0a785c204e8f813dc))
+
 ## [4.7.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.6.1...v4.7.0) (2022-02-07)
 
 ### Features
