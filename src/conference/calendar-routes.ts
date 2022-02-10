@@ -100,7 +100,11 @@ export class CalendarRoutes {
       )
     )
 
-    if (!icsFile.value) throw ApiError.internalServerError()
+    if (!icsFile.value) {
+      console.error('Failed to generate ical for session=%o', sessionId)
+      console.error(icsFile.error)
+      throw ApiError.internalServerError()
+    }
 
     return icsFile.value
   }
@@ -167,6 +171,7 @@ export class CalendarRoutes {
     // Generate an ical file and return it
     const ical = createEvents(userSessions)
     if (!ical.value) {
+      console.error('Failed to generate ical for user=%o', icalToken.sub)
       console.error(ical.error)
       throw ApiError.internalServerError()
     }
