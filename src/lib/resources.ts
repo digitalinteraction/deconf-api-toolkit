@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import createDebug from 'debug'
+import { createDebug } from './utils'
 
 const debug = createDebug('deconf:lib:resources')
 

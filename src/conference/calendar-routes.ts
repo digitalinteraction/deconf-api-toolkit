@@ -1,4 +1,4 @@
-import { AuthToken, Session, SessionSlot } from '@openlab/deconf-shared'
+import { Session, SessionSlot } from '@openlab/deconf-shared'
 import { createEvent, createEvents, EventAttributes } from 'ics'
 import {
   ApiError,
@@ -6,11 +6,6 @@ import {
   localise,
   UserICalToken,
 } from '../lib/module'
-
-type Context = Pick<
-  DeconfBaseContext,
-  'conferenceRepo' | 'url' | 'attendanceRepo'
->
 
 /** Convert a `Date` into an ICS format */
 export function getIcsDate(date: Date) {
@@ -64,14 +59,12 @@ export interface CalendarOptions {
   calName?: string
 }
 
-export class CalendarRoutes {
-  get #conferenceRepo() {
-    return this.#context.conferenceRepo
-  }
-  get #url() {
-    return this.#context.url
-  }
+type Context = Pick<
+  DeconfBaseContext,
+  'conferenceRepo' | 'url' | 'attendanceRepo'
+>
 
+export class CalendarRoutes {
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -83,10 +76,10 @@ export class CalendarRoutes {
     sessionId: string,
     options: CalendarOptions = {}
   ): Promise<string> {
-    const session = await this.#conferenceRepo.findSession(sessionId)
+    const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
-    const slots = await this.#conferenceRepo.getSlots()
+    const slots = await this.#context.conferenceRepo.getSlots()
     const slot = slots.find((s) => s.id === session.slot)
     if (!slot) throw ApiError.notFound()
 
@@ -95,7 +88,7 @@ export class CalendarRoutes {
         locale,
         session,
         slot,
-        this.#url.getSessionLink(session.id),
+        this.#context.url.getSessionLink(session.id),
         options
       )
     )
@@ -111,10 +104,10 @@ export class CalendarRoutes {
 
   /** Get a calendar.google.com URL to add a Session as an event */
   async getGoogleCalendarUrl(locale: string, sessionId: string): Promise<URL> {
-    const session = await this.#conferenceRepo.findSession(sessionId)
+    const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
-    const slots = await this.#conferenceRepo.getSlots()
+    const slots = await this.#context.conferenceRepo.getSlots()
     const slot = slots.find((s) => s.id === session.slot)
     if (!slot) throw ApiError.notFound()
 
@@ -127,7 +120,7 @@ export class CalendarRoutes {
     url.searchParams.set('text', localise(locale, session.title, ''))
     url.searchParams.set(
       'location',
-      this.#url.getSessionLink(session.id).toString()
+      this.#context.url.getSessionLink(session.id).toString()
     )
 
     return url
@@ -138,11 +131,11 @@ export class CalendarRoutes {
     if (!icalToken) throw ApiError.unauthorized()
 
     // Grab slots and index them by key
-    const slots = await this.#conferenceRepo.getSlots()
+    const slots = await this.#context.conferenceRepo.getSlots()
     const slotMap = new Map(slots.map((s) => [s.id, s]))
 
     // Grab sessions and index them by key
-    const sessions = await this.#conferenceRepo.getSessions()
+    const sessions = await this.#context.conferenceRepo.getSessions()
     const sessionMap = new Map(sessions.map((s) => [s.id, s]))
 
     // Get the sessions the user is attending
@@ -163,7 +156,7 @@ export class CalendarRoutes {
           icalToken.user_lang,
           session,
           slot,
-          this.#url.getSessionLink(session.id),
+          this.#context.url.getSessionLink(session.id),
           options
         )
       )

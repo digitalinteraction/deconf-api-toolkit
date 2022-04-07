@@ -4,10 +4,10 @@ import {
   LocalisedLink,
   Theme,
 } from '@openlab/deconf-shared'
-import createDebug from 'debug'
 
 import got, { PaginationOptions, Got } from 'got'
 import { DeconfBaseContext } from '../lib/context'
+import { createDebug } from '../lib/module'
 import {
   Localised,
   PretalxEvent,
@@ -35,25 +35,17 @@ interface LocaleRecord {
 
 const debug = createDebug('deconf:pretalx:service')
 
-type Env = { PRETALX_API_TOKEN: string }
-type Config = {
-  eventSlug: string
-  englishKeys: string[]
-}
-
 type Context = Pick<DeconfBaseContext, 'store'> & {
-  env: Env
-  config: Config
+  env: {
+    PRETALX_API_TOKEN: string
+  }
+  config: {
+    eventSlug: string
+    englishKeys: string[]
+  }
 }
 
 export class PretalxService {
-  get #config() {
-    return this.#context.config
-  }
-  get #env() {
-    return this.#context.env
-  }
-
   #context: Context
   #pretalx: Got
   #codeMap = new Map<string, number>()
@@ -63,7 +55,7 @@ export class PretalxService {
     this.#pretalx = got.extend({
       prefixUrl: `https://pretalx.com/api/events/${context.config.eventSlug}`,
       headers: {
-        authorization: `Token ${this.#env.PRETALX_API_TOKEN}`,
+        authorization: `Token ${this.#context.env.PRETALX_API_TOKEN}`,
       },
       responseType: 'json',
     })
@@ -180,7 +172,7 @@ export class PretalxService {
   /** From a localised title, generate a slug-based id */
   getIdFromTitle(localised: Localised | null, fallback: string) {
     if (!localised) return fallback
-    for (const key of this.#config.englishKeys) {
+    for (const key of this.#context.config.englishKeys) {
       if (localised[key]) return this.getSlug(localised[key] as string)
     }
     return fallback

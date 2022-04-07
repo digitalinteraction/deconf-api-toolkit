@@ -18,6 +18,7 @@ import { CarbonRepository } from '../carbon/carbon-repository'
 import { MetricsRepository } from '../metrics/metrics-repository'
 import { RegistrationRepository } from '../registration/registration-repository'
 import { InterpreterRepository } from '../interpret/interpreter-repository'
+import { ContentRepository } from '../content/content-repository'
 
 export type DeconfBaseContext = {
   // Core library
@@ -43,6 +44,7 @@ export type DeconfBaseContext = {
   metricsRepo: Readonly<MetricsRepository>
   registrationRepo: Readonly<RegistrationRepository>
   interpreterRepo: Readonly<InterpreterRepository>
+  contentRepo: Readonly<ContentRepository>
 }
 
 // IDEA: Provide a super-class to reduce boilerplate code

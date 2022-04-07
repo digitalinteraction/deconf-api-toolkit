@@ -3,7 +3,7 @@ import { DeconfBaseContext } from '../lib/context'
 
 //
 // NOTES:
-// - "userData" must be quoted in queries
+// - "userData" must be quoted in SQL queries
 //
 
 type Context = Pick<DeconfBaseContext, 'postgres'>

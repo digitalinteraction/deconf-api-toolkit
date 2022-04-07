@@ -2,10 +2,8 @@ import path from 'path'
 import fs from 'fs/promises'
 
 import MarkdownIt from 'markdown-it'
-import createDebug from 'debug'
 
-import { DeconfBaseContext } from '../module'
-import { ContentRepository } from './content-repository'
+import { DeconfBaseContext, createDebug } from '../module'
 
 const debug = createDebug('deconf:content:service')
 
@@ -21,20 +19,10 @@ export interface ProcessRepoCallback {
   (directory: string): AsyncGenerator<unknown, unknown, AsyncGenerator>
 }
 
-type Context = Pick<DeconfBaseContext, 'store'> & {
-  contentRepo: Readonly<ContentRepository>
-}
+type Context = Pick<DeconfBaseContext, 'store' | 'contentRepo'>
 
 export class ContentService {
-  get #contentRepo() {
-    return this.#context.contentRepo
-  }
-  get #store() {
-    return this.#context.store
-  }
-
   #context: Context
-
   constructor(context: Context) {
     this.#context = context
   }
@@ -46,21 +34,23 @@ export class ContentService {
     // Work out what directory the repo is in / should be in
     const directory =
       options.reuseDirectory ??
-      (await this.#contentRepo.makeTempDir('content_'))
+      (await this.#context.contentRepo.makeTempDir('content_'))
 
     try {
       if (!options.reuseDirectory) {
-        const isValid = await this.#contentRepo.validateRemote(options.remote)
+        const isValid = await this.#context.contentRepo.validateRemote(
+          options.remote
+        )
         if (!isValid) throw new Error('Invalid git remote')
 
-        await this.#contentRepo.cloneRepo(
+        await this.#context.contentRepo.cloneRepo(
           directory,
           options.remote,
           options.branch
         )
       } else {
         // If reusing a directory, ensure the branch is correct
-        await this.#contentRepo.updateLocalRepo(
+        await this.#context.contentRepo.updateLocalRepo(
           directory,
           options.remote,
           options.branch
@@ -87,7 +77,7 @@ export class ContentService {
     } finally {
       // Clear the temporary directory
       if (!options.reuseDirectory) {
-        await this.#contentRepo.clearDirectory(directory)
+        await this.#context.contentRepo.clearDirectory(directory)
       }
     }
   }
@@ -113,7 +103,7 @@ export class ContentService {
 
     debug('contentInterator storing %o', contentKeys)
     for (const { key, files } of content) {
-      await this.#store.put(`content.${key}`, files)
+      await this.#context.store.put(`content.${key}`, files)
     }
   }
 

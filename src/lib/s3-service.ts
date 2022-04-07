@@ -1,25 +1,30 @@
 import * as Minio from 'minio'
-import { DeconfBaseContext } from './context'
+import { DeconfEnv } from './env'
 
-type Context = Pick<DeconfBaseContext, 'env'>
+type Context = {
+  env: Pick<
+    DeconfEnv,
+    'S3_ENDPOINT' | 'S3_ACCESS_KEY' | 'S3_SECRET_KEY' | 'S3_BUCKET_NAME'
+  >
+}
 
 export class S3Service {
-  get #env() {
-    return this.#context.env
-  }
-
   #client: Minio.Client
   #context: Context
   constructor(context: Context) {
     this.#context = context
     this.#client = new Minio.Client({
-      endPoint: this.#env.S3_ENDPOINT,
-      accessKey: this.#env.S3_ACCESS_KEY,
-      secretKey: this.#env.S3_SECRET_KEY,
+      endPoint: this.#context.env.S3_ENDPOINT,
+      accessKey: this.#context.env.S3_ACCESS_KEY,
+      secretKey: this.#context.env.S3_SECRET_KEY,
     })
   }
 
   uploadFile(objectName: string, data: Buffer) {
-    return this.#client.putObject(this.#env.S3_BUCKET_NAME, objectName, data)
+    return this.#client.putObject(
+      this.#context.env.S3_BUCKET_NAME,
+      objectName,
+      data
+    )
   }
 }

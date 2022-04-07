@@ -1,5 +1,4 @@
 import jsonwebtoken from 'jsonwebtoken'
-import createDebug from 'debug'
 import {
   is,
   type,
@@ -15,6 +14,7 @@ import { AuthToken, Interpreter } from '@openlab/deconf-shared'
 import { ApiError } from './api-error'
 import { DeconfBaseContext } from './context'
 import { assertStruct } from './structs'
+import { createDebug } from './utils'
 
 /** @deprecated use JWT_DEFAULT_ISSUER */
 export const JWT_ISSUER = 'deconf-app'
@@ -83,33 +83,36 @@ export interface UserICalToken {
 // Service
 //
 
-type JwtEnv = Pick<DeconfBaseContext['env'], 'JWT_SECRET'>
-type Context = Pick<DeconfBaseContext, 'store' | 'config'> & { env: JwtEnv }
+type Context = Pick<DeconfBaseContext, 'store'> & {
+  /** @deprecated use `jwtConfig` instead */
+  config: {
+    jwt?: DeconfBaseContext['config']['jwt']
+  }
+
+  env: Pick<DeconfBaseContext['env'], 'JWT_SECRET'>
+  jwtConfig?: {
+    issuer: string
+  }
+}
 
 export class JwtService {
-  get #store() {
-    return this.#context.store
-  }
-  get #env() {
-    return this.#context.env
-  }
-  get #config() {
-    return this.#context.config
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
   #getIssuer(): string {
-    return this.#config.jwt?.issuer ?? JWT_DEFAULT_ISSUER
+    return (
+      this.#context.jwtConfig?.issuer ??
+      this.#context.config.jwt?.issuer ??
+      JWT_DEFAULT_ISSUER
+    )
   }
 
   verifyToken<T extends object>(token: string, struct: Struct<T>): T {
     debug('verifyToken %o', token)
     try {
-      const result = jsonwebtoken.verify(token, this.#env.JWT_SECRET, {
+      const result = jsonwebtoken.verify(token, this.#context.env.JWT_SECRET, {
         issuer: this.#getIssuer(),
       })
 
@@ -142,7 +145,7 @@ export class JwtService {
 
   signToken<T extends object>(token: T, options: JwtSignOptions = {}) {
     debug('sign %o', token)
-    return jsonwebtoken.sign(token, this.#env.JWT_SECRET, {
+    return jsonwebtoken.sign(token, this.#context.env.JWT_SECRET, {
       ...options,
       issuer: this.#getIssuer(),
     })
@@ -150,7 +153,9 @@ export class JwtService {
 
   async getSocketAuth(socketId: string) {
     debug('fromSocketId %o', socketId)
-    const auth = await this.#store.retrieve<SocketAuth>(`auth/${socketId}`)
+    const auth = await this.#context.store.retrieve<SocketAuth>(
+      `auth/${socketId}`
+    )
     if (!auth) throw ApiError.unauthorized()
     return auth
   }

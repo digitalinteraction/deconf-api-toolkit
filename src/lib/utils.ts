@@ -1,3 +1,5 @@
+export { default as createDebug } from 'debug'
+
 export interface VoidResponse {
   message: 'ok'
 }

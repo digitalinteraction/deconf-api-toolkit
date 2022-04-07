@@ -9,7 +9,7 @@ import {
   Infer,
   optional,
 } from 'superstruct'
-import createDebug from 'debug'
+import { createDebug } from './utils'
 
 const debug = createDebug('deconf:lib:config')
 
@@ -17,6 +17,7 @@ const debug = createDebug('deconf:lib:config')
 //   return coerce(date(), string(), (value) => new Date(value))
 // }
 
+/** @deprecated use Context specific alternatives */
 export const DeconfConfigStruct = object({
   admins: array(
     object({
@@ -41,6 +42,7 @@ export const DeconfConfigStruct = object({
   ),
 })
 
+/** @deprecated */
 export type DeconfConfig = Infer<typeof DeconfConfigStruct>
 
 /** Load a json file and validate against a structure */

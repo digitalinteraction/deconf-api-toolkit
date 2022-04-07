@@ -1,21 +1,19 @@
-import { DeconfBaseContext } from './context'
+import { DeconfEnv } from './env'
 
-export type Context = Pick<DeconfBaseContext, 'env'>
+export type Context = {
+  env: Pick<DeconfEnv, 'CLIENT_URL' | 'SELF_URL'>
+}
 
 export class UrlService {
-  get #env() {
-    return this.#context.env
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
   getSessionLink(sessionId: string) {
-    return new URL(`session/${sessionId}`, this.#env.CLIENT_URL)
+    return new URL(`session/${sessionId}`, this.#context.env.CLIENT_URL)
   }
   getClientLoginLink(token: string) {
-    return new URL(`login/${token}`, this.#env.CLIENT_URL)
+    return new URL(`login/${token}`, this.#context.env.CLIENT_URL)
   }
 }

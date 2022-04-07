@@ -11,8 +11,7 @@ import {
   Theme,
   Track,
 } from '@openlab/deconf-shared'
-import createDebug from 'debug'
-import { DeconfBaseContext } from '../lib/module'
+import { createDebug, DeconfBaseContext } from '../lib/module'
 
 const debug = createDebug('deconf:conference:mock-schedule')
 
@@ -24,10 +23,6 @@ export interface MockScheduleCommandOptions {
 type Context = Pick<DeconfBaseContext, 'store'>
 
 export class MockScheduleCommand {
-  get #store() {
-    return this.#context.store
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -43,14 +38,14 @@ export class MockScheduleCommand {
         })
       )
 
-      await this.#store.put('schedule.interpreters', interpreters)
+      await this.#context.store.put('schedule.interpreters', interpreters)
     }
 
     debug('generating schedule')
     const schedule = getFakeSchedule()
     for (const [key, value] of Object.entries(schedule)) {
       if (options.exclude?.includes(key as any)) continue
-      await this.#store.put(`schedule.${key}`, value)
+      await this.#context.store.put(`schedule.${key}`, value)
     }
   }
 }

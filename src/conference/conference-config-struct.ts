@@ -16,6 +16,7 @@ export const PageFlagStruct: Describe<PageFlag> = object({
   visible: boolean(),
 })
 
+// TODO: deprecate this
 export const ConferenceConfigStruct: Describe<ConferenceConfig> = object({
   atrium: PageFlagStruct,
   whatsOn: PageFlagStruct,

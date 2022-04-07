@@ -3,6 +3,7 @@ import path from 'path'
 import Yaml from 'yaml'
 import dot from 'dot-prop'
 import mustache from 'mustache'
+import { ResourcesMap } from './resources'
 
 export type I18nDictionary = Record<string, any>
 
@@ -24,6 +25,23 @@ export function getI18nKeys(object: any, segments: string[] = []) {
   }
 
   return keys
+}
+
+export function loadI18nLocales(
+  resources: ResourcesMap,
+  locales: string[]
+): I18nDictionary {
+  const result: Record<string, unknown> = {}
+
+  for (const locale of locales) {
+    const key = `i18n/${locale}.yml`
+
+    const raw = resources.get(key)?.toString('utf8')
+    if (!raw) throw new Error(`I18n: "${key}" not found`)
+    result[locale] = Yaml.parse(raw)
+  }
+
+  return result
 }
 
 export function localise(

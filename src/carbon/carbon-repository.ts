@@ -8,17 +8,13 @@ interface CountryCount {
 type Context = Pick<DeconfBaseContext, 'postgres'>
 
 export class CarbonRepository {
-  get #postgres() {
-    return this.#context.postgres
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
   getCountryCount(): Promise<CountryCount[]> {
-    return this.#postgres.run((client) => {
+    return this.#context.postgres.run((client) => {
       return client.sql`
         SELECT country, count(*) as count
         FROM attendees

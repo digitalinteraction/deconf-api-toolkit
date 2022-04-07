@@ -1,4 +1,4 @@
-import createDebug from 'debug'
+import { createDebug } from '../lib/module'
 import { MigrateRepository, Migration } from './migrate-repository'
 
 const debug = createDebug('deconf:module:migrate')
@@ -12,10 +12,6 @@ const debug = createDebug('deconf:module:migrate')
 type Context = { migrateRepo: Readonly<MigrateRepository> }
 
 export class MigrateService {
-  get #migrateRepo() {
-    return this.#context.migrateRepo
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -23,7 +19,7 @@ export class MigrateService {
 
   async #setupMigrator() {
     // Check for the migrations table
-    const tables = await this.#migrateRepo.getTables()
+    const tables = await this.#context.migrateRepo.getTables()
 
     debug(
       `tables=%o`,
@@ -33,12 +29,12 @@ export class MigrateService {
     // If the migrations table doesn't exist, create it
     if (tables.every((t) => t.name !== 'migrations')) {
       debug('CREATE TABLE %o', 'migrations')
-      await this.#migrateRepo.createMigrationsTable()
+      await this.#context.migrateRepo.createMigrationsTable()
       return new Set()
     }
 
     // Query for previous migrations
-    const migrations = await this.#migrateRepo.getPreviousMigrations()
+    const migrations = await this.#context.migrateRepo.getPreviousMigrations()
 
     debug(
       `found=%o`,
@@ -62,7 +58,7 @@ export class MigrateService {
       }
 
       debug('run %o', migration.id)
-      await this.#migrateRepo.runMigration(migration)
+      await this.#context.migrateRepo.runMigration(migration)
     }
   }
 }

@@ -10,10 +10,6 @@ export interface LockRecord {
 type Context = Pick<DeconfBaseContext, 'store'>
 
 export class SemaphoreService {
-  get #store() {
-    return this.#context.store
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -22,11 +18,11 @@ export class SemaphoreService {
   /** Returns true if the lock is aquired */
   async aquire(lockKey: string, maxAgeMs: number) {
     try {
-      const lock = await this.#store.retrieve<LockRecord>(lockKey)
+      const lock = await this.#context.store.retrieve<LockRecord>(lockKey)
 
       if (lock && Date.now() - lock.time < maxAgeMs) return false
 
-      await this.#store.put<LockRecord>(lockKey, {
+      await this.#context.store.put<LockRecord>(lockKey, {
         time: Date.now(),
         hostname: os.hostname(),
       })
@@ -40,18 +36,18 @@ export class SemaphoreService {
 
   /** Returns true if the lock is released */
   async release(lockKey: string) {
-    const lock = await this.#store.retrieve<LockRecord>(lockKey)
+    const lock = await this.#context.store.retrieve<LockRecord>(lockKey)
     if (!lock) return true
 
     if (lock.hostname !== os.hostname()) return false
 
-    this.#store.delete(lockKey)
+    this.#context.store.delete(lockKey)
     return true
   }
 
   /** Check if the current host has the lock */
   async hasLock(lockKey: string) {
-    const lock = await this.#store.retrieve<LockRecord>(lockKey)
+    const lock = await this.#context.store.retrieve<LockRecord>(lockKey)
     return lock?.hostname === os.hostname()
   }
 }

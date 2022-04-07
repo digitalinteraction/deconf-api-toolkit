@@ -15,23 +15,17 @@ const LINKS_GRACE_MS = 30 * 60 * 1000
 
 type Context = Pick<
   DeconfBaseContext,
-  'conferenceRepo' | 'config' | 'url' | 'attendanceRepo'
->
+  'conferenceRepo' | 'url' | 'attendanceRepo'
+> & {
+  /** @deprecated use `CalendarRoutes` instead */
+  config: {
+    organiser: DeconfBaseContext['config']['organiser']
+  }
+}
+
+// TODO: remove config next major version
 
 export class ConferenceRoutes {
-  get #conferenceRepo() {
-    return this.#context.conferenceRepo
-  }
-  get #config() {
-    return this.#context.config
-  }
-  get #url() {
-    return this.#context.url
-  }
-  get #attendanceRepo() {
-    return this.#context.attendanceRepo
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -47,14 +41,14 @@ export class ConferenceRoutes {
       return obj[locale] ?? obj.en ?? fallback
     }
 
-    const session = await this.#conferenceRepo.findSession(sessionId)
+    const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
-    const slots = await this.#conferenceRepo.getSlots()
+    const slots = await this.#context.conferenceRepo.getSlots()
     const slot = slots.find((s) => s.id === session.slot)
     if (!slot) throw ApiError.notFound()
 
-    const webUrl = this.#url.getSessionLink(session.id)
+    const webUrl = this.#context.url.getSessionLink(session.id)
 
     const icsFile = ics.createEvent({
       start: getIcsDate(slot.start),
@@ -64,7 +58,7 @@ export class ConferenceRoutes {
       title: localise(session.title, 'Session'),
       description: localise(session.content, ''),
       location: webUrl.toString(),
-      organizer: { ...this.#config.organiser },
+      organizer: { ...this.#context.config.organiser },
     })
 
     if (!icsFile.value) throw ApiError.internalServerError()
@@ -76,10 +70,10 @@ export class ConferenceRoutes {
   async getSchedule(): Promise<ScheduleRecord> {
     const states = new Set([SessionState.confirmed])
 
-    const settings = await this.#conferenceRepo.getSettings()
+    const settings = await this.#context.conferenceRepo.getSettings()
     if (!settings) throw ApiError.internalServerError()
 
-    const rawSessions = await this.#conferenceRepo.getSessions()
+    const rawSessions = await this.#context.conferenceRepo.getSessions()
     const sessions = rawSessions
       .filter((s) => states.has(s.state))
       .map((session) => ({
@@ -89,11 +83,11 @@ export class ConferenceRoutes {
       }))
 
     return {
-      slots: await this.#conferenceRepo.getSlots(),
-      themes: await this.#conferenceRepo.getThemes(),
-      tracks: await this.#conferenceRepo.getTracks(),
-      types: await this.#conferenceRepo.getTypes(),
-      speakers: await this.#conferenceRepo.getSpeakers(),
+      slots: await this.#context.conferenceRepo.getSlots(),
+      themes: await this.#context.conferenceRepo.getThemes(),
+      tracks: await this.#context.conferenceRepo.getTracks(),
+      types: await this.#context.conferenceRepo.getTypes(),
+      speakers: await this.#context.conferenceRepo.getSpeakers(),
       settings: settings,
       sessions: sessions,
     }
@@ -110,12 +104,12 @@ export class ConferenceRoutes {
     const isAdmin = authToken.user_roles.includes('admin')
 
     // Grab the specific session
-    const session = await this.#conferenceRepo.findSession(sessionId)
+    const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
     // If not an admin and the session is capped, check the user is attending
     if (!isAdmin && session.participantCap !== null) {
-      const attendance = await this.#attendanceRepo.getUserAttendance(
+      const attendance = await this.#context.attendanceRepo.getUserAttendance(
         authToken.sub
       )
       const isAttending = attendance.some((a) => a.session === sessionId)
@@ -124,7 +118,7 @@ export class ConferenceRoutes {
     }
 
     // Get the slot of the session
-    const slots = await this.#conferenceRepo.getSlots()
+    const slots = await this.#context.conferenceRepo.getSlots()
     const slot = session.slot
       ? slots.find((s) => s.id === session.slot)
       : undefined
@@ -143,9 +137,9 @@ export class ConferenceRoutes {
   }
 
   async lintSessions(): Promise<SessionLintResult> {
-    const sessions = await this.#conferenceRepo.getSessions()
-    const types = await this.#conferenceRepo.getTypes()
-    const tracks = await this.#conferenceRepo.getTracks()
+    const sessions = await this.#context.conferenceRepo.getSessions()
+    const types = await this.#context.conferenceRepo.getTypes()
+    const tracks = await this.#context.conferenceRepo.getTracks()
 
     const typeIds = new Set(types.map((t) => t.id))
     const trackIds = new Set(tracks.map((t) => t.id))

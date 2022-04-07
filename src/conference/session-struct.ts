@@ -22,6 +22,8 @@ import {
   SessionVisibility,
 } from '@openlab/deconf-shared'
 
+// TODO: review this
+
 export const SessionStruct: Describe<Session> = object({
   id: string(),
   type: string(),

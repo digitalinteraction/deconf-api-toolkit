@@ -16,16 +16,6 @@ type Context = Pick<
 >
 
 export class AttendanceRoutes {
-  get #conferenceRepo() {
-    return this.#context.conferenceRepo
-  }
-  get #registrationRepo() {
-    return this.#context.registrationRepo
-  }
-  get #attendanceRepo() {
-    return this.#context.attendanceRepo
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
@@ -34,10 +24,10 @@ export class AttendanceRoutes {
   async #setup(authToken: AuthToken | null, sessionId: string) {
     if (!authToken) throw ApiError.unauthorized()
 
-    const session = await this.#conferenceRepo.findSession(sessionId)
+    const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
-    const attendee = await this.#registrationRepo.getVerifiedRegistration(
+    const attendee = await this.#context.registrationRepo.getVerifiedRegistration(
       authToken.sub
     )
     if (!attendee) throw ApiError.unauthorized()
@@ -53,7 +43,7 @@ export class AttendanceRoutes {
     const { session, attendee } = await this.#setup(authToken, sessionId)
 
     if (session.participantCap !== null) {
-      const attendance = await this.#attendanceRepo.getSessionAttendance()
+      const attendance = await this.#context.attendanceRepo.getSessionAttendance()
       const current = attendance.get(session.id) ?? 0
 
       if (current >= session.participantCap) {
@@ -61,7 +51,7 @@ export class AttendanceRoutes {
       }
     }
 
-    await this.#attendanceRepo.attend(attendee.id, sessionId)
+    await this.#context.attendanceRepo.attend(attendee.id, sessionId)
 
     return VOID_RESPONSE
   }
@@ -73,7 +63,7 @@ export class AttendanceRoutes {
   ): Promise<VoidResponse> {
     const { attendee } = await this.#setup(authToken, sessionId)
 
-    await this.#attendanceRepo.unattend(attendee.id, sessionId)
+    await this.#context.attendanceRepo.unattend(attendee.id, sessionId)
 
     return VOID_RESPONSE
   }
@@ -85,11 +75,11 @@ export class AttendanceRoutes {
   ): Promise<UserSessionAttendance> {
     const { attendee } = await this.#setup(authToken, sessionId)
 
-    const userAttendance = await this.#attendanceRepo.getUserAttendance(
+    const userAttendance = await this.#context.attendanceRepo.getUserAttendance(
       attendee.id
     )
 
-    const sessionAttendance = await this.#attendanceRepo.getSessionAttendance()
+    const sessionAttendance = await this.#context.attendanceRepo.getSessionAttendance()
 
     return {
       isAttending: userAttendance.some((a) => a.session === sessionId),
@@ -103,7 +93,7 @@ export class AttendanceRoutes {
   ): Promise<UserAttendance> {
     if (!authToken) throw ApiError.unauthorized()
 
-    const attendance = await this.#attendanceRepo.getUserAttendance(
+    const attendance = await this.#context.attendanceRepo.getUserAttendance(
       authToken.sub
     )
     return { attendance }

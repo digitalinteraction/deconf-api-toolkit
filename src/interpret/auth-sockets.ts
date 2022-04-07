@@ -8,51 +8,38 @@ type Context = Pick<
 >
 
 export class AuthSockets {
-  get #jwt() {
-    return this.#context.jwt
-  }
-  get #registrationRepo() {
-    return this.#context.registrationRepo
-  }
-  get #conferenceRepo() {
-    return this.#context.conferenceRepo
-  }
-  get #store() {
-    return this.#context.store
-  }
-
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
   async auth(socketId: string, authToken: string): Promise<void> {
-    const token = this.#jwt.verifyToken(authToken, AuthTokenStruct)
+    const token = this.#context.jwt.verifyToken(authToken, AuthTokenStruct)
 
-    const registration = await this.#registrationRepo.getVerifiedRegistration(
+    const registration = await this.#context.registrationRepo.getVerifiedRegistration(
       token.sub
     )
     if (!registration) throw ApiError.unauthorized()
 
-    const interpreter = await this.#conferenceRepo.findInterpreter(
+    const interpreter = await this.#context.conferenceRepo.findInterpreter(
       registration.email
     )
 
-    await this.#store.put<SocketAuth>(`auth/${socketId}`, {
+    await this.#context.store.put<SocketAuth>(`auth/${socketId}`, {
       authToken: token,
       email: registration.email,
       interpreter,
     })
 
-    await this.#store.setExpiry(`auth/${socketId}`, 24 * 60 * 60)
+    await this.#context.store.setExpiry(`auth/${socketId}`, 24 * 60 * 60)
   }
 
   async deauth(socketId: string): Promise<void> {
     const authKey = `auth/${socketId}`
 
-    const hasToken = await this.#store.retrieve<SocketAuth>(authKey)
+    const hasToken = await this.#context.store.retrieve<SocketAuth>(authKey)
     if (!hasToken) throw ApiError.unauthorized()
 
-    await this.#store.delete(authKey)
+    await this.#context.store.delete(authKey)
   }
 }

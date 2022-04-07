@@ -13,26 +13,26 @@ export const RESOURCE_CARBON_LOCATIONS = 'carbon/countries.json'
 //
 // Routes
 //
-type Context = Pick<
-  DeconfBaseContext,
-  'carbonRepo' | 'resources' | 'config' | 'store'
->
+type Context = Pick<DeconfBaseContext, 'carbonRepo' | 'resources' | 'store'> & {
+  /** @deprecated use `carbonOriginCountry` instead */
+  config: {
+    carbon: DeconfBaseContext['config']['carbon']
+  }
+
+  carbonOriginCountry?: string
+}
 
 export class CarbonRoutes {
-  get #carbonRepo() {
-    return this.#context.carbonRepo
-  }
-  get #resources() {
-    return this.#context.resources
-  }
-  get #store() {
-    return this.#context.store
-  }
   get #originCountry() {
-    return this.#countries.get(this.#context.config.carbon.originCountry)!
+    return this.#countries.get(
+      this.#context.carbonOriginCountry ??
+        this.#context.config.carbon.originCountry
+    )!
   }
   get #locationsFile() {
-    return this.#resources.get(RESOURCE_CARBON_LOCATIONS)?.toString('utf8')!
+    return this.#context.resources
+      .get(RESOURCE_CARBON_LOCATIONS)
+      ?.toString('utf8')!
   }
 
   #context: Context
@@ -59,12 +59,12 @@ export class CarbonRoutes {
 
   // GET /carbon
   async getCarbon(): Promise<CarbonCalculation> {
-    const cached = await this.#store.retrieve<CarbonCalculation | null>(
+    const cached = await this.#context.store.retrieve<CarbonCalculation | null>(
       CARBON_CACHE_KEY
     )
     if (cached) return cached
 
-    const result = await this.#carbonRepo.getCountryCount()
+    const result = await this.#context.carbonRepo.getCountryCount()
 
     let totalMeters = 0
 
@@ -88,8 +88,8 @@ export class CarbonRoutes {
     }
 
     // Cache the response for 5 minutes
-    this.#store.put(CARBON_CACHE_KEY, calculation)
-    this.#store.setExpiry(CARBON_CACHE_KEY, 5 * 60)
+    this.#context.store.put(CARBON_CACHE_KEY, calculation)
+    this.#context.store.setExpiry(CARBON_CACHE_KEY, 5 * 60)
 
     return calculation
   }

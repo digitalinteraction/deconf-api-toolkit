@@ -29,16 +29,14 @@ type Context = {
 }
 
 export class PostgresService {
-  get #env() {
-    return this.#context.env
-  }
-
   #context: Context
   #pool: pg.Pool
 
   constructor(context: Context) {
     this.#context = context
-    this.#pool = new pg.Pool({ connectionString: this.#env.DATABASE_URL })
+    this.#pool = new pg.Pool({
+      connectionString: this.#context.env.DATABASE_URL,
+    })
   }
 
   async #createClient(pool: pg.Pool): Promise<PostgresClient> {

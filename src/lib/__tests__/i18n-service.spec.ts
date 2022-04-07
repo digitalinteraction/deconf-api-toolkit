@@ -1,7 +1,8 @@
 import path from 'path'
-import { getI18nKeys, I18nService } from '../i18n-service'
+import { getI18nKeys, I18nService, loadI18nLocales } from '../i18n-service'
+import { ResourcesMap } from '../resources'
 
-describe('getI18nKeys', () => {
+describe('#getI18nKeys', () => {
   it('should return the dot-notation keys on an object', () => {
     const result = getI18nKeys({
       test: {
@@ -10,6 +11,22 @@ describe('getI18nKeys', () => {
     })
 
     expect(result).toEqual(['test.simple'])
+  })
+})
+
+describe('#loadI18nLocales', () => {
+  it('should load the matching yaml files', async () => {
+    const resources: ResourcesMap = new Map([
+      ['i18n/en.yml', Buffer.from('{ message: "Hello" }', 'utf8')],
+      ['i18n/fr.yml', Buffer.from('{ message: "Bonjour" }', 'utf8')],
+    ])
+
+    const locales = loadI18nLocales(resources, ['en', 'fr'])
+
+    expect(locales).toEqual({
+      en: { message: 'Hello' },
+      fr: { message: 'Bonjour' },
+    })
   })
 })
 

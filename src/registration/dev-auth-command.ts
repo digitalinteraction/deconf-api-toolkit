@@ -1,6 +1,5 @@
-import createDebug from 'debug'
 import { AuthToken } from '@openlab/deconf-shared'
-import { DeconfBaseContext } from '../lib/module'
+import { createDebug, DeconfBaseContext } from '../lib/module'
 
 const debug = createDebug('deconf:registration:dev-auth')
 
@@ -13,16 +12,6 @@ export interface DevAuthCommandOptions {
 type Context = Pick<DeconfBaseContext, 'jwt' | 'url' | 'registrationRepo'>
 
 export class DevAuthCommand {
-  get #registrationRepo() {
-    return this.#context.registrationRepo
-  }
-  get #jwt() {
-    return this.#context.jwt
-  }
-  get #url() {
-    return this.#context.url
-  }
-
   #context: Context
 
   constructor(context: Context) {
@@ -31,7 +20,7 @@ export class DevAuthCommand {
 
   async process(options: DevAuthCommandOptions) {
     // Grab the user
-    const registrations = await this.#registrationRepo.getRegistrations(
+    const registrations = await this.#context.registrationRepo.getRegistrations(
       options.email
     )
     debug(
@@ -51,13 +40,13 @@ export class DevAuthCommand {
     debug('roles %o', roles)
 
     // Sign a JWT
-    const token = this.#jwt.signToken<AuthToken>({
+    const token = this.#context.jwt.signToken<AuthToken>({
       kind: 'auth',
       sub: verifiedUser.id,
       user_lang: verifiedUser.language,
       user_roles: roles,
     })
-    const url = this.#url.getClientLoginLink(token)
+    const url = this.#context.url.getClientLoginLink(token)
 
     return { token, url }
   }
