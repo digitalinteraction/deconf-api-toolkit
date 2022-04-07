@@ -23,8 +23,6 @@ type Context = Pick<
   }
 }
 
-// TODO: remove config next major version
-
 export class ConferenceRoutes {
   #context: Context
   constructor(context: Context) {
