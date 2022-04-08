@@ -26,7 +26,7 @@
     "release:beta": "npm run preversion && standard-version --prerelease=beta"
   },
   "dependencies": {
-    "@openlab/deconf-shared": "^3.4.0",
+    "@openlab/deconf-shared": "^3.5.0",
     "@sendgrid/mail": "^7.4.6",
     "debug": "^4.3.2",
     "dot-prop": "^6.0.1",

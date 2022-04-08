@@ -6,6 +6,8 @@ import {
   mockConferenceRepository,
   mockUrlService,
   mockAttendance,
+  mockJwtService,
+  mockAuthToken,
 } from '../../test-lib/module'
 
 import {
@@ -17,11 +19,17 @@ import {
 import { mockSlot } from '../mock-schedule-command'
 
 function setup() {
+  const jwt = mockJwtService()
   const url = mockUrlService()
   const attendanceRepo = mockAttendanceRepository()
   const conferenceRepo = mockConferenceRepository()
-  const routes = new CalendarRoutes({ url, attendanceRepo, conferenceRepo })
-  return { routes, url, attendanceRepo, conferenceRepo }
+  const routes = new CalendarRoutes({
+    jwt,
+    url,
+    attendanceRepo,
+    conferenceRepo,
+  })
+  return { routes, jwt, url, attendanceRepo, conferenceRepo }
 }
 
 describe('getIcsDate', () => {
@@ -177,6 +185,23 @@ describe('CalendarRoutes', () => {
 
       expect(result).toMatch('SUMMARY:Session A Title')
       expect(result).toMatch('SUMMARY:Session B Title')
+    })
+  })
+
+  describe('createUserCalendar', () => {
+    it('should return a url with the user-ical token in it', async () => {
+      const { routes, jwt } = setup()
+      const authToken = mockAuthToken({ sub: 1, user_lang: 'fr' })
+      mocked(jwt.signToken).mockReturnValue('user-ical-token')
+
+      const result = routes.createUserCalendar(
+        authToken,
+        (token) => new URL(`http://localhost/user-ical/${token}`)
+      )
+
+      expect(result.url.toString()).toEqual(
+        'http://localhost/user-ical/user-ical-token'
+      )
     })
   })
 })

@@ -1,4 +1,9 @@
-import { Session, SessionSlot } from '@openlab/deconf-shared'
+import {
+  AuthToken,
+  PrivateCalendar,
+  Session,
+  SessionSlot,
+} from '@openlab/deconf-shared'
 import { createEvent, createEvents, EventAttributes } from 'ics'
 import {
   ApiError,
@@ -61,7 +66,7 @@ export interface CalendarOptions {
 
 type Context = Pick<
   DeconfBaseContext,
-  'conferenceRepo' | 'url' | 'attendanceRepo'
+  'conferenceRepo' | 'url' | 'attendanceRepo' | 'jwt'
 >
 
 export class CalendarRoutes {
@@ -169,5 +174,20 @@ export class CalendarRoutes {
       throw ApiError.internalServerError()
     }
     return ical.value
+  }
+
+  createUserCalendar(
+    authToken: AuthToken | undefined,
+    getCalendarUrl: (token: string) => URL
+  ): PrivateCalendar {
+    if (!authToken) throw ApiError.unauthorized()
+
+    const icalToken = this.#context.jwt.signToken<UserICalToken>({
+      kind: 'user-ical',
+      sub: authToken.sub,
+      user_lang: authToken.user_lang,
+    })
+
+    return { url: getCalendarUrl(icalToken) }
   }
 }
