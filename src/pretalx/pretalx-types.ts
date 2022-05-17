@@ -4,7 +4,7 @@ type Unknown = null
 /** A string thats localised into multiple languages */
 export type Localised = Record<string, string | undefined>
 
-// https://docs.pretalx.org/api/resources/events.html
+/** https://docs.pretalx.org/api/resources/events.html */
 export interface PretalxEvent {
   name: Localised
   slug: string
@@ -20,7 +20,7 @@ export interface PretalxEvent {
   }
 }
 
-// https://docs.pretalx.org/api/resources/speakers.html
+/** https://docs.pretalx.org/api/resources/speakers.html */
 export interface PretalxSpeaker {
   code: string
   name: string
@@ -32,12 +32,14 @@ export interface PretalxSpeaker {
   answers: PretalxResponse[]
 }
 
+/** A generated slot from pretalx information */
 export interface PretalxSlot {
   room: { en: string }
   start: string // 2021-03-10T04:10:00+01:00
   end: string // 2021-03-10T05:10:00+01:00
 }
 
+/** https://docs.pretalx.org/api/resources/answers.html */
 export interface PretalxResponse {
   id: number
   question: {
@@ -55,7 +57,7 @@ export interface PretalxResponse {
   }>
 }
 
-// https://docs.pretalx.org/api/resources/questions.html#resource-description
+/** https://docs.pretalx.org/api/resources/questions.html#resource-description */
 export interface PretalxQuestion {
   id: number
   variant: string
@@ -70,10 +72,10 @@ export interface PretalxQuestion {
   default_answer: Unknown
 }
 
-// https://docs.pretalx.org/api/resources/answers.html#resource-description
+/** https://docs.pretalx.org/api/resources/answers.html#resource-description */
 export interface PretalxAnswer {}
 
-// https://docs.pretalx.org/api/resources/talks.html#
+/** https://docs.pretalx.org/api/resources/talks.html# */
 export interface PretalxTalk {
   code: string
   speakers: Array<{
@@ -111,6 +113,7 @@ export interface PretalxTalk {
   tags?: string[]
 }
 
+/** https://docs.pretalx.org/api/resources/tags.html */
 export interface PretalxTax {
   tag: string
   description: Localised

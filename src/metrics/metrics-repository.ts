@@ -1,6 +1,7 @@
 import { DeconfBaseContext } from '../lib/context'
 
-interface TrackOptions {
+/** Extra data to link to a logged metric */
+export interface MetricsTrackOptions {
   attendee?: number
   socket?: string
 }
@@ -13,7 +14,11 @@ export class MetricsRepository {
     this.#context = context
   }
 
-  async trackEvent(eventName: string, data: any, options: TrackOptions = {}) {
+  async trackEvent(
+    eventName: string,
+    data: any,
+    options: MetricsTrackOptions = {}
+  ) {
     this.#context.postgres.run(async (client) => {
       const { attendee = null, socket = null } = options
       await client.sql`

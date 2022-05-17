@@ -11,6 +11,15 @@ const debug = createDebug('deconf:module:migrate')
 // not a context
 type Context = { migrateRepo: Readonly<MigrateRepository> }
 
+/**
+ * MigrateService setups up and runs migrations for you.
+ *
+ * ```ts
+ * const migrateRepo: MigrateRepository
+ *
+ * const migrateService = new MigrateService({ migrateRepo })
+ * ```
+ */
 export class MigrateService {
   #context: Context
   constructor(context: Context) {
@@ -48,6 +57,28 @@ export class MigrateService {
     }, new Set<string>())
   }
 
+  /**
+   * Run a set of migrations.
+   * This works well with `DECONF_MIGRATIONS`.
+   *
+   * > NOTE: all migrations must have a unique name,
+   * > this is so previous migrations are not re-run.
+   *
+   * ```ts
+   * // Run the deconf migrations
+   * await migrateService.runMigrations(DECONF_MIGRATIONS)
+   *
+   * // Run custom migrations
+   * await migrateService.runMigrations([
+   *   {
+   *     id: 'add-custom-table',
+   *     async run(client) {
+   *       await client.sql`CREATE TABLE ...`
+   *     },
+   *   },
+   * ])
+   * ```
+   */
   async runMigrations(migrations: Migration[]) {
     const previousMigrations = await this.#setupMigrator()
 

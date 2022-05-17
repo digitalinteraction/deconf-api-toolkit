@@ -15,6 +15,29 @@ type Context = Pick<
   'conferenceRepo' | 'registrationRepo' | 'attendanceRepo'
 >
 
+/**
+ * `AttendanceRoutes` provides routes for adding, removing and querying attendee attendance.
+ *
+ * ```ts
+ * const conferenceRepo: ConferenceRepository
+ * const registrationRepo: RegistrationRepository
+ * const attendanceRepo: AttendanceRepository
+ * const jwt: JwtService
+ *
+ * const app = express().use(express.json())
+ *
+ * const attendanceRoutes = new AttendanceRoutes({
+ *   conferenceRepo,
+ *   registrationRepo,
+ *   attendanceRepo,
+ * })
+ * ```
+ *
+ * These general errors might occur with any of the `AttendanceRoutes`:
+ *
+ * - `general.unauthorized` — the authToken was missing or not verified
+ * - `general.notFound` — the related session does not exist
+ */
 export class AttendanceRoutes {
   #context: Context
   constructor(context: Context) {
@@ -35,7 +58,24 @@ export class AttendanceRoutes {
     return { session, attendee }
   }
 
-  // POST /attend/:session_id
+  /**
+   * `attend` marks a user as attending/interested in a session.
+   *
+   * Extra potential errors:
+   *
+   * - `general.badRequest` — the session has met it's participation cap
+   *
+   * ```ts
+   * app.post('/attendance/attend/:sessionId', async (req, res) => {
+   *   res.send(
+   *     await attendanceRoutes.attend(
+   *       jwt.getRequestAuth(req.headers),
+   *       req.params.sessionId
+   *     )
+   *   )
+   * })
+   * ```
+   */
   async attend(
     authToken: AuthToken | null,
     sessionId: string
@@ -56,7 +96,20 @@ export class AttendanceRoutes {
     return VOID_RESPONSE
   }
 
-  // POST /unattend/:session_id
+  /**
+   * `unattend` remove's an attendee's attendance/interest in a session.
+   *
+   * ```ts
+   * app.post('/attendance/unattend/:sessionId', async (req, res) => {
+   *   res.send(
+   *     await attendanceRoutes.unattend(
+   *       jwt.getRequestAuth(req.headers),
+   *       req.params.sessionId
+   *     )
+   *   )
+   * })
+   * ```
+   */
   async unattend(
     authToken: AuthToken | null,
     sessionId: string
@@ -68,7 +121,20 @@ export class AttendanceRoutes {
     return VOID_RESPONSE
   }
 
-  // GET /attendance/:session_id
+  /**
+   * `getSessionAttendance` gets the attendance for a session and whether the current user is attending it.
+   *
+   * ```ts
+   * app.get('/attendance/session/:sessionId', async (req, res) => {
+   *   res.send(
+   *     await attendanceRoutes.getSessionAttendance(
+   *       jwt.getRequestAuth(req.headers),
+   *       req.params.sessionId
+   *     )
+   *   )
+   * })
+   * ```
+   */
   async getSessionAttendance(
     authToken: AuthToken | null,
     sessionId: string
@@ -87,7 +153,17 @@ export class AttendanceRoutes {
     }
   }
 
-  // GET /attendance/me
+  /**
+   * `getUserAttendance` fetches the sessions an attendee is attending.
+   *
+   * ```ts
+   * app.get('/attendance/me', async (req, res) => {
+   *   res.send(
+   *     await attendanceRoutes.getUserAttendance(jwt.getRequestAuth(req.headers))
+   *   )
+   * })
+   * ```
+   */
   async getUserAttendance(
     authToken: AuthToken | null
   ): Promise<UserAttendance> {

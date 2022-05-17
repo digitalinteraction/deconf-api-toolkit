@@ -6,6 +6,7 @@ import { Describe, object, optional, string } from 'superstruct'
 import { LocalisedStruct } from './localised-struct'
 import { Speaker } from '@openlab/deconf-shared'
 
+/** `SpeakerStruct` validates an object is a deconf `Speaker` */
 export const SpeakerStruct: Describe<Speaker> = object({
   id: string(),
   name: string(),

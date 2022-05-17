@@ -19,7 +19,13 @@ function promisifyRedis(client: RedisClient) {
 }
 type PromisifiedRedis = ReturnType<typeof promisifyRedis>
 
-/** A KeyValueService backed by redis */
+/**
+ * `RedisService` is a `KeyValueService` that is backed by a redis database.
+ *
+ * ```ts
+ * const store = new RedisService('redis://127.0.0.1')
+ * ```
+ */
 export class RedisService implements KeyValueService {
   #client: PromisifiedRedis
   constructor(redisUrl: string) {

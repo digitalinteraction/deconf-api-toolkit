@@ -1,6 +1,12 @@
 import { PostgresClient } from './postgres-service'
 import { Migration } from './migrate-repository'
 
+/**
+ * `DECONF_MIGRATIONS` are the default migration for deconf
+ * so they can quickly be executed
+ * and the database is setup in a consistent manor
+ * and in the correct order.
+ */
 export const DECONF_MIGRATIONS: Migration[] = [
   { id: 'add-attendees', run: addAttendees },
   { id: 'add-logs', run: addLogs },
@@ -8,6 +14,10 @@ export const DECONF_MIGRATIONS: Migration[] = [
   { id: 'add-attendees-data', run: addRegistrationData },
 ]
 
+/**
+ * `addAttendees` is a migration that creates the `attendees` table,
+ * it stores user registrations and manages verification.
+ */
 export async function addAttendees(client: PostgresClient) {
   await client.sql`
     CREATE TABLE "attendees" (
@@ -24,6 +34,12 @@ export async function addAttendees(client: PostgresClient) {
   `
 }
 
+/**
+ * `addLogs` is a migration that creates the `logs` table,
+ * it stores timestamped messages that could be linked to a user.
+ * The `event` is an identifier for the category of thing being logged
+ * and `data` is custom JSON data to be stored alongside it.
+ */
 export async function addLogs(client: PostgresClient) {
   await client.sql`
     CREATE TABLE "logs" (
@@ -37,6 +53,10 @@ export async function addLogs(client: PostgresClient) {
   `
 }
 
+/**
+ * `addAttendance` is a migration that creates the `attendance` table,
+ * it stores which attendee is attending which session.
+ */
 export async function addAttendance(client: PostgresClient) {
   await client.sql`
     CREATE TABLE "attendance" (
@@ -48,6 +68,11 @@ export async function addAttendance(client: PostgresClient) {
   `
 }
 
+/**
+ * `addAttendees` is a migration that creates the `attendees` table,
+ * it adds `userData` to attendees so arbitrary data can be stored
+ * alongside a user.
+ */
 export async function addRegistrationData(client: PostgresClient) {
   await client.sql`
     ALTER TABLE "attendees"

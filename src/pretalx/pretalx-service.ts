@@ -27,11 +27,11 @@ interface PretalxPaginated<T> {
   results: T[]
 }
 
-interface LocaleRecord {
-  id: number
-  name: string
-  locale: string
-}
+// interface LocaleRecord {
+//   id: number
+//   name: string
+//   locale: string
+// }
 
 const debug = createDebug('deconf:pretalx:service')
 
@@ -45,6 +45,21 @@ type Context = Pick<DeconfBaseContext, 'store'> & {
   }
 }
 
+/**
+ * `PretalxService` provides access to the Pretalx API
+ * and provides methods to convert pretalx resources into deconf ones.
+ *
+ * ```ts
+ * const store: KeyValueStore
+ * const env = { PRETALX_API_TOKEN: string }
+ * const config = {
+ *   eventSlug: string,
+ *   englishKeys: string[],
+ * }
+ *
+ * const pretalx = new PretalxService({ store, env, config })
+ * ```
+ */
 export class PretalxService {
   #context: Context
   #pretalx: Got
@@ -61,7 +76,7 @@ export class PretalxService {
     })
   }
 
-  /** Create a pretalx-specific paginator for `got` requests */
+  /** @internal Create a pretalx-specific paginator for `got` requests */
   getPaginator<T>(): PaginationOptions<T, PretalxPaginated<T>> {
     return {
       pagination: {
@@ -132,7 +147,7 @@ export class PretalxService {
   // Answer helpers
   //
 
-  /** Find the answer to a question from a set of responses */
+  /** `findAnswer` gets the answer to a specific question from an array of responses. */
   findAnswer(questionId: number, responses: PretalxResponse[]) {
     for (const r of responses) {
       if (r.question.id === questionId) {
@@ -143,12 +158,12 @@ export class PretalxService {
     return null
   }
 
-  /** Create a unique id for a slot based on it's date */
+  /** `getSlotId` generates a unique id for a pretalx slot */
   getSlotId(slot: PretalxSlot) {
     return `${slot.start}__${slot.end}`
   }
 
-  /** Decide wether a string is a URL or not */
+  /** `isUrl` determines if a string passed is a URL or not */
   isUrl(input: string) {
     try {
       const url = new URL(input)
@@ -159,8 +174,8 @@ export class PretalxService {
   }
 
   /**
-   * Take a string and ensure it is unique within the life of this PretalxService instance.
-   * Achieved by appending a number to the end
+   * `makeUnique` takes a possibly duplicated id and makes sure it is unique
+   * (within the life of the PretalxService itself)
    */
   makeUnique(code: string) {
     const count = this.#codeMap.get(code) ?? 1
@@ -169,7 +184,7 @@ export class PretalxService {
     return id
   }
 
-  /** From a localised title, generate a slug-based id */
+  /** `getIdFromTitle` converts a localised text title into a slug */
   getIdFromTitle(localised: Localised | null, fallback: string) {
     if (!localised) return fallback
     for (const key of this.#context.config.englishKeys) {
@@ -178,7 +193,7 @@ export class PretalxService {
     return fallback
   }
 
-  /** Convert a name with spaces and punctuation into a slug with '-'s */
+  /** `getSlug` converts a text string into a URL friendly slug */
   getSlug(name: string) {
     return name
       .toLowerCase()
@@ -192,7 +207,7 @@ export class PretalxService {
   // Conversions
   //
 
-  /** Generate deconf slots based on pretalx talks */
+  /** `getDeconfSlots` finds the unique slots from a set of pretalx talks */
   getDeconfSlots(talks: PretalxTalk[]): SessionSlot[] {
     const slotMap = new Map<string, SessionSlot>()
     for (const talk of talks) {
@@ -214,7 +229,7 @@ export class PretalxService {
     return deconfSlots
   }
 
-  /** Generate deconf speakers based on pretalx speakers */
+  /** `getDeconfSpeakers` converts pretalx speakers to deconf */
   getDeconfSpeakers(
     speakers: PretalxSpeaker[],
     affiliationQuestion: number
@@ -230,7 +245,7 @@ export class PretalxService {
     }))
   }
 
-  /** Generate deconf themes based on pretalx tags */
+  /** `getDeconfThemes` converts pretalx tags to themes */
   getDeconfThemes(tags: PretalxTax[]): Theme[] {
     return tags.map((tag) => ({
       id: tag.tag,
@@ -238,7 +253,10 @@ export class PretalxService {
     }))
   }
 
-  /** Parse out links from a set of pretalx questions */
+  /**
+   * `getSessionLinks` generates a set of `LocalisedLinks` for a session
+   * based on the answers to multiple questions
+   */
   getSessionLinks(
     talk: PretalxTalk,
     linksQuestions: number[]
@@ -265,7 +283,11 @@ export class PretalxService {
     return result
   }
 
-  /** Get a session's capacity answer */
+  /**
+   * `getSessionCap` finds the answer to a numeric question
+   * and attempts to parse the number as an integer.
+   * It returns the number if it is found, or null if not found or not a numeric string.
+   */
   getSessionCap(talk: PretalxTalk, capacityQuestionId: number) {
     const capAnswer = this.findAnswer(capacityQuestionId, talk.answers)
     if (!capAnswer) return null

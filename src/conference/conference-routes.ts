@@ -23,14 +23,16 @@ type Context = Pick<
   }
 }
 
+/**
+ * `ConferenceRoutes` provides routes to access conference content
+ */
 export class ConferenceRoutes {
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
-  // GET /ics/:session_id
-  /** @deprecated use `CalendarRoutes#getSessionIcsFile` */
+  /** @deprecated use [[CalendarRoutes.getSessionIcsFile]] */
   async generateIcs(locale: string, sessionId: string): Promise<string> {
     const localise = (
       obj: Record<string, string | undefined>,

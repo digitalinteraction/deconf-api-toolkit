@@ -1,3 +1,9 @@
+/**
+ * The conference module is an API to retrieve and process conference information.
+ *
+ * @module conference
+ */
+
 export * from './calendar-routes'
 export * from './conference-config-struct'
 export * from './conference-repository'

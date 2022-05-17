@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./src/attendance/module.ts",
+    "./src/carbon/module.ts",
+    "./src/conference/module.ts",
+    "./src/content/module.ts",
+    "./src/database/module.ts",
+    "./src/interpret/module.ts",
+    "./src/key-value/module.ts",
+    "./src/lib/module.ts",
+    "./src/metrics/module.ts",
+    "./src/pretalx/module.ts",
+    "./src/registration/module.ts",
+    "./src/test-lib/module.ts"
+  ],
+  "out": "_docs",
+  "excludePrivate": true
+}

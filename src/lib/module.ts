@@ -1,3 +1,8 @@
+/**
+ * The lib module contains useful functions and services to be used throughout all modules.
+ * @module lib
+ */
+
 export * from './api-error'
 export * from './config'
 export * from './context'

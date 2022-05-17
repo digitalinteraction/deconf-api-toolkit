@@ -4,10 +4,16 @@ import { DeconfBaseContext } from '../lib/context'
 import { CountryLocationStruct } from './country-location-struct'
 import { CarbonCalculation, CountryLocation } from '@openlab/deconf-shared'
 
-// The kg of carbon emitted for a 1km of flight
-// https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2019
+/**
+ * The kg of carbon emitted for a 1km of flight
+ * https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2019
+ */
 export const CARBON_FACTOR = 0.195
+
+/** The KeyValue key to cache the calculation at */
 export const CARBON_CACHE_KEY = 'c02'
+
+/** The name of the resource to find the carbon countries */
 export const RESOURCE_CARBON_LOCATIONS = 'carbon/countries.json'
 
 //
@@ -22,6 +28,27 @@ type Context = Pick<DeconfBaseContext, 'carbonRepo' | 'resources' | 'store'> & {
   carbonOriginCountry?: string
 }
 
+/**
+ * `CarbonRoutes`  provides routes for retrieving the carbon reduction estimate.
+ * It requires a json file at [[RESOURCE_CARBON_LOCATIONS]] in resources,
+ * it should be an array of [[CountryLocationStruct]]
+ *
+ * ```ts
+ * const carbonRepo: CarbonRepository
+ * const resources: ResourcesMap
+ * const store: KeyValueService
+ * const carbonOriginCountry = 'GB'
+ *
+ * const app = express().use(express.json())
+ *
+ * const carbonRoutes = new CarbonRoutes({
+ *   carbonRepo,
+ *   resources,
+ *   store,
+ *   carbonOriginCountry,
+ * })
+ * ```
+ */
 export class CarbonRoutes {
   get #originCountry() {
     return this.#countries.get(
@@ -57,7 +84,18 @@ export class CarbonRoutes {
     }
   }
 
-  // GET /carbon
+  /**
+   * `getCarbon` gets the carbon reduction estimate and the total distance travelled.
+   * This can be computationally expensive so the value is cached in the store for 5 minutes.
+   *
+   * ```ts
+   * app.get('/carbon/estimate', async (req, res) => {
+   *   res.send(
+   *     await carbonRoutes.getCarbon()
+   *   )
+   * })
+   * ```
+   */
   async getCarbon(): Promise<CarbonCalculation> {
     const cached = await this.#context.store.retrieve<CarbonCalculation | null>(
       CARBON_CACHE_KEY

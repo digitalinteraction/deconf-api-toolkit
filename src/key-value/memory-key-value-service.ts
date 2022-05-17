@@ -1,6 +1,11 @@
 import { KeyValueService } from './key-value-service'
 
-/** An in-memory key-value store, for development and testing */
+/**
+ * createMemoryStore creates a `KeyValueService` that stores values in redis.
+ * Doesn't currently support expiration.
+ *
+ * > This should be migrated to a class-based implementation e.g. `InMemoryService`
+ */
 export function createMemoryStore(): KeyValueService {
   const data = new Map<string, any>()
 

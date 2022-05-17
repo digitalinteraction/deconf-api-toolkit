@@ -7,20 +7,39 @@ import { DeconfBaseContext, createDebug } from '../module'
 
 const debug = createDebug('deconf:content:service')
 
+/** `ProcessRepoOptions` defines options for how the git scrape works */
 export interface ProcessRepoOptions {
+  /** The remote to pull from */
   remote: string
+
+  /** The branch of the repository to checkout */
   branch: string
+
+  /** Specify an existing local directory to use instead of cloning the repo */
   reuseDirectory?: string
+
+  /** The keys inside the content repo to pull out */
   contentKeys: string[]
+
+  /** The languages to look for each bit of content */
   languages: string[]
 }
 
+/**
+ * A method which is called as part of the git scrape,
+ * it's an async generator to allow seperate parsing/storing of data.
+ * see [[ContentService]] for more.
+ */
 export interface ProcessRepoCallback {
   (directory: string): AsyncGenerator<unknown, unknown, AsyncGenerator>
 }
 
 type Context = Pick<DeconfBaseContext, 'store' | 'contentRepo'>
 
+/**
+ * see [docs/content.md](https://github.com/digitalinteraction/deconf-api-toolkit/blob/main/docs/content.md)
+ * @todo migrate markdown docs across.
+ */
 export class ContentService {
   #context: Context
   constructor(context: Context) {

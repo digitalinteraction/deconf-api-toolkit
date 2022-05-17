@@ -12,7 +12,15 @@ import {
   UserICalToken,
 } from '../lib/module'
 
-/** Convert a `Date` into an ICS format */
+/**
+ * `getIcsDate` formats a `Date` for the `ics` library,
+ * i.e. `[year, month, date, hour, minutes]` as UTC values.
+ *
+ * ```ts
+ * const icsFormat = getIcsDate(new Date())
+ * // returns [2022, 08, 01, 12, 59]
+ * ```
+ */
 export function getIcsDate(date: Date) {
   return [
     date.getUTCFullYear(),
@@ -27,7 +35,14 @@ const padStart = (input: number, zeros: number) => {
   return input.toString().padStart(zeros, '0')
 }
 
-/** Convert a `Date` into an Google Calendar format */
+/**
+ * `getGoogleDate` formats a `Date` for the `calendar.google.com`,
+ * i.e. `yyyymmddThhmmssZ` as UTC values.
+ *
+ * ```ts
+ * const googleFormat = getGoogleDate(new Date())
+ * ```
+ */
 export function getGoogleDate(input: Date) {
   return [
     input.getUTCFullYear(),
@@ -41,6 +56,10 @@ export function getGoogleDate(input: Date) {
   ].join('')
 }
 
+/**
+ * generates `ics` parameters for a `Session` + `Slot`
+ * @internal
+ */
 export function getSessionIcsAttributes(
   locale: string,
   session: Session,
@@ -60,6 +79,7 @@ export function getSessionIcsAttributes(
   }
 }
 
+/** Options for generating an ics calendar */
 export interface CalendarOptions {
   calName?: string
 }
@@ -69,13 +89,50 @@ type Context = Pick<
   'conferenceRepo' | 'url' | 'attendanceRepo' | 'jwt'
 >
 
+/**
+ * `CalendarRoutes` provides routes for processing conference data into calendar events.
+ *
+ * ```ts
+ * const conferenceRepo: ConferenceRepository
+ * const url: UrlService
+ * const attendanceRepo: AttendanceRepository
+ *
+ * const app = express().use(express.json())
+ *
+ * const calendarRoutes = new CalendarRoutes({
+ *   conferenceRepo,
+ *   url,
+ *   attendanceRepo,
+ * })
+ * ```
+ *
+ * @todo Update to use express-based examples
+ */
 export class CalendarRoutes {
   #context: Context
   constructor(context: Context) {
     this.#context = context
   }
 
-  /** Generate an ics file for a Session */
+  /**
+   * `getSessionIcsFile` returns a translated ics file from a `Session`.
+   * It returns a string which is the contents of the ics file.
+   *
+   * ```ts
+   * const file = await calendarRoutes.getSessionIcsFile('en', 'session-a')
+   * ```
+   *
+   * Set these headers for it to download nicely:
+   *
+   * - `Content-Type: text/calendar`
+   * - `Content-Disposition: attachment; filename="{session_id}.ics`
+   *   — where `session_id` is the id of the session being downloaded
+   *
+   * Potential errors:
+   *
+   * - `general.notFound` — if the session is not found or is not scheduled
+   * - `general.internalServerError` — if there was an unknown error generating the ics.
+   */
   async getSessionIcsFile(
     locale: string,
     sessionId: string,
@@ -107,7 +164,18 @@ export class CalendarRoutes {
     return icsFile.value
   }
 
-  /** Get a calendar.google.com URL to add a Session as an event */
+  /**
+   * `getGoogleCalendarUrl` generates a URL to add a `Session` to a visitor's Google Calendar.
+   * Redirect the visitor to the returned URL so they can add the session to their calendar.
+   *
+   * ```ts
+   * const url = await calendarRoutes.getGoogleCalendarUrl('en', 'session-a')
+   * ```
+   *
+   * Potential errors:
+   *
+   * - `general.notFound` — if the session is not found or is not scheduled
+   */
   async getGoogleCalendarUrl(locale: string, sessionId: string): Promise<URL> {
     const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
@@ -131,7 +199,19 @@ export class CalendarRoutes {
     return url
   }
 
-  /** Generate an ical file for a user, filled with the sessions they are attending */
+  /**
+   * `getUserIcs` generates an ICS file with all sessions a visitor is attending.
+   * see `getSessionIcsFile` for the best headers to set.
+   *
+   * ```ts
+   * const file = await calendarRoutes.getSessionIcsFile(icalToken)
+   * ```
+   *
+   * Potential errors:
+   *
+   * - `general.unauthorized` — if `icalToken` is not passed, it should be validated elsewhere.
+   * - `general.internalServerError` — if there was an unknown error generating the ics.
+   */
   async getUserIcs(icalToken?: UserICalToken, options: CalendarOptions = {}) {
     if (!icalToken) throw ApiError.unauthorized()
 
@@ -176,6 +256,14 @@ export class CalendarRoutes {
     return ical.value
   }
 
+  /**
+   * `createUserCalendar` generates a URL for a user's personal calendar,
+   * the endpoint should be served by [[getUserIcs]].
+   *
+   * ```ts
+   * const url = calendarRoutes.createUserCalendar()
+   * ```
+   */
   createUserCalendar(
     authToken: AuthToken | undefined,
     getCalendarUrl: (token: string) => URL

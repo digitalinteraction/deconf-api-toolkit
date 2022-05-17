@@ -1,3 +1,5 @@
+/** @module interpret */
+
 export * from './auth-sockets'
 export * from './channel-sockets'
 export * from './interpret-booth-struct'

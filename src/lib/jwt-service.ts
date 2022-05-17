@@ -16,11 +16,18 @@ import { DeconfBaseContext } from './context'
 import { assertStruct } from './structs'
 import { createDebug } from './utils'
 
-/** @deprecated use JWT_DEFAULT_ISSUER */
+/** @deprecated use [[JWT_DEFAULT_ISSUER]] */
 export const JWT_ISSUER = 'deconf-app'
+
+/** `JWT_DEFAULT_ISSUER` is the fallback JWT `iss` (issuer) if it has not set via config. */
 export const JWT_DEFAULT_ISSUER = 'deconf-app'
 
 const debug = createDebug('deconf:lib:jwt')
+
+/**
+ * `bearerRegex` creates a regex to test if a string is a `bearer xyz` header.
+ * It is case insensitive.
+ */
 export const bearerRegex = () => /^bearer\s+/i
 
 //
@@ -30,10 +37,16 @@ function authzHeader() {
   return refine(string(), 'authz-bearer', (value) => bearerRegex().test(value))
 }
 
+/**
+ * `AuthzHeadersStruct` is a structure to assert an object containing authorization headers.
+ */
 export const AuthzHeadersStruct = type({
   authorization: authzHeader(),
 })
 
+/**
+ * `AuthTokenStruct` is structure to assert an object is an 'auth' JWT payload
+ */
 export const AuthTokenStruct = type({
   kind: literal('auth'),
   sub: number(),
@@ -41,17 +54,26 @@ export const AuthTokenStruct = type({
   user_lang: string(),
 })
 
+/**
+ * `EmailLoginTokenStruct` is a structure to assert an object is an 'email-login' JWT payload
+ */
 export const EmailLoginTokenStruct = type({
   kind: literal('email-login'),
   sub: number(),
   user_roles: array(string()),
 })
 
+/**
+ * `VerifyTokenStruct` is a structure to assert an object is a 'verify' JWT payload
+ */
 export const VerifyTokenStruct = type({
   kind: literal('verify'),
   sub: number(),
 })
 
+/**
+ * `UserICalTokenStruct` is a structure to assert an object is a user-ical JWT payload
+ */
 export const UserICalTokenStruct = type({
   kind: literal('user-ical'),
   sub: number(),
@@ -61,10 +83,18 @@ export const UserICalTokenStruct = type({
 //
 // Types
 //
+
+/**
+ * `JwtSignOptions` is a type containing extra options when signing a JWT
+ */
 export interface JwtSignOptions {
   expiresIn?: string | number
 }
 
+/**
+ * `SocketAuth` is a collection of data about a user to be stored together against
+ * a socket id for the purpose of authenticating and accessing information about them.
+ */
 export interface SocketAuth {
   authToken: AuthToken
   email: string
@@ -73,6 +103,7 @@ export interface SocketAuth {
   // Not including Registration because json & dates
 }
 
+/** `UserICalToken` is a JWT payload to access a user's private ical feed */
 export interface UserICalToken {
   kind: 'user-ical'
   sub: number
@@ -95,6 +126,19 @@ type Context = Pick<DeconfBaseContext, 'store'> & {
   }
 }
 
+/**
+ * `JwtService` is a service for verifying and signing JWTs.
+ * It requires a `store`, `config` and an `env` with `JWT_SECRET` in it.
+ * It also manages socket authentication, storing auth data in the `store`.
+ *
+ * ```ts
+ * const store: KeyValueService
+ * const config: DeconfConfig
+ * const env: DeconfEnv
+ *
+ * const jwt = new JwtService({ store, config, env })
+ * ```
+ */
 export class JwtService {
   #context: Context
   constructor(context: Context) {
@@ -109,6 +153,22 @@ export class JwtService {
     )
   }
 
+  /**
+   * `verifyToken` verifies a JWT string was signed by the app and conforms to a structure.
+   * It throws `ApiError(401)` errors if something is wrong:
+   *
+   * - `auth.tooEarly`
+   * - `auth.tokenExpired`
+   * - `auth.badToken`
+   *
+   * or a `StructApiError` if the payload does not match the structure.
+   * If it doesn't throw, it returns the decoded payload.
+   *
+   * ```ts
+   * const NameStruct = object({ name: string() })
+   * const payload = jwt.verifyToken('abc.def.ghi', NameStruct)
+   * ```
+   */
   verifyToken<T extends object>(token: string, struct: Struct<T>): T {
     debug('verifyToken %o', token)
     try {
@@ -143,6 +203,16 @@ export class JwtService {
     }
   }
 
+  /**
+   * `signToken` takes a JWT payload, signs it and returns it as a JWT string.
+   * You can pass extra options with a `JwtSIgnOptions`.
+   *
+   * > See https://github.com/auth0/node-jsonwebtoken#usage for more options.
+   *
+   * ```ts
+   * const token = jwt.signToken({ name: 'Geoff' }, { expiresIn: '55m' })
+   * ```
+   */
   signToken<T extends object>(token: T, options: JwtSignOptions = {}) {
     debug('sign %o', token)
     return jsonwebtoken.sign(token, this.#context.env.JWT_SECRET, {
@@ -151,6 +221,15 @@ export class JwtService {
     })
   }
 
+  /**
+   * `getSocketAuth` retrieves the authentication packet for a socket.
+   * It takes the socket's id as a parameter
+   * and it will throw a `http/401` if the packet isn't found.
+   *
+   * ```ts
+   * const auth = await jwt.getSocketAuth('abcdefg')
+   * ```
+   */
   async getSocketAuth(socketId: string) {
     debug('fromSocketId %o', socketId)
     const auth = await this.#context.store.retrieve<SocketAuth>(
@@ -160,6 +239,17 @@ export class JwtService {
     return auth
   }
 
+  /**
+   * `getRequestAuth` is a helper to find and verify an authentication token out of a http headers object.
+   * It returns `null` if one is not found or a `AuthToken` if it is.
+   * It will also throw the same errors as `verifyToken`.
+   *
+   * ```ts
+   * const payload = jwt.getRequestAuth({
+   *   authorization: 'bearer abc.def.ghi',
+   * })
+   * ```
+   */
   getRequestAuth(headers: any) {
     debug('fromRequestHeaders %o', headers?.authorization)
 
