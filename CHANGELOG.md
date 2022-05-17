@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.8.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.7.1...v4.8.0) (2022-05-17)
+
+### Features
+
+- add CalendarRoutes#createUserCalendar ([ca5f5ec](https://github.com/digitalinteraction/deconf-api-toolkit/commit/ca5f5ec3159f0658f53c385249954eb07f826391))
+
+### Bug Fixes
+
+- fix bad deps ([066ef03](https://github.com/digitalinteraction/deconf-api-toolkit/commit/066ef036c00fd12c2788c83cd05ed07747a4eed5))
+- several code updates ([dd47c24](https://github.com/digitalinteraction/deconf-api-toolkit/commit/dd47c2451d8b36127fc1556836a576b9b318468e))
+
 ### [4.7.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.7.0...v4.7.1) (2022-02-10)
 
 ### Bug Fixes
