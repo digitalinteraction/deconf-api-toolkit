@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.8.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.8.0...v4.8.1) (2022-05-20)
+
+### Bug Fixes
+
+- simplify email deprecated type ([0a3dfeb](https://github.com/digitalinteraction/deconf-api-toolkit/commit/0a3dfeb5482507f5819cc4c7c53473b35f0497b2))
+
 ## [4.8.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.7.1...v4.8.0) (2022-05-17)
 
 ### Features
