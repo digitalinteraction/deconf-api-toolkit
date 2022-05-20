@@ -2,9 +2,9 @@ import { PostgresClient } from './postgres-service'
 import { Migration } from './migrate-repository'
 
 /**
- * `DECONF_MIGRATIONS` are the default migration for deconf
- * so they can quickly be executed
- * and the database is setup in a consistent manor
+ * `DECONF_MIGRATIONS` are the migrations for deconf
+ * so that are required for internal modules.
+ * They setup the database in a consistent manor
  * and in the correct order.
  */
 export const DECONF_MIGRATIONS: Migration[] = [
