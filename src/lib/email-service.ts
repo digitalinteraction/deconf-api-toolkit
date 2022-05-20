@@ -5,13 +5,17 @@ import { DeconfEnv } from './env'
 
 type Context = {
   /** @deprecated use `mailConfig` */
-  config: DeconfBaseContext['config']
+  config?: Pick<DeconfBaseContext['config'], 'mail'>
   env: Pick<DeconfEnv, 'SENDGRID_API_KEY'>
 
   mailConfig?: {
     replyToEmail: string
     fromEmail: string
   }
+}
+
+const badConfig = (): string => {
+  throw new Error('Bad configuration')
 }
 
 /**
@@ -33,10 +37,12 @@ export class EmailService {
     return {
       replyTo:
         this.#context.mailConfig?.replyToEmail ??
-        this.#context.config.mail.replyToEmail,
+        this.#context.config?.mail.replyToEmail ??
+        badConfig(),
       from:
         this.#context.mailConfig?.fromEmail ??
-        this.#context.config.mail.fromEmail,
+        this.#context.config?.mail.fromEmail ??
+        badConfig(),
       trackingSettings: {
         clickTracking: { enable: false },
         openTracking: { enable: false },
