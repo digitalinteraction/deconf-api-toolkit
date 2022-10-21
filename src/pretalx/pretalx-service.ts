@@ -106,10 +106,10 @@ export class PretalxService {
 
   /** Fetch pretalx questions */
   getQuestions() {
-    return this.#pretalx.paginate.all(
-      'questions',
-      this.getPaginator<PretalxQuestion>()
-    )
+    return this.#pretalx.paginate.all('questions', {
+      ...this.getPaginator<PretalxQuestion>(),
+      searchParams: { limit: 100 },
+    })
   }
 
   /** Fetch the pretalx event */
@@ -119,23 +119,26 @@ export class PretalxService {
 
   /** Fetch all pretalx submissions */
   getSubmissions() {
-    return this.#pretalx.paginate.all(
-      'submissions',
-      this.getPaginator<PretalxTalk>()
-    )
+    return this.#pretalx.paginate.all('submissions', {
+      ...this.getPaginator<PretalxTalk>(),
+      searchParams: { limit: 100 },
+    })
   }
 
   /** Fetch released pretalx submissions */
   getTalks() {
-    return this.#pretalx.paginate.all('talks', this.getPaginator<PretalxTalk>())
+    return this.#pretalx.paginate.all('talks', {
+      ...this.getPaginator<PretalxTalk>(),
+      searchParams: { limit: 100 },
+    })
   }
 
   /** Fetch pretalx speakers */
   getSpeakers() {
-    return this.#pretalx.paginate.all(
-      'speakers',
-      this.getPaginator<PretalxSpeaker>()
-    )
+    return this.#pretalx.paginate.all('speakers', {
+      ...this.getPaginator<PretalxSpeaker>(),
+      searchParams: { limit: 100 },
+    })
   }
 
   /** Fetch pretalx tags */
