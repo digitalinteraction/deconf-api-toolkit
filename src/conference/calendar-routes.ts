@@ -265,7 +265,7 @@ export class CalendarRoutes {
    * ```
    */
   createUserCalendar(
-    authToken: AuthToken | undefined,
+    authToken: AuthToken | null,
     getCalendarUrl: (token: string) => URL
   ): PrivateCalendar {
     if (!authToken) throw ApiError.unauthorized()
