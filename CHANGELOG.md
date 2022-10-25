@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.9.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.8.1...v4.9.0) (2022-10-25)
+
+### Features
+
+- **lib:** add `getRedirectErrorCode` + `trimEmail` utils ([335326a](https://github.com/digitalinteraction/deconf-api-toolkit/commit/335326a0d7601d4ae5a2eb610fef9decc1802f77))
+- **pretalx:** add pageSize option to PretalxService and use it in pagination ([2eb5621](https://github.com/digitalinteraction/deconf-api-toolkit/commit/2eb56213a1950be935769d478db04f6da197474c))
+
+### Bug Fixes
+
+- **conference:** align CalendarRoutes.createUserCalendar to use null ([ffc490e](https://github.com/digitalinteraction/deconf-api-toolkit/commit/ffc490e66a931fe03336a76c86cda31e10028702))
+- **pretalx:** bigger page-size ([f5804c9](https://github.com/digitalinteraction/deconf-api-toolkit/commit/f5804c9fb9b81d524b7a05490722c994056d4d3e))
+
 ### [4.8.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.8.0...v4.8.1) (2022-05-20)
 
 ### Bug Fixes
