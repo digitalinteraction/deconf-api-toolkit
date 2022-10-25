@@ -47,7 +47,7 @@ type Context<T extends Record<string, unknown>> = Pick<
   'jwt' | 'registrationRepo' | 'conferenceRepo' | 'url'
 > & {
   /** @deprecated use `admins` instead */
-  config: {
+  config?: {
     admins: DeconfBaseContext['config']['admins']
   }
 
@@ -122,7 +122,7 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
 
   // TODO: remove once deprecated
   #getAdmins() {
-    return this.#context.admins ?? this.#context.config.admins
+    return this.#context.admins ?? this.#context.config?.admins ?? []
   }
 
   async #getRoles(registration: Registration) {
