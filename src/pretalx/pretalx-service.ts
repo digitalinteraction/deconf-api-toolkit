@@ -42,6 +42,7 @@ type Context = Pick<DeconfBaseContext, 'store'> & {
   config: {
     eventSlug: string
     englishKeys: string[]
+    pageSize?: number
   }
 }
 
@@ -100,6 +101,12 @@ export class PretalxService {
     }
   }
 
+  /** @internal Get common URL search params */
+  get baseSearchParams() {
+    const { pageSize: limit = 100 } = this.#context.config
+    return { limit }
+  }
+
   //
   // Data accessors
   //
@@ -108,7 +115,7 @@ export class PretalxService {
   getQuestions() {
     return this.#pretalx.paginate.all('questions', {
       ...this.getPaginator<PretalxQuestion>(),
-      searchParams: { limit: 100 },
+      searchParams: this.baseSearchParams,
     })
   }
 
@@ -121,7 +128,7 @@ export class PretalxService {
   getSubmissions() {
     return this.#pretalx.paginate.all('submissions', {
       ...this.getPaginator<PretalxTalk>(),
-      searchParams: { limit: 100 },
+      searchParams: this.baseSearchParams,
     })
   }
 
@@ -129,7 +136,7 @@ export class PretalxService {
   getTalks() {
     return this.#pretalx.paginate.all('talks', {
       ...this.getPaginator<PretalxTalk>(),
-      searchParams: { limit: 100 },
+      searchParams: this.baseSearchParams,
     })
   }
 
@@ -137,13 +144,16 @@ export class PretalxService {
   getSpeakers() {
     return this.#pretalx.paginate.all('speakers', {
       ...this.getPaginator<PretalxSpeaker>(),
-      searchParams: { limit: 100 },
+      searchParams: this.baseSearchParams,
     })
   }
 
   /** Fetch pretalx tags */
   getTags() {
-    return this.#pretalx.paginate.all('tags', this.getPaginator<PretalxTax>())
+    return this.#pretalx.paginate.all('tags', {
+      ...this.getPaginator<PretalxTax>(),
+      searchParams: this.baseSearchParams,
+    })
   }
 
   //
