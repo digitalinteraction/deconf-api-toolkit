@@ -18,7 +18,7 @@ type Context = Pick<
   'conferenceRepo' | 'url' | 'attendanceRepo'
 > & {
   /** @deprecated use `CalendarRoutes` instead */
-  config: {
+  config?: {
     organiser: DeconfBaseContext['config']['organiser']
   }
 }
@@ -58,7 +58,9 @@ export class ConferenceRoutes {
       title: localise(session.title, 'Session'),
       description: localise(session.content, ''),
       location: webUrl.toString(),
-      organizer: { ...this.#context.config.organiser },
+      organizer: {
+        ...(this.#context.config?.organiser ?? { name: '', email: '' }),
+      },
     })
 
     if (!icsFile.value) throw ApiError.internalServerError()
