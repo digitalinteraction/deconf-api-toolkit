@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.9.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.0...v4.9.1) (2022-10-25)
+
+### Bug Fixes
+
+- **conference:** make ConferenceRoutes#config options more deprecated ([b0383ec](https://github.com/digitalinteraction/deconf-api-toolkit/commit/b0383eca5813e19bc6871135ad18d58b3a73252f))
+- **registration:** make RegistrationRoutes#config more deprecated ([4048fd9](https://github.com/digitalinteraction/deconf-api-toolkit/commit/4048fd9c713d30f3782d4fcee83735dd99f93886))
+
 ## [4.9.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.8.1...v4.9.0) (2022-10-25)
 
 ### Features
