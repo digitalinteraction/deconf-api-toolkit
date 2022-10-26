@@ -35,6 +35,10 @@ interface PretalxPaginated<T> {
 
 const debug = createDebug('deconf:pretalx:service')
 
+export interface GetSubmissionOptions {
+  questions?: number[]
+}
+
 type Context = Pick<DeconfBaseContext, 'store'> & {
   env: {
     PRETALX_API_TOKEN: string
@@ -101,8 +105,8 @@ export class PretalxService {
 
   /** @internal Get common URL search params */
   get baseSearchParams() {
-    const { pageSize: limit = 100 } = this.#context.config
-    return { limit }
+    const { pageSize = 100 } = this.#context.config
+    return { limit: pageSize.toString() }
   }
 
   //
@@ -112,7 +116,7 @@ export class PretalxService {
   /** Fetch pretalx questions */
   getQuestions() {
     return this.#pretalx.paginate.all('questions', {
-      ...this.getPaginator<PretalxQuestion>(),
+      pagination: this.getPaginator<PretalxQuestion>(),
       searchParams: this.baseSearchParams,
     })
   }
@@ -123,17 +127,20 @@ export class PretalxService {
   }
 
   /** Fetch all pretalx submissions */
-  getSubmissions() {
+  getSubmissions(options: GetSubmissionOptions = {}) {
+    const searchParams = new URLSearchParams(this.baseSearchParams)
+    searchParams.set('question', options.questions?.join(',') ?? 'all')
+
     return this.#pretalx.paginate.all('submissions', {
-      ...this.getPaginator<PretalxTalk>(),
-      searchParams: this.baseSearchParams,
+      pagination: this.getPaginator<PretalxTalk>(),
+      searchParams,
     })
   }
 
   /** Fetch released pretalx submissions @deprecated */
   getTalks() {
     return this.#pretalx.paginate.all('talks', {
-      ...this.getPaginator<PretalxTalk>(),
+      pagination: this.getPaginator<PretalxTalk>(),
       searchParams: this.baseSearchParams,
     })
   }
@@ -141,7 +148,7 @@ export class PretalxService {
   /** Fetch pretalx speakers */
   getSpeakers() {
     return this.#pretalx.paginate.all('speakers', {
-      ...this.getPaginator<PretalxSpeaker>(),
+      pagination: this.getPaginator<PretalxSpeaker>(),
       searchParams: this.baseSearchParams,
     })
   }
@@ -149,7 +156,7 @@ export class PretalxService {
   /** Fetch pretalx tags */
   getTags() {
     return this.#pretalx.paginate.all('tags', {
-      ...this.getPaginator<PretalxTax>(),
+      pagination: this.getPaginator<PretalxTax>(),
       searchParams: this.baseSearchParams,
     })
   }
