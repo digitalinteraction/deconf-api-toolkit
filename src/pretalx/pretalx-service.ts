@@ -91,7 +91,7 @@ export class PretalxService {
             const next = new URL(response.body.next)
 
             return {
-              searchParams: next.searchParams.toString(),
+              searchParams: next.searchParams,
             }
           } catch (error) {
             return false
@@ -132,7 +132,7 @@ export class PretalxService {
     })
   }
 
-  /** Fetch released pretalx submissions */
+  /** Fetch released pretalx submissions @deprecated */
   getTalks() {
     return this.#pretalx.paginate.all('talks', {
       ...this.getPaginator<PretalxTalk>(),
@@ -171,9 +171,19 @@ export class PretalxService {
     return null
   }
 
-  /** `getSlotId` generates a unique id for a pretalx slot */
-  getSlotId(slot: PretalxSlot) {
-    return `${slot.start}__${slot.end}`
+  /**
+   * `getSlotId` generates a unique id for a pretalx slot,
+   * it uses undefined to match `Session#slot`'s type
+   */
+  getSlotId(slot?: PretalxSlot) {
+    if (!slot || !slot.start || !slot.end) return undefined
+    const start = new Date(slot.start)
+    const end = new Date(slot.end)
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      return undefined
+    }
+
+    return `${start.getTime()}__${end.getTime()}`
   }
 
   /** `isUrl` determines if a string passed is a URL or not */
@@ -212,8 +222,8 @@ export class PretalxService {
       .toLowerCase()
       .trim()
       .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
       .replace(/[^\w-]+/g, '')
+      .replace(/-+/g, '-')
   }
 
   //
@@ -227,7 +237,7 @@ export class PretalxService {
       if (!talk.slot) continue
 
       const id = this.getSlotId(talk.slot)
-      if (slotMap.has(id)) continue
+      if (!id || slotMap.has(id)) continue
 
       slotMap.set(id, {
         id: id,
