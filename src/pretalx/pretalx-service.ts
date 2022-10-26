@@ -88,7 +88,7 @@ export class PretalxService {
         return response.body.results
       },
       paginate(data) {
-        debug('paginate %o', data.response.requestUrl)
+        debug('paginate %o', data.response.requestUrl.toString())
         try {
           if (!data.response.body.next) return false
           const next = new URL(data.response.body.next)
