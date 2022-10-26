@@ -1,5 +1,5 @@
-import { mockKeyValueStore } from '../../test-lib/module'
-import { makeFixture, MockScheduleCommand } from '../mock-schedule-command'
+import { mockKeyValueStore } from '../../test-lib/module.js'
+import { makeFixture, MockScheduleCommand } from '../mock-schedule-command.js'
 
 function setup() {
   const store = mockKeyValueStore()

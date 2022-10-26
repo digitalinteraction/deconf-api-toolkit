@@ -1,5 +1,5 @@
 import { Localised, LocalisedContent } from '@openlab/deconf-shared'
-import { ApiError, DeconfBaseContext } from '../lib/module'
+import { ApiError, DeconfBaseContext } from '../lib/module.js'
 
 type Context = Pick<DeconfBaseContext, 'store'>
 

@@ -1,5 +1,5 @@
-import { ApiError } from '../api-error'
-import { getRedirectErrorCode, trimEmail } from '../utils'
+import { ApiError } from '../api-error.js'
+import { getRedirectErrorCode, trimEmail } from '../utils.js'
 
 describe('getRedirectErrorCode', () => {
   it('should return not_found', async () => {

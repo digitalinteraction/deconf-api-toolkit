@@ -1,4 +1,4 @@
-import { DeconfEnv } from './env'
+import { DeconfEnv } from './env.js'
 
 export type Context = {
   env: Pick<DeconfEnv, 'CLIENT_URL' | 'SELF_URL'>

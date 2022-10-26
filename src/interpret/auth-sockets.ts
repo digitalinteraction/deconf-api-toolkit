@@ -1,6 +1,6 @@
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
-import { AuthTokenStruct, SocketAuth } from '../lib/jwt-service'
+import { ApiError } from '../lib/api-error.js'
+import { DeconfBaseContext } from '../lib/context.js'
+import { AuthTokenStruct, SocketAuth } from '../lib/jwt-service.js'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -16,9 +16,8 @@ export class AuthSockets {
   async auth(socketId: string, authToken: string): Promise<void> {
     const token = this.#context.jwt.verifyToken(authToken, AuthTokenStruct)
 
-    const registration = await this.#context.registrationRepo.getVerifiedRegistration(
-      token.sub
-    )
+    const registration =
+      await this.#context.registrationRepo.getVerifiedRegistration(token.sub)
     if (!registration) throw ApiError.unauthorized()
 
     const interpreter = await this.#context.conferenceRepo.findInterpreter(

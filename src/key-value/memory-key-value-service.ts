@@ -1,4 +1,4 @@
-import { KeyValueService } from './key-value-service'
+import { KeyValueService } from './key-value-service.js'
 
 /**
  * createMemoryStore creates a `KeyValueService` that stores values in redis.

@@ -3,8 +3,8 @@ import {
   ActiveBooth,
   ActiveInterpreter,
 } from '@openlab/deconf-shared'
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
+import { ApiError } from '../lib/api-error.js'
+import { DeconfBaseContext } from '../lib/context.js'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -85,10 +85,8 @@ export class InterpreterSockets {
     socketId: string,
     booth: InterpretBooth
   ): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. emit the acceptance to the interpreter room
     this.#context.sockets.emitTo(
@@ -105,10 +103,8 @@ export class InterpreterSockets {
   }
 
   async joinBooth(socketId: string, booth: InterpretBooth): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. emit the interpreter to the socket
     this.#context.sockets.emitTo(socketId, 'interpreter-self', auth.interpreter)
@@ -155,11 +151,8 @@ export class InterpreterSockets {
   }
 
   async leaveBooth(socketId: string, booth: InterpretBooth): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-      channelRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom, channelRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. leave the interpreter room
     await this.#context.sockets.leaveRoom(socketId, interpretRoom)
@@ -197,10 +190,8 @@ export class InterpreterSockets {
     booth: InterpretBooth,
     message: string
   ): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. broadcast the message to the booth
     this.#context.sockets.emitTo(
@@ -216,10 +207,8 @@ export class InterpreterSockets {
     booth: InterpretBooth,
     duration: number
   ): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. broadcast the request to the booth
     this.#context.sockets.emitTo(
@@ -259,11 +248,8 @@ export class InterpreterSockets {
   }
 
   async startInterpret(socketId: string, booth: InterpretBooth): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-      channelRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom, channelRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. boot any existing interpreters
     const activeBooth = await this.#getActiveBooth(booth)
@@ -306,11 +292,8 @@ export class InterpreterSockets {
   }
 
   async stopInterpret(socketId: string, booth: InterpretBooth): Promise<void> {
-    const {
-      auth,
-      interpretRoom,
-      channelRoom,
-    } = await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
+    const { auth, interpretRoom, channelRoom } =
+      await this.#context.interpreterRepo.prepInterpreter(socketId, booth)
 
     // 1. remove the active-interpreter packet
     this.#context.store.delete(this.#activeInterpreterKey(socketId))

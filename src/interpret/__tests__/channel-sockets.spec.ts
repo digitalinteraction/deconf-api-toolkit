@@ -1,13 +1,13 @@
-import { mocked } from 'ts-jest/utils'
-import { mockAuthToken, mockSession } from '../../test-lib/fixtures'
 import {
+  mockAuthToken,
+  mockSession,
   mockConferenceRepository,
   mockJwtService,
   mockKeyValueStore,
   mockMetricsRepository,
   mockSocketService,
-} from '../../test-lib/mocks'
-import { ChannelSockets } from '../channel-sockets'
+} from '../../test-lib/module.js'
+import { ChannelSockets } from '../channel-sockets.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -29,14 +29,14 @@ describe('ChannelSockets', () => {
   describe('#joinChannel', () => {
     it('should add the user to the room', async () => {
       const { channel, sockets, jwt, conferenceRepo } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken(),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      mocked(conferenceRepo.findSession).mockResolvedValue(
-        mockSession({ enableInterpretation: true })
-      )
+      jest
+        .mocked(conferenceRepo.findSession)
+        .mockResolvedValue(mockSession({ enableInterpretation: true }))
 
       await channel.joinChannel('socket-a', {
         sessionId: 'session-a',
@@ -50,14 +50,14 @@ describe('ChannelSockets', () => {
     })
     it('should log a metrics event', async () => {
       const { channel, metricsRepo, jwt, conferenceRepo } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      mocked(conferenceRepo.findSession).mockResolvedValue(
-        mockSession({ enableInterpretation: true })
-      )
+      jest
+        .mocked(conferenceRepo.findSession)
+        .mockResolvedValue(mockSession({ enableInterpretation: true }))
 
       await channel.joinChannel('socket-a', {
         sessionId: 'session-a',
@@ -72,14 +72,14 @@ describe('ChannelSockets', () => {
     })
     it('should emit channel-started if it has already started', async () => {
       const { channel, sockets, jwt, conferenceRepo, store } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken(),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      mocked(conferenceRepo.findSession).mockResolvedValue(
-        mockSession({ enableInterpretation: true })
-      )
+      jest
+        .mocked(conferenceRepo.findSession)
+        .mockResolvedValue(mockSession({ enableInterpretation: true }))
       store.data.set('active-booth/session-a/en', { _: 'something non-null' })
 
       await channel.joinChannel('socket-a', {
@@ -94,10 +94,10 @@ describe('ChannelSockets', () => {
   describe('#leaveChannel', () => {
     it('should remove the user from the room', async () => {
       const { sockets, channel, jwt } = setup()
-      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
-        new Set(['channel/session-a/en'])
-      )
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest
+        .mocked(sockets.getRoomsOfSocket)
+        .mockResolvedValue(new Set(['channel/session-a/en']))
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,
@@ -115,10 +115,10 @@ describe('ChannelSockets', () => {
     })
     it('should log a leave-channel event', async () => {
       const { sockets, channel, metricsRepo, jwt } = setup()
-      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
-        new Set(['channel/session-a/en'])
-      )
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest
+        .mocked(sockets.getRoomsOfSocket)
+        .mockResolvedValue(new Set(['channel/session-a/en']))
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,

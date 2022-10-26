@@ -13,8 +13,8 @@ import {
   nullable,
   number,
 } from 'superstruct'
-import { LocalisedLinkStruct } from './link-struct'
-import { LocalisedStruct } from './localised-struct'
+import { LocalisedLinkStruct } from './link-struct.js'
+import { LocalisedStruct } from './localised-struct.js'
 
 import {
   Session,

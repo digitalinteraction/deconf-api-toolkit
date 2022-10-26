@@ -1,5 +1,5 @@
-import { createMemoryStore } from '../../module'
-import { PretalxService } from '../pretalx-service'
+import { createMemoryStore } from '../../module.js'
+import { PretalxService } from '../pretalx-service.js'
 
 function setup() {
   const store = createMemoryStore()
@@ -18,30 +18,34 @@ describe('PretalxService', () => {
     it('should not transform the body', async () => {
       const { service } = setup()
       const paginator = service.getPaginator()
-      const response: any = { body: { results: 'test_results' } }
-      const result = paginator.pagination?.transform?.(response)
+      const data: any = { body: { results: 'test_results' } }
+      const result = paginator.transform?.(data)
       expect(result).toEqual('test_results')
     })
     it('should paginate with the "next" link', async () => {
       const { service } = setup()
       const paginator = service.getPaginator()
-      const response: any = {
-        requestUrl: 'https://example.com',
-        body: { next: 'https://example.com?page=2' },
+      const data: any = {
+        response: {
+          requestUrl: 'https://example.com',
+          body: { next: 'https://example.com?page=2' },
+        },
       }
 
-      const result: any = paginator?.pagination?.paginate?.(response, [], [])
+      const result: any = paginator.paginate?.(data)
 
       expect(result?.searchParams?.get('page')).toEqual('2')
     })
     it('should not paginate when no next is passed', async () => {
       const { service } = setup()
       const paginator = service.getPaginator()
-      const response: any = {
-        requestUrl: 'https://example.com',
+      const data: any = {
+        response: {
+          requestUrl: 'https://example.com',
+        },
       }
 
-      const result = paginator?.pagination?.paginate?.(response, [], [])
+      const result = paginator.paginate?.(data)
 
       expect(result).toEqual(false)
     })

@@ -1,14 +1,14 @@
 import { object, string } from 'superstruct'
-import { mocked } from 'ts-jest/utils'
-import { ApiError } from '../../module'
+import { ApiError } from '../../module.js'
 import {
   mockJwtService,
   mockMetricsRepository,
   mockSemaphore,
   mockSocketAuth,
   mockSocketService,
-} from '../../test-lib/module'
-import { MetricsSockets, SITE_VISITORS_ROOM } from '../metrics-sockets'
+  jest,
+} from '../../test-lib/module.js'
+import { MetricsSockets, SITE_VISITORS_ROOM } from '../metrics-sockets.js'
 
 function setup() {
   const sockets = mockSocketService()
@@ -30,7 +30,7 @@ describe('MetricsSockets', () => {
   describe('#cameOnline', () => {
     it('should add the socket to the room', async () => {
       const { metrics, sockets } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
 
       await metrics.cameOnline('socket-a')
 
@@ -38,11 +38,9 @@ describe('MetricsSockets', () => {
     })
     it('should emit the current visitors to the socket', async () => {
       const { metrics, sockets } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([
-        'socket-a',
-        'socket-b',
-        'socket-c',
-      ])
+      jest
+        .mocked(sockets.getSocketsInRoom)
+        .mockResolvedValue(['socket-a', 'socket-b', 'socket-c'])
 
       await metrics.cameOnline('socket-a')
 
@@ -50,13 +48,11 @@ describe('MetricsSockets', () => {
     })
     it('should broadcast the site visitors to everyone', async () => {
       const { metrics, semaphore, sockets } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([
-        'socket-a',
-        'socket-b',
-        'socket-c',
-      ])
-      mocked(semaphore.aquire).mockResolvedValue(true)
-      mocked(semaphore.hasLock).mockResolvedValue(true)
+      jest
+        .mocked(sockets.getSocketsInRoom)
+        .mockResolvedValue(['socket-a', 'socket-b', 'socket-c'])
+      jest.mocked(semaphore.aquire).mockResolvedValue(true)
+      jest.mocked(semaphore.hasLock).mockResolvedValue(true)
 
       await metrics.cameOnline('socket-a')
 
@@ -65,13 +61,13 @@ describe('MetricsSockets', () => {
     })
     // it('should release the lock', async () => {
     //   const { metrics, semaphore, sockets } = setup()
-    //   mocked(sockets.getSocketsInRoom).mockResolvedValue([
+    //   jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([
     //     'socket-a',
     //     'socket-b',
     //     'socket-c',
     //   ])
-    //   mocked(semaphore.aquire).mockResolvedValue(true)
-    //   mocked(semaphore.hasLock).mockResolvedValue(true)
+    //   jest.mocked(semaphore.aquire).mockResolvedValue(true)
+    //   jest.mocked(semaphore.hasLock).mockResolvedValue(true)
 
     //   await metrics.cameOnline('socket-a')
 
@@ -82,13 +78,11 @@ describe('MetricsSockets', () => {
   describe('#wentOffilne', () => {
     it('should broadcast the site visitors to everyone', async () => {
       const { metrics, semaphore, sockets } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([
-        'socket-a',
-        'socket-b',
-        'socket-c',
-      ])
-      mocked(semaphore.aquire).mockResolvedValue(true)
-      mocked(semaphore.hasLock).mockResolvedValue(true)
+      jest
+        .mocked(sockets.getSocketsInRoom)
+        .mockResolvedValue(['socket-a', 'socket-b', 'socket-c'])
+      jest.mocked(semaphore.aquire).mockResolvedValue(true)
+      jest.mocked(semaphore.hasLock).mockResolvedValue(true)
 
       await metrics.wentOffline('socket-a')
 
@@ -103,7 +97,7 @@ describe('MetricsSockets', () => {
   describe('#event', () => {
     it('should store an event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+      jest.mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
 
       await metrics.event('socket-a', 'page-view', { path: '/about' })
 
@@ -115,9 +109,11 @@ describe('MetricsSockets', () => {
     })
     it('should store an authenticated event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue(
-        mockSocketAuth({ id: 1, email: 'geoff@example.com' })
-      )
+      jest
+        .mocked(jwt.getSocketAuth)
+        .mockResolvedValue(
+          mockSocketAuth({ id: 1, email: 'geoff@example.com' })
+        )
 
       await metrics.event('socket-a', 'page-view', { path: '/about' })
 
@@ -129,7 +125,7 @@ describe('MetricsSockets', () => {
     })
     it('should send a client error for unknown events', async () => {
       const { metrics, metricsRepo, jwt, sockets } = setup()
-      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+      jest.mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
 
       await metrics.event('socket-a', 'page-reload', {})
 
@@ -138,7 +134,7 @@ describe('MetricsSockets', () => {
     })
     it('should send a client error for bac payloads', async () => {
       const { metrics, metricsRepo, jwt, sockets } = setup()
-      mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
+      jest.mocked(jwt.getSocketAuth).mockRejectedValue(new Error())
 
       await metrics.event('socket-a', 'page-view', {})
 
@@ -150,9 +146,11 @@ describe('MetricsSockets', () => {
   describe('#event', () => {
     it('should store an event', async () => {
       const { metrics, metricsRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue(
-        mockSocketAuth({ id: 1, email: 'geoff@example.com' })
-      )
+      jest
+        .mocked(jwt.getSocketAuth)
+        .mockResolvedValue(
+          mockSocketAuth({ id: 1, email: 'geoff@example.com' })
+        )
 
       await metrics.error('socket-a', new Error('Test Error'))
 

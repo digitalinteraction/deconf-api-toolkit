@@ -1,5 +1,8 @@
-import { mockContentRepository, mockKeyValueStore } from '../../test-lib/module'
-import { ContentService } from '../content-service'
+import {
+  mockContentRepository,
+  mockKeyValueStore,
+} from '../../test-lib/module.js'
+import { ContentService } from '../content-service.js'
 
 // NOTE:
 // it is slightly hacky to use 'test/fixtures' as the directory because it

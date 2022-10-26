@@ -1,5 +1,5 @@
 import { RegisterRequest, Registration } from '@openlab/deconf-shared'
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 //
 // NOTES:

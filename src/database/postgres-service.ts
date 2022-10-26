@@ -1,5 +1,5 @@
 import pg from 'pg'
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 /**
  * `PostgresClient` is a postgres pool client that is connected to the database

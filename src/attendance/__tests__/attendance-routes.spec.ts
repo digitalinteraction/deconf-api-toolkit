@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockAttendance,
   mockAttendanceRepository,
@@ -8,8 +7,9 @@ import {
   mockRegistrationRepository,
   mockSession,
   VOID_RESPONSE,
-} from '../../test-lib/module'
-import { AttendanceRoutes } from '../attendance-routes'
+  jest,
+} from '../../test-lib/module.js'
+import { AttendanceRoutes } from '../attendance-routes.js'
 
 const SESSION_ID = 'session-a'
 const ATTENDEE_ID = 1
@@ -49,13 +49,13 @@ describe('AttendanceRoutes', () => {
         session,
         registration,
       } = setup()
-      mocked(conferenceRepo.findSession).mockResolvedValue(session)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        registration
-      )
-      mocked(attendanceRepo.getSessionAttendance).mockResolvedValue(
-        new Map([[SESSION_ID, 10]])
-      )
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(registration)
+      jest
+        .mocked(attendanceRepo.getSessionAttendance)
+        .mockResolvedValue(new Map([[SESSION_ID, 10]]))
 
       const result = await routes.attend(token, SESSION_ID)
 
@@ -71,13 +71,13 @@ describe('AttendanceRoutes', () => {
         session,
         registration,
       } = setup()
-      mocked(conferenceRepo.findSession).mockResolvedValue(session)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        registration
-      )
-      mocked(attendanceRepo.getSessionAttendance).mockResolvedValue(
-        new Map([[SESSION_ID, 10]])
-      )
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(registration)
+      jest
+        .mocked(attendanceRepo.getSessionAttendance)
+        .mockResolvedValue(new Map([[SESSION_ID, 10]]))
 
       await routes.attend(token, SESSION_ID)
 
@@ -96,10 +96,10 @@ describe('AttendanceRoutes', () => {
         token,
       } = setup()
 
-      mocked(conferenceRepo.findSession).mockResolvedValue(session)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        registration
-      )
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(registration)
 
       const result = await routes.unattend(token, SESSION_ID)
 
@@ -116,10 +116,10 @@ describe('AttendanceRoutes', () => {
         token,
       } = setup()
 
-      mocked(conferenceRepo.findSession).mockResolvedValue(session)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        registration
-      )
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(registration)
 
       await routes.unattend(token, SESSION_ID)
 
@@ -139,16 +139,18 @@ describe('AttendanceRoutes', () => {
         token,
       } = setup()
 
-      mocked(conferenceRepo.findSession).mockResolvedValue(session)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        registration
-      )
-      mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
-        mockAttendance({ attendee: ATTENDEE_ID, session: SESSION_ID }),
-      ])
-      mocked(attendanceRepo.getSessionAttendance).mockResolvedValue(
-        new Map([[SESSION_ID, 42]])
-      )
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(session)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(registration)
+      jest
+        .mocked(attendanceRepo.getUserAttendance)
+        .mockResolvedValue([
+          mockAttendance({ attendee: ATTENDEE_ID, session: SESSION_ID }),
+        ])
+      jest
+        .mocked(attendanceRepo.getSessionAttendance)
+        .mockResolvedValue(new Map([[SESSION_ID, 42]]))
 
       const result = await routes.getSessionAttendance(token, SESSION_ID)
 
@@ -161,20 +163,14 @@ describe('AttendanceRoutes', () => {
 
   describe('#getUserAttendance', () => {
     it("should return a user's attendance", async () => {
-      const {
-        conferenceRepo,
-        registrationRepo,
-        routes,
-        attendanceRepo,
-        session,
-        registration,
-        token,
-      } = setup()
-      mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
-        mockAttendance({ attendee: ATTENDEE_ID, session: 'session-a' }),
-        mockAttendance({ attendee: ATTENDEE_ID, session: 'session-b' }),
-        mockAttendance({ attendee: ATTENDEE_ID, session: 'session-c' }),
-      ])
+      const { routes, attendanceRepo, token } = setup()
+      jest
+        .mocked(attendanceRepo.getUserAttendance)
+        .mockResolvedValue([
+          mockAttendance({ attendee: ATTENDEE_ID, session: 'session-a' }),
+          mockAttendance({ attendee: ATTENDEE_ID, session: 'session-b' }),
+          mockAttendance({ attendee: ATTENDEE_ID, session: 'session-c' }),
+        ])
 
       const result = await routes.getUserAttendance(token)
 

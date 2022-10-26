@@ -3,7 +3,7 @@
 //
 
 import { Describe, object, optional, string } from 'superstruct'
-import { LocalisedStruct } from './localised-struct'
+import { LocalisedStruct } from './localised-struct.js'
 import { Speaker } from '@openlab/deconf-shared'
 
 /** `SpeakerStruct` validates an object is a deconf `Speaker` */

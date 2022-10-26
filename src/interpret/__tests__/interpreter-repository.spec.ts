@@ -1,11 +1,12 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockAuthToken,
   mockInterpreter,
   mockSession,
-} from '../../test-lib/fixtures'
-import { mockConferenceRepository, mockJwtService } from '../../test-lib/mocks'
-import { InterpreterRepository } from '../interpreter-repository'
+  jest,
+  mockConferenceRepository,
+  mockJwtService,
+} from '../../test-lib/module.js'
+import { InterpreterRepository } from '../interpreter-repository.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -18,14 +19,14 @@ describe('InterpreterRepository', () => {
   describe('#prepInterpreter', () => {
     it('should return the auth, session and interpret room', async () => {
       const { repo, conferenceRepo, jwt } = setup()
-      mocked(jwt.getSocketAuth).mockResolvedValue({
+      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'jess@example.com',
         interpreter: mockInterpreter({ email: 'jess@example.com' }),
       })
-      mocked(conferenceRepo.findSession).mockResolvedValue(
-        mockSession({ id: 'session-a' })
-      )
+      jest
+        .mocked(conferenceRepo.findSession)
+        .mockResolvedValue(mockSession({ id: 'session-a' }))
 
       const result = await repo.prepInterpreter('socket-a', {
         sessionId: 'session-a',

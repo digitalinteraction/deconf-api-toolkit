@@ -1,10 +1,9 @@
-import path from 'path'
-import { DeconfConfigStruct, loadConfig } from '../config'
+import { DeconfConfigStruct, loadConfig } from '../config.js'
 
 describe('loadConfig', () => {
   it('should load and validate a config file', async () => {
-    const file = path.join(__dirname, '../../test-lib/test-config.json')
-    const config = await loadConfig(file, DeconfConfigStruct)
+    const file = new URL('../../test-lib/test-config.json', import.meta.url)
+    const config = await loadConfig(file.pathname, DeconfConfigStruct)
 
     expect(config).toBeDefined()
   })

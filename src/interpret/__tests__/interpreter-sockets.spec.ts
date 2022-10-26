@@ -1,18 +1,16 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockInterpreter,
   mockSession,
   mockSocketAuth,
-} from '../../test-lib/fixtures'
-import {
   mockInterpreterRepository,
   mockJwtService,
   mockKeyValueStore,
   mockMetricsRepository,
   mockS3Service,
   mockSocketService,
-} from '../../test-lib/mocks'
-import { InterpreterSockets } from '../interpreter-sockets'
+  jest,
+} from '../../test-lib/module.js'
+import { InterpreterSockets } from '../interpreter-sockets.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -138,9 +136,9 @@ describe('InterpreterSockets', () => {
   describe('#acceptInterpret', () => {
     it('should emit the acceptance to the interpreter room', async () => {
       const { sockets, interpreter, interpreterRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.acceptInterpret('socket-a', {
         sessionId: 'session-a',
@@ -155,7 +153,7 @@ describe('InterpreterSockets', () => {
     })
     it('should log the event', async () => {
       const { interpreter, interpreterRepo, metricsRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue({
+      jest.mocked(interpreterRepo.prepInterpreter).mockResolvedValue({
         auth: mockSocketAuth({
           id: 1,
           email: 'jess@example.com',
@@ -182,10 +180,10 @@ describe('InterpreterSockets', () => {
   describe('#joinBooth', () => {
     it('should emit the interpreter to the socket', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.joinBooth('socket-a', {
         sessionId: 'session-a',
@@ -200,13 +198,17 @@ describe('InterpreterSockets', () => {
     })
     it('should emit the rooms occupants to the joiner', async () => {
       const { interpreter, sockets, jwt, interpreterRepo } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue(['socket-b'])
-      mocked(jwt.getSocketAuth).mockResolvedValueOnce(
-        mockSocketAuth({ id: 1, email: 'geoff@example.com', interpreter: true })
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue(['socket-b'])
+      jest.mocked(jwt.getSocketAuth).mockResolvedValueOnce(
+        mockSocketAuth({
+          id: 1,
+          email: 'geoff@example.com',
+          interpreter: true,
+        })
       )
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.joinBooth('socket-a', {
         sessionId: 'session-a',
@@ -221,10 +223,10 @@ describe('InterpreterSockets', () => {
     })
     it('should emit the active interpreter to the joiner', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
       store.data.set('active-booth/session-a/en', {
         socketId: 'socket-b',
         attendee: 2,
@@ -244,10 +246,10 @@ describe('InterpreterSockets', () => {
     })
     it('should join the interpret room', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.joinBooth('socket-a', {
         sessionId: 'session-a',
@@ -261,10 +263,10 @@ describe('InterpreterSockets', () => {
     })
     it('should emit the joining to the room', async () => {
       const { interpreter, sockets, interpreterRepo } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.joinBooth('socket-a', {
         sessionId: 'session-a',
@@ -281,10 +283,10 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, sockets, interpreterRepo, metricsRepo } = setup()
-      mocked(sockets.getSocketsInRoom).mockResolvedValue([])
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest.mocked(sockets.getSocketsInRoom).mockResolvedValue([])
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.joinBooth('socket-a', {
         sessionId: 'session-a',
@@ -302,9 +304,9 @@ describe('InterpreterSockets', () => {
   describe('#leaveBooth', () => {
     it('should leave the interpreter room', async () => {
       const { interpreter, sockets, interpreterRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.leaveBooth('socket-a', {
         sessionId: 'session-a',
@@ -318,9 +320,9 @@ describe('InterpreterSockets', () => {
     })
     it('should broadcast the leaving to the booth', async () => {
       const { interpreter, sockets, interpreterRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.leaveBooth('socket-a', {
         sessionId: 'session-a',
@@ -335,9 +337,9 @@ describe('InterpreterSockets', () => {
     })
     it('should stop interpretation if active', async () => {
       const { interpreter, sockets, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
       store.data.set('active-booth/session-a/en', {
         socketId: 'socket-a',
         attendee: 1,
@@ -361,9 +363,9 @@ describe('InterpreterSockets', () => {
     })
     it('should remove any lingering active packets', async () => {
       const { interpreter, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.leaveBooth('socket-a', {
         sessionId: 'session-a',
@@ -374,9 +376,9 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, interpreterRepo, metricsRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.leaveBooth('socket-a', {
         sessionId: 'session-a',
@@ -394,9 +396,9 @@ describe('InterpreterSockets', () => {
   describe('#messageBooth', () => {
     it('should broadcast the message to the booth', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       const booth = { sessionId: 'session-a', channel: 'en' }
       await interpreter.messageBooth('socket-a', booth, 'Test Message')
@@ -413,9 +415,9 @@ describe('InterpreterSockets', () => {
   describe('#requestInterpreter', () => {
     it('should broadcast the request to the booth', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       const booth = { sessionId: 'session-a', channel: 'en' }
       await interpreter.requestInterpreter('socket-a', booth, 60)
@@ -429,9 +431,9 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, interpreterRepo, metricsRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       const booth = { sessionId: 'session-a', channel: 'en' }
       await interpreter.requestInterpreter('socket-a', booth, 60)
@@ -477,9 +479,9 @@ describe('InterpreterSockets', () => {
   describe('#startInterpret', () => {
     it('should boot any existing interpreters', async () => {
       const { interpreter, interpreterRepo, store, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
       store.data.set('active-booth/session-a/en', {
         socketId: 'socket-b',
         attendee: 2,
@@ -499,9 +501,9 @@ describe('InterpreterSockets', () => {
     })
     it('should store the active-booth packet', async () => {
       const { interpreter, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.startInterpret('socket-a', {
         sessionId: 'session-a',
@@ -516,9 +518,9 @@ describe('InterpreterSockets', () => {
     })
     it('should store the active-interpreter packet', async () => {
       const { interpreter, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.startInterpret('socket-a', {
         sessionId: 'session-a',
@@ -534,9 +536,9 @@ describe('InterpreterSockets', () => {
     })
     it('should broadcast the start to the booth', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.startInterpret('socket-a', {
         sessionId: 'session-a',
@@ -551,9 +553,9 @@ describe('InterpreterSockets', () => {
     })
     it('should broadcast the start to the channel', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.startInterpret('socket-a', {
         sessionId: 'session-a',
@@ -567,9 +569,9 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, interpreterRepo, metricsRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.startInterpret('socket-a', {
         sessionId: 'session-a',
@@ -587,9 +589,9 @@ describe('InterpreterSockets', () => {
   describe('#stopInterpret', () => {
     it('should remove the active-interpreter packet', async () => {
       const { interpreter, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.stopInterpret('socket-a', {
         sessionId: 'session-a',
@@ -600,9 +602,9 @@ describe('InterpreterSockets', () => {
     })
     it('should remove the active-booth packet', async () => {
       const { interpreter, interpreterRepo, store } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.stopInterpret('socket-a', {
         sessionId: 'session-a',
@@ -613,9 +615,9 @@ describe('InterpreterSockets', () => {
     })
     it('should broadcast the stop to the booth', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.stopInterpret('socket-a', {
         sessionId: 'session-a',
@@ -630,9 +632,9 @@ describe('InterpreterSockets', () => {
     })
     it('should broadcast the stop to the channel', async () => {
       const { interpreter, interpreterRepo, sockets } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.stopInterpret('socket-a', {
         sessionId: 'session-a',
@@ -646,9 +648,9 @@ describe('InterpreterSockets', () => {
     })
     it('should log an event', async () => {
       const { interpreter, interpreterRepo, metricsRepo } = setup()
-      mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
-        mockPrep(1, 'jess@example.com', 'session-a', 'en')
-      )
+      jest
+        .mocked(interpreterRepo.prepInterpreter)
+        .mockResolvedValue(mockPrep(1, 'jess@example.com', 'session-a', 'en'))
 
       await interpreter.stopInterpret('socket-a', {
         sessionId: 'session-a',

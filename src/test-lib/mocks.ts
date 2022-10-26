@@ -1,21 +1,27 @@
-import { AttendanceRepository } from '../attendance/attendance-repository'
-import { CarbonRepository } from '../carbon/carbon-repository'
-import { ConferenceRepository } from '../conference/conference-repository'
-import { ContentRepository } from '../content/content-repository'
-import { MigrateRepository } from '../database/migrate-repository'
-import { MigrateService } from '../database/migrate-service'
-import { PostgresService, PostgresClient } from '../database/postgres-service'
-import { InterpreterRepository } from '../interpret/interpreter-repository'
-import { EmailService } from '../lib/email-service'
-import { I18nService } from '../lib/i18n-service'
-import { JwtService } from '../lib/jwt-service'
-import { KeyValueService } from '../key-value/key-value-service'
-import { S3Service } from '../lib/s3-service'
-import { SemaphoreService } from '../lib/semaphore-service'
-import { SocketService } from '../lib/socket-service'
-import { UrlService } from '../lib/url-service'
-import { MetricsRepository } from '../metrics/metrics-repository'
-import { RegistrationRepository } from '../registration/registration-repository'
+import { jest } from '@jest/globals'
+import { AttendanceRepository } from '../attendance/attendance-repository.js'
+import { CarbonRepository } from '../carbon/carbon-repository.js'
+import { ConferenceRepository } from '../conference/conference-repository.js'
+import { ContentRepository } from '../content/content-repository.js'
+import { MigrateRepository } from '../database/migrate-repository.js'
+import { MigrateService } from '../database/migrate-service.js'
+import {
+  PostgresService,
+  PostgresClient,
+} from '../database/postgres-service.js'
+import { InterpreterRepository } from '../interpret/interpreter-repository.js'
+import { EmailService } from '../lib/email-service.js'
+import { I18nService } from '../lib/i18n-service.js'
+import { JwtService } from '../lib/jwt-service.js'
+import { KeyValueService } from '../key-value/key-value-service.js'
+import { S3Service } from '../lib/s3-service.js'
+import { SemaphoreService } from '../lib/semaphore-service.js'
+import { SocketService } from '../lib/socket-service.js'
+import { UrlService } from '../lib/url-service.js'
+import { MetricsRepository } from '../metrics/metrics-repository.js'
+import { RegistrationRepository } from '../registration/registration-repository.js'
+
+const emptyMock = () => jest.fn<any>()
 
 //
 // Attendance
@@ -23,10 +29,10 @@ import { RegistrationRepository } from '../registration/registration-repository'
 
 export function mockAttendanceRepository(): Readonly<AttendanceRepository> {
   return {
-    attend: jest.fn(),
-    unattend: jest.fn(),
-    getSessionAttendance: jest.fn(),
-    getUserAttendance: jest.fn(),
+    attend: emptyMock(),
+    unattend: emptyMock(),
+    getSessionAttendance: emptyMock(),
+    getUserAttendance: emptyMock(),
   }
 }
 
@@ -36,7 +42,7 @@ export function mockAttendanceRepository(): Readonly<AttendanceRepository> {
 
 export function mockCarbonRepository(): Readonly<CarbonRepository> {
   return {
-    getCountryCount: jest.fn(),
+    getCountryCount: emptyMock(),
   }
 }
 
@@ -46,16 +52,16 @@ export function mockCarbonRepository(): Readonly<CarbonRepository> {
 
 export function mockConferenceRepository(): Readonly<ConferenceRepository> {
   return {
-    getSlots: jest.fn(),
-    getSessions: jest.fn(),
-    findSession: jest.fn(),
-    getTracks: jest.fn(),
-    getThemes: jest.fn(),
-    getSpeakers: jest.fn(),
-    getTypes: jest.fn(),
-    getSettings: jest.fn(),
-    getInterpreters: jest.fn(),
-    findInterpreter: jest.fn(),
+    getSlots: emptyMock(),
+    getSessions: emptyMock(),
+    findSession: emptyMock(),
+    getTracks: emptyMock(),
+    getThemes: emptyMock(),
+    getSpeakers: emptyMock(),
+    getTypes: emptyMock(),
+    getSettings: emptyMock(),
+    getInterpreters: emptyMock(),
+    findInterpreter: emptyMock(),
   }
 }
 
@@ -70,8 +76,8 @@ interface PostgresServiceExtras {
 
 export function mockPostgresClient(): Readonly<PostgresClient> {
   return {
-    release: jest.fn(),
-    sql: jest.fn(),
+    release: emptyMock(),
+    sql: emptyMock(),
   }
 }
 
@@ -79,27 +85,27 @@ export function mockPostgresService(): Readonly<PostgresService> &
   PostgresServiceExtras {
   const mockClient = mockPostgresClient()
   return {
-    getClient: jest.fn(async () => mockClient),
-    close: jest.fn(),
-    run: jest.fn((block) => block(mockClient)),
+    getClient: emptyMock(async () => mockClient),
+    close: emptyMock(),
+    run: emptyMock((block) => block(mockClient)),
     mockClient,
     mockSql: mockClient.sql as any,
-    checkHealth: jest.fn(),
+    checkHealth: emptyMock(),
   }
 }
 
 export function mockMigrateService(): Readonly<MigrateService> {
   return {
-    runMigrations: jest.fn(),
+    runMigrations: emptyMock(),
   }
 }
 
 export function mockMigrateRepository(): Readonly<MigrateRepository> {
   return {
-    getTables: jest.fn(),
-    createMigrationsTable: jest.fn(),
-    getPreviousMigrations: jest.fn(),
-    runMigration: jest.fn(),
+    getTables: emptyMock(),
+    createMigrationsTable: emptyMock(),
+    getPreviousMigrations: emptyMock(),
+    runMigration: emptyMock(),
   }
 }
 
@@ -108,11 +114,11 @@ export function mockMigrateRepository(): Readonly<MigrateRepository> {
 //
 export function mockRegistrationRepository(): Readonly<RegistrationRepository> {
   return {
-    getRegistrations: jest.fn(),
-    getVerifiedRegistration: jest.fn(),
-    register: jest.fn(),
-    unregister: jest.fn(),
-    verifyRegistration: jest.fn(),
+    getRegistrations: emptyMock(),
+    getVerifiedRegistration: emptyMock(),
+    register: emptyMock(),
+    unregister: emptyMock(),
+    verifyRegistration: emptyMock(),
   }
 }
 
@@ -121,7 +127,7 @@ export function mockRegistrationRepository(): Readonly<RegistrationRepository> {
 //
 export function mockMetricsRepository(): Readonly<MetricsRepository> {
   return {
-    trackEvent: jest.fn(),
+    trackEvent: emptyMock(),
   }
 }
 
@@ -136,10 +142,10 @@ export function mockEmailService(): Readonly<EmailService & EmailExtras> {
   const outbox: EmailExtras['outbox'] = []
   return {
     outbox,
-    sendEmail: jest.fn(async (to, subject) => {
+    sendEmail: emptyMock(async (to, subject) => {
       outbox.push({ to, subject })
     }),
-    sendTransactional: jest.fn(async (to, subject) => {
+    sendTransactional: emptyMock(async (to, subject) => {
       outbox.push({ to, subject })
     }),
   }
@@ -147,23 +153,23 @@ export function mockEmailService(): Readonly<EmailService & EmailExtras> {
 
 export function mockI18nService(): Readonly<I18nService> {
   return {
-    translate: jest.fn(),
+    translate: emptyMock(),
   }
 }
 
 export function mockJwtService(): Readonly<JwtService> {
   return {
-    signToken: jest.fn(),
-    verifyToken: jest.fn(),
-    getRequestAuth: jest.fn(),
-    getSocketAuth: jest.fn(),
+    signToken: emptyMock(),
+    verifyToken: emptyMock(),
+    getRequestAuth: emptyMock(),
+    getSocketAuth: emptyMock(),
   }
 }
 
 export function mockUrlService(): Readonly<UrlService> {
   return {
-    getClientLoginLink: jest.fn(),
-    getSessionLink: jest.fn(),
+    getClientLoginLink: emptyMock(),
+    getSessionLink: emptyMock(),
   }
 }
 
@@ -175,18 +181,18 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
   const data = new Map<string, any>()
   const expirys = new Map<string, number>()
   return {
-    retrieve: jest.fn(async (key) => data.get(key) ?? null),
-    put: jest.fn(async (key, value) => {
+    retrieve: emptyMock(async (key) => data.get(key) ?? null),
+    put: emptyMock(async (key, value) => {
       data.set(key, value)
     }),
-    checkHealth: jest.fn(),
-    setExpiry: jest.fn(async (key, length) => {
+    checkHealth: emptyMock(),
+    setExpiry: emptyMock(async (key, length) => {
       expirys.set(key, length)
     }),
-    delete: jest.fn(async (key) => {
+    delete: emptyMock(async (key) => {
       data.delete(key)
     }),
-    close: jest.fn(),
+    close: emptyMock(),
     data,
     expirys,
   }
@@ -194,27 +200,27 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
 
 export function mockSocketService(): Readonly<SocketService> {
   return {
-    emitToEveryone: jest.fn(),
-    emitTo: jest.fn(),
-    joinRoom: jest.fn(),
-    leaveRoom: jest.fn(),
-    sendError: jest.fn(),
-    getRoomsOfSocket: jest.fn(),
-    getSocketsInRoom: jest.fn(),
+    emitToEveryone: emptyMock(),
+    emitTo: emptyMock(),
+    joinRoom: emptyMock(),
+    leaveRoom: emptyMock(),
+    sendError: emptyMock(),
+    getRoomsOfSocket: emptyMock(),
+    getSocketsInRoom: emptyMock(),
   }
 }
 
 export function mockSemaphore(): Readonly<SemaphoreService> {
   return {
-    aquire: jest.fn(),
-    hasLock: jest.fn(),
-    release: jest.fn(),
+    aquire: emptyMock(),
+    hasLock: emptyMock(),
+    release: emptyMock(),
   }
 }
 
 export function mockS3Service(): Readonly<S3Service> {
   return {
-    uploadFile: jest.fn(),
+    uploadFile: emptyMock(),
   }
 }
 
@@ -224,7 +230,7 @@ export function mockS3Service(): Readonly<S3Service> {
 
 export function mockInterpreterRepository(): Readonly<InterpreterRepository> {
   return {
-    prepInterpreter: jest.fn(),
+    prepInterpreter: emptyMock(),
   }
 }
 
@@ -233,10 +239,10 @@ export function mockInterpreterRepository(): Readonly<InterpreterRepository> {
 //
 export function mockContentRepository(): Readonly<ContentRepository> {
   return {
-    validateRemote: jest.fn(async () => true),
-    updateLocalRepo: jest.fn(),
-    cloneRepo: jest.fn(),
-    clearDirectory: jest.fn(),
-    makeTempDir: jest.fn(async () => 'test/fixtures'),
+    validateRemote: emptyMock(async () => true),
+    updateLocalRepo: emptyMock(),
+    cloneRepo: emptyMock(),
+    clearDirectory: emptyMock(),
+    makeTempDir: emptyMock(async () => 'test/fixtures'),
   }
 }

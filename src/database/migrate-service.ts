@@ -1,5 +1,5 @@
-import { createDebug } from '../lib/module'
-import { MigrateRepository, Migration } from './migrate-repository'
+import { createDebug } from '../lib/module.js'
+import { MigrateRepository, Migration } from './migrate-repository.js'
 
 const debug = createDebug('deconf:module:migrate')
 

@@ -1,5 +1,5 @@
 /** @module metrics */
 
-export * from './metrics-repository'
-export * from './metrics-sockets'
-export * from './metrics-structs'
+export * from './metrics-repository.js'
+export * from './metrics-sockets.js'
+export * from './metrics-structs.js'

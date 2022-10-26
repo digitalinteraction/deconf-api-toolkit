@@ -1,7 +1,7 @@
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
-import { assertStruct } from '../lib/module'
-import { InterpretBoothStruct } from './interpret-booth-struct'
+import { ApiError } from '../lib/api-error.js'
+import { DeconfBaseContext } from '../lib/context.js'
+import { assertStruct } from '../lib/module.js'
+import { InterpretBoothStruct } from './interpret-booth-struct.js'
 
 type Context = Pick<DeconfBaseContext, 'jwt' | 'conferenceRepo'>
 
@@ -14,11 +14,8 @@ export class InterpreterRepository {
   async prepInterpreter(socketId: string, booth: unknown) {
     assertStruct(booth, InterpretBoothStruct)
 
-    const {
-      authToken,
-      email,
-      interpreter,
-    } = await this.#context.jwt.getSocketAuth(socketId)
+    const { authToken, email, interpreter } =
+      await this.#context.jwt.getSocketAuth(socketId)
     if (!interpreter) throw ApiError.unauthorized()
 
     const session = await this.#context.conferenceRepo.findSession(

@@ -1,11 +1,10 @@
-import { mocked } from 'ts-jest/utils'
-import { createTestingDeconfConfig } from '../../lib/config'
+import { createTestingDeconfConfig } from '../../lib/config.js'
 import {
   createTestingResources,
   mockCarbonRepository,
   mockKeyValueStore,
-} from '../../test-lib/module'
-import { CarbonRoutes, CARBON_CACHE_KEY } from '../carbon-routes'
+} from '../../test-lib/module.js'
+import { CarbonRoutes, CARBON_CACHE_KEY } from '../carbon-routes.js'
 
 function setup() {
   const config = createTestingDeconfConfig()
@@ -20,9 +19,9 @@ describe('CarbonRoutes', () => {
   describe('getCarbon', () => {
     it('should return the carbon estimate and distance', async () => {
       const { routes, carbonRepo } = setup()
-      mocked(carbonRepo.getCountryCount).mockResolvedValue([
-        { country: 'FR', count: 1 },
-      ])
+      jest
+        .mocked(carbonRepo.getCountryCount)
+        .mockResolvedValue([{ country: 'FR', count: 1 }])
 
       const result = await routes.getCarbon()
 
@@ -35,9 +34,9 @@ describe('CarbonRoutes', () => {
     })
     it('should store the cached version for a limited time', async () => {
       const { routes, carbonRepo, store } = setup()
-      mocked(carbonRepo.getCountryCount).mockResolvedValue([
-        { country: 'FR', count: 1 },
-      ])
+      jest
+        .mocked(carbonRepo.getCountryCount)
+        .mockResolvedValue([{ country: 'FR', count: 1 }])
 
       await routes.getCarbon()
 
@@ -49,9 +48,9 @@ describe('CarbonRoutes', () => {
     })
     it('should return the cached version if there is one', async () => {
       const { routes, carbonRepo, store } = setup()
-      mocked(carbonRepo.getCountryCount).mockResolvedValue([
-        { country: 'FR', count: 1 },
-      ])
+      jest
+        .mocked(carbonRepo.getCountryCount)
+        .mockResolvedValue([{ country: 'FR', count: 1 }])
       store.data.set(CARBON_CACHE_KEY, {
         totalDistance: 100,
         carbonNotEmitted: 1,

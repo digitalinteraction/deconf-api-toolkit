@@ -1,8 +1,8 @@
 import { promisify } from 'util'
 import { RedisClient } from 'redis'
-import { KeyValueService } from './key-value-service'
+import { KeyValueService } from './key-value-service.js'
 
-import { createRedisClient } from '../lib/module'
+import { createRedisClient } from '../lib/module.js'
 
 /** Generate a promisified client to talk to redis */
 function promisifyRedis(client: RedisClient) {

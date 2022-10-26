@@ -6,8 +6,8 @@ import {
 } from '@openlab/deconf-shared'
 
 import got, { PaginationOptions, Got } from 'got'
-import { DeconfBaseContext } from '../lib/context'
-import { createDebug } from '../lib/module'
+import { DeconfBaseContext } from '../lib/context.js'
+import { createDebug } from '../lib/module.js'
 import {
   Localised,
   PretalxEvent,
@@ -17,7 +17,7 @@ import {
   PretalxSpeaker,
   PretalxTalk,
   PretalxTax,
-} from './pretalx-types'
+} from './pretalx-types.js'
 
 /** A paginated pretalx response */
 interface PretalxPaginated<T> {
@@ -80,23 +80,21 @@ export class PretalxService {
   /** @internal Create a pretalx-specific paginator for `got` requests */
   getPaginator<T>(): PaginationOptions<T, PretalxPaginated<T>> {
     return {
-      pagination: {
-        transform(response) {
-          return response.body.results
-        },
-        paginate(response) {
-          debug('paginate %o', response.requestUrl)
-          try {
-            if (!response.body.next) return false
-            const next = new URL(response.body.next)
+      transform(response) {
+        return response.body.results
+      },
+      paginate(data) {
+        debug('paginate %o', data.response.requestUrl)
+        try {
+          if (!data.response.body.next) return false
+          const next = new URL(data.response.body.next)
 
-            return {
-              searchParams: next.searchParams,
-            }
-          } catch (error) {
-            return false
+          return {
+            searchParams: next.searchParams,
           }
-        },
+        } catch (error) {
+          return false
+        }
       },
     }
   }

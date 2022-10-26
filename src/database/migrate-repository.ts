@@ -1,4 +1,4 @@
-import { PostgresClient } from './postgres-service'
+import { PostgresClient } from './postgres-service.js'
 
 /**
  * `MigrationRecord` is a database record of a migration that has been performed,

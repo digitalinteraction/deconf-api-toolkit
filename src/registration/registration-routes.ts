@@ -16,7 +16,7 @@ import {
   VerifyTokenStruct,
   VoidResponse,
   VOID_RESPONSE,
-} from '../lib/module'
+} from '../lib/module.js'
 
 export interface RegistrationMailer {
   sendLoginEmail(registration: Registration, token: string): Promise<void>
@@ -186,9 +186,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     assertStruct(body, LoginBodyStruct)
 
     // Make sure they have a verified record
-    const allRegistrations = await this.#context.registrationRepo.getRegistrations(
-      body.email
-    )
+    const allRegistrations =
+      await this.#context.registrationRepo.getRegistrations(body.email)
     const registration = allRegistrations.find((r) => r.verified)
     if (!registration) throw ApiError.unauthorized()
 
@@ -218,9 +217,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
   async finishEmailLogin(rawToken: any): Promise<URL> {
     const token = this.#context.jwt.verifyToken(rawToken, EmailLoginTokenStruct)
 
-    const registration = await this.#context.registrationRepo.getVerifiedRegistration(
-      token.sub
-    )
+    const registration =
+      await this.#context.registrationRepo.getVerifiedRegistration(token.sub)
     if (!registration) throw ApiError.unauthorized()
 
     const authToken: AuthToken = {
@@ -269,9 +267,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     assertStruct(userData, this.#context.userDataStruct)
     const body = { ...rest, userData }
 
-    let allRegistrations = await this.#context.registrationRepo.getRegistrations(
-      body.email
-    )
+    let allRegistrations =
+      await this.#context.registrationRepo.getRegistrations(body.email)
 
     if (allRegistrations.some((r) => r.verified)) {
       const verified = allRegistrations.find((r) => r.verified) as Registration
@@ -322,9 +319,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     const token = this.#context.jwt.verifyToken(rawToken, VerifyTokenStruct)
 
     // If already verified exit early
-    const previousReg = await this.#context.registrationRepo.getVerifiedRegistration(
-      token.sub
-    )
+    const previousReg =
+      await this.#context.registrationRepo.getVerifiedRegistration(token.sub)
     if (previousReg) {
       throw new ApiError(400, ['registration.alreadyVerified'])
     }
@@ -332,9 +328,8 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
     // Verify the user
     await this.#context.registrationRepo.verifyRegistration(token.sub)
 
-    const registration = await this.#context.registrationRepo.getVerifiedRegistration(
-      token.sub
-    )
+    const registration =
+      await this.#context.registrationRepo.getVerifiedRegistration(token.sub)
     if (!registration) throw ApiError.internalServerError()
 
     const authToken = this.#context.jwt.signToken<AuthToken>({
@@ -362,9 +357,10 @@ export class RegistrationRoutes<T extends Record<string, unknown>> {
   async unregister(authToken: AuthToken | null): Promise<VoidResponse> {
     if (!authToken) throw ApiError.unauthorized()
 
-    const registration = await this.#context.registrationRepo.getVerifiedRegistration(
-      authToken.sub
-    )
+    const registration =
+      await this.#context.registrationRepo.getVerifiedRegistration(
+        authToken.sub
+      )
     if (!registration) throw ApiError.unauthorized()
 
     await this.#context.registrationRepo.unregister(registration.email)

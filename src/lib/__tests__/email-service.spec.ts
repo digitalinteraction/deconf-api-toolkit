@@ -1,17 +1,18 @@
 import { MailService as Sendgrid } from '@sendgrid/mail'
-import { mocked } from 'ts-jest/utils'
-import { createTestingDeconfConfig } from '../config'
-import { createTestingEnv } from '../env'
-import { EmailService } from '../email-service'
+
+import { jest } from '../../test-lib/module.js'
+import { createTestingDeconfConfig } from '../config.js'
+import { createTestingEnv } from '../env.js'
+import { EmailService } from '../email-service.js'
 
 jest.mock('@sendgrid/mail')
 
 function setup() {
-  mocked(Sendgrid).mockClear()
+  jest.mocked(Sendgrid).mockClear()
   const env = createTestingEnv()
   const config = createTestingDeconfConfig()
   const service = new EmailService({ env, config })
-  const sendgrid = mocked(Sendgrid).mock.instances[0]
+  const sendgrid = jest.mocked(Sendgrid).mock.instances[0]
   return { env, config, service, sendgrid }
 }
 

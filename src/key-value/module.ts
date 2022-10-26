@@ -5,6 +5,6 @@
  * @module key-value
  */
 
-export * from './key-value-service'
-export * from './memory-key-value-service'
-export * from './redis-key-value-service'
+export * from './key-value-service.js'
+export * from './memory-key-value-service.js'
+export * from './redis-key-value-service.js'

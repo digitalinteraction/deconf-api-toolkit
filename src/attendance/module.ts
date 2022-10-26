@@ -4,6 +4,6 @@
  * @module attendance
  */
 
-export * from './attendance-repository'
-export * from './attendance-routes'
-export * from './attendance-struct'
+export * from './attendance-repository.js'
+export * from './attendance-routes.js'
+export * from './attendance-struct.js'

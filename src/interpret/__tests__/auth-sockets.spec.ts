@@ -1,14 +1,14 @@
-import { mocked } from 'ts-jest/utils'
-import { mockInterpreter } from '../../module'
-import { mockAuthToken, mockRegistration } from '../../test-lib/fixtures'
+import { mockInterpreter } from '../../module.js'
 import {
+  mockAuthToken,
+  mockRegistration,
   mockConferenceRepository,
   mockJwtService,
   mockKeyValueStore,
   mockRegistrationRepository,
-  mockSocketService,
-} from '../../test-lib/mocks'
-import { AuthSockets } from '../auth-sockets'
+  jest,
+} from '../../test-lib/module.js'
+import { AuthSockets } from '../auth-sockets.js'
 
 function setup() {
   const store = mockKeyValueStore()
@@ -24,11 +24,11 @@ describe('AuthSockets', () => {
     it('should store the authentication token', async () => {
       const { auth, jwt, registrationRepo, store, conferenceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      mocked(jwt.verifyToken).mockReturnValue(authToken)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        mockRegistration({ email: 'geoff@example.com' })
-      )
-      mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
+      jest.mocked(jwt.verifyToken).mockReturnValue(authToken)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(mockRegistration({ email: 'geoff@example.com' }))
+      jest.mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
 
       await auth.auth('socket-a', 'fake_jwt')
 
@@ -41,13 +41,13 @@ describe('AuthSockets', () => {
     it('should store their interpretation record', async () => {
       const { auth, jwt, registrationRepo, store, conferenceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      mocked(jwt.verifyToken).mockReturnValue(authToken)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        mockRegistration({ email: 'jess@example.com' })
-      )
-      mocked(conferenceRepo.findInterpreter).mockResolvedValue(
-        mockInterpreter({ email: 'jess@example.com' })
-      )
+      jest.mocked(jwt.verifyToken).mockReturnValue(authToken)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(mockRegistration({ email: 'jess@example.com' }))
+      jest
+        .mocked(conferenceRepo.findInterpreter)
+        .mockResolvedValue(mockInterpreter({ email: 'jess@example.com' }))
 
       await auth.auth('socket-a', 'fake_jwt')
 
@@ -60,11 +60,11 @@ describe('AuthSockets', () => {
     it('should set the their auth to expire after a day', async () => {
       const { auth, jwt, registrationRepo, store, conferenceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      mocked(jwt.verifyToken).mockReturnValue(authToken)
-      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        mockRegistration({ email: 'geoff@example.com' })
-      )
-      mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
+      jest.mocked(jwt.verifyToken).mockReturnValue(authToken)
+      jest
+        .mocked(registrationRepo.getVerifiedRegistration)
+        .mockResolvedValue(mockRegistration({ email: 'geoff@example.com' }))
+      jest.mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
 
       await auth.auth('socket-a', 'fake_jwt')
 
@@ -75,7 +75,7 @@ describe('AuthSockets', () => {
   describe('#deauth', () => {
     it('should remove the authentication', async () => {
       const { auth, store } = setup()
-      mocked(store.retrieve).mockResolvedValue({})
+      jest.mocked(store.retrieve).mockResolvedValue({})
 
       await auth.deauth('socket-a')
 

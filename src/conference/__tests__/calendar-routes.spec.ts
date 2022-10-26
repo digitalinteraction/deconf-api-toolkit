@@ -1,6 +1,5 @@
-import { mocked } from 'ts-jest/utils'
-
 import {
+  jest,
   mockSession,
   mockAttendanceRepository,
   mockConferenceRepository,
@@ -8,15 +7,15 @@ import {
   mockAttendance,
   mockJwtService,
   mockAuthToken,
-} from '../../test-lib/module'
+} from '../../test-lib/module.js'
 
 import {
   CalendarRoutes,
   getGoogleDate,
   getIcsDate,
   getSessionIcsAttributes,
-} from '../calendar-routes'
-import { mockSlot } from '../mock-schedule-command'
+} from '../calendar-routes.js'
+import { mockSlot } from '../mock-schedule-command.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -80,7 +79,7 @@ describe('CalendarRoutes', () => {
   describe('getSessionIcsFile', () => {
     it('should generate an ics file', async () => {
       const { routes, conferenceRepo, url } = setup()
-      mocked(conferenceRepo.findSession).mockResolvedValue(
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -88,12 +87,12 @@ describe('CalendarRoutes', () => {
           content: { en: 'Session Content' },
         })
       )
-      mocked(conferenceRepo.getSlots).mockResolvedValue([
-        mockSlot({ id: 'slot-a' }),
-      ])
-      mocked(url.getSessionLink).mockReturnValue(
-        new URL('http://localhost:3000/session/session-a')
-      )
+      jest
+        .mocked(conferenceRepo.getSlots)
+        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
+      jest
+        .mocked(url.getSessionLink)
+        .mockReturnValue(new URL('http://localhost:3000/session/session-a'))
 
       const result = await routes.getSessionIcsFile('en', 'session-a')
 
@@ -106,7 +105,7 @@ describe('CalendarRoutes', () => {
   describe('#getGoogleCalendarUrl', () => {
     it('should return a URL to create the event', async () => {
       const { routes, conferenceRepo, url, attendanceRepo } = setup()
-      mocked(conferenceRepo.findSession).mockResolvedValue(
+      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -114,16 +113,16 @@ describe('CalendarRoutes', () => {
           content: { en: 'Session Content' },
         })
       )
-      mocked(conferenceRepo.getSlots).mockResolvedValue([
+      jest.mocked(conferenceRepo.getSlots).mockResolvedValue([
         mockSlot({
           id: 'slot-a',
           start: new Date('2022-01-01T12:30:00.000Z'),
           end: new Date('2022-01-01T13:00:00.000Z'),
         }),
       ])
-      mocked(url.getSessionLink).mockReturnValue(
-        new URL('http://localhost:3000/session/session-a')
-      )
+      jest
+        .mocked(url.getSessionLink)
+        .mockReturnValue(new URL('http://localhost:3000/session/session-a'))
 
       const result = await routes.getGoogleCalendarUrl('en', 'session-a')
 
@@ -143,7 +142,7 @@ describe('CalendarRoutes', () => {
   describe('#getUserIcs', () => {
     it('should generate an ics file with user events', async () => {
       const { routes, conferenceRepo, url, attendanceRepo } = setup()
-      mocked(conferenceRepo.getSessions).mockResolvedValue([
+      jest.mocked(conferenceRepo.getSessions).mockResolvedValue([
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -157,7 +156,7 @@ describe('CalendarRoutes', () => {
           content: { en: 'Session B Content' },
         }),
       ])
-      mocked(conferenceRepo.getSlots).mockResolvedValue([
+      jest.mocked(conferenceRepo.getSlots).mockResolvedValue([
         mockSlot({
           id: 'slot-a',
           start: new Date('2022-01-01T12:30:00.000Z'),
@@ -169,13 +168,15 @@ describe('CalendarRoutes', () => {
           end: new Date('2022-01-02T13:00:00.000Z'),
         }),
       ])
-      mocked(url.getSessionLink).mockReturnValue(
-        new URL('http://localhost:3000/session/session-a')
-      )
-      mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
-        mockAttendance({ session: 'session-a' }),
-        mockAttendance({ session: 'session-b' }),
-      ])
+      jest
+        .mocked(url.getSessionLink)
+        .mockReturnValue(new URL('http://localhost:3000/session/session-a'))
+      jest
+        .mocked(attendanceRepo.getUserAttendance)
+        .mockResolvedValue([
+          mockAttendance({ session: 'session-a' }),
+          mockAttendance({ session: 'session-b' }),
+        ])
 
       const result = await routes.getUserIcs({
         kind: 'user-ical',
@@ -192,7 +193,7 @@ describe('CalendarRoutes', () => {
     it('should return a url with the user-ical token in it', async () => {
       const { routes, jwt } = setup()
       const authToken = mockAuthToken({ sub: 1, user_lang: 'fr' })
-      mocked(jwt.signToken).mockReturnValue('user-ical-token')
+      jest.mocked(jwt.signToken).mockReturnValue('user-ical-token')
 
       const result = routes.createUserCalendar(
         authToken,

@@ -3,7 +3,7 @@ import path from 'path'
 import Yaml from 'yaml'
 import dot from 'dot-prop'
 import mustache from 'mustache'
-import { ResourcesMap } from './resources'
+import { ResourcesMap } from './resources.js'
 
 export type I18nDictionary = Record<string, any>
 

@@ -2,14 +2,13 @@ import fs from 'fs/promises'
 import {
   object,
   string,
-  Describe,
   create,
   array,
   Struct,
   Infer,
   optional,
 } from 'superstruct'
-import { createDebug } from './utils'
+import { createDebug } from './utils.js'
 
 const debug = createDebug('deconf:lib:config')
 

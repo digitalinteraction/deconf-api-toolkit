@@ -1,5 +1,5 @@
 import { Interpreter } from '@openlab/deconf-shared'
-import { ApiError } from './api-error'
+import { ApiError } from './api-error.js'
 
 //
 // Messages

@@ -1,11 +1,11 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockJwtService,
   mockRegistration,
   mockRegistrationRepository,
   mockUrlService,
-} from '../../test-lib/module'
-import { DevAuthCommand } from '../dev-auth-command'
+  jest,
+} from '../../test-lib/module.js'
+import { DevAuthCommand } from '../dev-auth-command.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -23,11 +23,13 @@ describe('DevAuthCommand', () => {
   describe('#process', () => {
     it('should return a signed token and login URL', async () => {
       const { devAuthCmd, registrationRepo, jwt, url } = setup()
-      mocked(registrationRepo.getRegistrations).mockResolvedValue([
-        mockRegistration({ email: 'geoff@example.com' }),
-      ])
-      mocked(url.getClientLoginLink).mockReturnValue(new URL('http://mock_url'))
-      mocked(jwt.signToken).mockReturnValue('mock_token')
+      jest
+        .mocked(registrationRepo.getRegistrations)
+        .mockResolvedValue([mockRegistration({ email: 'geoff@example.com' })])
+      jest
+        .mocked(url.getClientLoginLink)
+        .mockReturnValue(new URL('http://mock_url'))
+      jest.mocked(jwt.signToken).mockReturnValue('mock_token')
 
       const result = await devAuthCmd.process({
         email: 'geoff@example.com',

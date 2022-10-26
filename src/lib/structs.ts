@@ -1,5 +1,5 @@
 import { Failure, Struct, StructError, validate } from 'superstruct'
-import { ApiError } from './api-error'
+import { ApiError } from './api-error.js'
 
 export class StructApiError extends ApiError {
   failures: Failure[]

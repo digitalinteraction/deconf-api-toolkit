@@ -1,8 +1,8 @@
-import { ApiError } from '../lib/api-error'
-import { DeconfBaseContext } from '../lib/context'
-import { InterpretBoothStruct } from './interpret-booth-struct'
 import { InterpretBooth } from '@openlab/deconf-shared'
-import { assertStruct } from '../module'
+import { ApiError } from '../lib/api-error.js'
+import { DeconfBaseContext } from '../lib/context.js'
+import { InterpretBoothStruct } from './interpret-booth-struct.js'
+import { assertStruct } from '../module.js'
 
 type Context = Pick<
   DeconfBaseContext,

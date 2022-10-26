@@ -1,19 +1,18 @@
-import { mocked } from 'ts-jest/utils'
 import pg from 'pg'
 
-import { composeSql, PostgresService } from '../../database/postgres-service'
-import { createTestingEnv } from '../../lib/env'
-import { mockPostgresClient } from '../../test-lib/module'
+import { composeSql, PostgresService } from '../../database/postgres-service.js'
+import { createTestingEnv } from '../../lib/env.js'
+import { mockPostgresClient, jest } from '../../test-lib/module.js'
 
 jest.mock('pg')
 
 function setup() {
-  mocked(pg.Pool).mockClear()
+  jest.mocked(pg.Pool).mockClear()
   const env = createTestingEnv()
   const service = new PostgresService({ env })
-  const pool = mocked(pg.Pool).mock.instances[0]
+  const pool = jest.mocked(pg.Pool).mock.instances[0]
   const poolClient = {
-    release: jest.fn(),
+    release: jest.fn<any>(),
     query: jest.fn(async () => Promise.resolve({ rows: [] })),
   }
   return { service, pool, poolClient }
@@ -54,7 +53,7 @@ describe('PostgresService', () => {
   describe('run', () => {
     it('should create a client and run the block with it', async () => {
       const { service, pool, poolClient } = setup()
-      mocked<any>(pool.connect).mockResolvedValue(poolClient)
+      jest.mocked<any>(pool.connect).mockResolvedValue(poolClient)
 
       await service.run((client) => client.sql`SELECT true`)
 
@@ -66,7 +65,7 @@ describe('PostgresService', () => {
 
     it('should release the client afterwards', async () => {
       const { service, pool, poolClient } = setup()
-      mocked<any>(pool.connect).mockResolvedValue(poolClient)
+      jest.mocked<any>(pool.connect).mockResolvedValue(poolClient)
 
       await service.run((client) => client.sql`SELECT true`)
 
@@ -97,7 +96,7 @@ describe('PostgresService', () => {
   describe('getClient', () => {
     it('should make a pool client', async () => {
       const { service, pool, poolClient } = setup()
-      mocked<any>(pool.connect).mockResolvedValue(poolClient)
+      jest.mocked<any>(pool.connect).mockResolvedValue(poolClient)
 
       const client = await service.getClient()
 
@@ -110,7 +109,7 @@ describe('PostgresService', () => {
     describe('release', () => {
       it('should release the client', async () => {
         const { service, pool, poolClient } = setup()
-        mocked<any>(pool.connect).mockResolvedValue(poolClient)
+        jest.mocked<any>(pool.connect).mockResolvedValue(poolClient)
         const client = await service.getClient()
 
         client.release()
@@ -121,7 +120,7 @@ describe('PostgresService', () => {
     describe('query', () => {
       it('should parse and execute a query with parameters', async () => {
         const { service, pool, poolClient } = setup()
-        mocked<any>(pool.connect).mockResolvedValue(poolClient)
+        jest.mocked<any>(pool.connect).mockResolvedValue(poolClient)
         const client = await service.getClient()
 
         client.sql`SELECT ${true}`

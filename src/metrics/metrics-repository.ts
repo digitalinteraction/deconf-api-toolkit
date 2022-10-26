@@ -1,4 +1,4 @@
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 /** Extra data to link to a logged metric */
 export interface MetricsTrackOptions {
