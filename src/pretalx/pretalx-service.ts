@@ -129,7 +129,7 @@ export class PretalxService {
   /** Fetch all pretalx submissions */
   getSubmissions(options: GetSubmissionOptions = {}) {
     const searchParams = new URLSearchParams(this.baseSearchParams)
-    searchParams.set('question', options.questions?.join(',') ?? 'all')
+    searchParams.set('questions', options.questions?.join(',') ?? 'all')
 
     return this.#pretalx.paginate.all('submissions', {
       pagination: this.getPaginator<PretalxTalk>(),
