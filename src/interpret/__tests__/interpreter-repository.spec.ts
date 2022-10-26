@@ -2,9 +2,9 @@ import {
   mockAuthToken,
   mockInterpreter,
   mockSession,
-  jest,
   mockConferenceRepository,
   mockJwtService,
+  mocked,
 } from '../../test-lib/module.js'
 import { InterpreterRepository } from '../interpreter-repository.js'
 
@@ -19,14 +19,14 @@ describe('InterpreterRepository', () => {
   describe('#prepInterpreter', () => {
     it('should return the auth, session and interpret room', async () => {
       const { repo, conferenceRepo, jwt } = setup()
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'jess@example.com',
         interpreter: mockInterpreter({ email: 'jess@example.com' }),
       })
-      jest
-        .mocked(conferenceRepo.findSession)
-        .mockResolvedValue(mockSession({ id: 'session-a' }))
+      mocked(conferenceRepo.findSession).mockResolvedValue(
+        mockSession({ id: 'session-a' })
+      )
 
       const result = await repo.prepInterpreter('socket-a', {
         sessionId: 'session-a',

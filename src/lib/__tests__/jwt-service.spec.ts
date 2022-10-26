@@ -56,16 +56,13 @@ describe('JwtService', () => {
   describe('#signToken', () => {
     it('should sign the token with an issuer', () => {
       const { service, env } = setup()
-
       const result = service.signToken({
         kind: 'auth',
         sub: 1,
         user_roles: ['admin'],
         user_lang: 'en',
       })
-
       const decoded = jsonwebtoken.verify(result, env.JWT_SECRET)
-
       expect(decoded).toEqual({
         kind: 'auth',
         sub: 1,

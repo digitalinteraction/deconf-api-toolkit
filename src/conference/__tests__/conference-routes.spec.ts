@@ -1,11 +1,11 @@
 import { LocalisedLink, SessionState } from '@openlab/deconf-shared'
 import { ApiError, createTestingDeconfConfig } from '../../lib/module.js'
 import {
-  jest,
   mockAttendance,
   mockAttendanceRepository,
   mockAuthToken,
   mockConferenceRepository,
+  mocked,
   mockSession,
   mockSessionType,
   mockSettings,
@@ -35,7 +35,7 @@ describe('ConferenceRoutes', () => {
   describe('generateIcs', () => {
     it('should return an ics file', async () => {
       const { routes, conferenceRepo, url } = setup()
-      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
+      mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -43,12 +43,12 @@ describe('ConferenceRoutes', () => {
           content: { en: 'Session Info' },
         })
       )
-      jest
-        .mocked(conferenceRepo.getSlots)
-        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
-      jest
-        .mocked(url.getSessionLink)
-        .mockReturnValue(new URL('http://localhost:3000/session/session-a/ics'))
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
+        mockSlot({ id: 'slot-a' }),
+      ])
+      mocked(url.getSessionLink).mockReturnValue(
+        new URL('http://localhost:3000/session/session-a/ics')
+      )
 
       const result = await routes.generateIcs('en', 'session-a')
 
@@ -64,25 +64,25 @@ describe('ConferenceRoutes', () => {
   describe('#getSchedule', () => {
     it('should return all schedule resources', async () => {
       const { routes, conferenceRepo } = setup()
-      jest.mocked(conferenceRepo.getSettings).mockResolvedValue(mockSettings())
-      jest
-        .mocked(conferenceRepo.getSessions)
-        .mockResolvedValue([mockSession({ id: 'session-a' })])
-      jest
-        .mocked(conferenceRepo.getSlots)
-        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
-      jest
-        .mocked(conferenceRepo.getThemes)
-        .mockResolvedValue([mockTheme({ id: 'theme-a' })])
-      jest
-        .mocked(conferenceRepo.getTracks)
-        .mockResolvedValue([mockTrack({ id: 'track-a' })])
-      jest
-        .mocked(conferenceRepo.getTypes)
-        .mockResolvedValue([mockSessionType({ id: 'type-a' })])
-      jest
-        .mocked(conferenceRepo.getSpeakers)
-        .mockResolvedValue([mockSpeaker({ id: 'speaker-a' })])
+      mocked(conferenceRepo.getSettings).mockResolvedValue(mockSettings())
+      mocked(conferenceRepo.getSessions).mockResolvedValue([
+        mockSession({ id: 'session-a' }),
+      ])
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
+        mockSlot({ id: 'slot-a' }),
+      ])
+      mocked(conferenceRepo.getThemes).mockResolvedValue([
+        mockTheme({ id: 'theme-a' }),
+      ])
+      mocked(conferenceRepo.getTracks).mockResolvedValue([
+        mockTrack({ id: 'track-a' }),
+      ])
+      mocked(conferenceRepo.getTypes).mockResolvedValue([
+        mockSessionType({ id: 'type-a' }),
+      ])
+      mocked(conferenceRepo.getSpeakers).mockResolvedValue([
+        mockSpeaker({ id: 'speaker-a' }),
+      ])
 
       const result = await routes.getSchedule()
 
@@ -98,22 +98,20 @@ describe('ConferenceRoutes', () => {
     })
     it('should filter out unconfirmed sessions', async () => {
       const { routes, conferenceRepo } = setup()
-      jest.mocked(conferenceRepo.getSettings).mockResolvedValue(mockSettings())
-      jest.mocked(conferenceRepo.getSlots).mockResolvedValue([])
-      jest.mocked(conferenceRepo.getThemes).mockResolvedValue([])
-      jest.mocked(conferenceRepo.getTracks).mockResolvedValue([])
-      jest.mocked(conferenceRepo.getTypes).mockResolvedValue([])
-      jest.mocked(conferenceRepo.getSpeakers).mockResolvedValue([])
-      jest
-        .mocked(conferenceRepo.getSessions)
-        .mockResolvedValue([
-          mockSession({ id: 'session-a', state: SessionState.confirmed }),
-          mockSession({ id: 'session-b', state: SessionState.confirmed }),
-          mockSession({ id: 'session-c', state: SessionState.cancelled }),
-          mockSession({ id: 'session-d', state: SessionState.rejected }),
-          mockSession({ id: 'session-e', state: SessionState.accepted }),
-          mockSession({ id: 'session-f', state: SessionState.draft }),
-        ])
+      mocked(conferenceRepo.getSettings).mockResolvedValue(mockSettings())
+      mocked(conferenceRepo.getSlots).mockResolvedValue([])
+      mocked(conferenceRepo.getThemes).mockResolvedValue([])
+      mocked(conferenceRepo.getTracks).mockResolvedValue([])
+      mocked(conferenceRepo.getTypes).mockResolvedValue([])
+      mocked(conferenceRepo.getSpeakers).mockResolvedValue([])
+      mocked(conferenceRepo.getSessions).mockResolvedValue([
+        mockSession({ id: 'session-a', state: SessionState.confirmed }),
+        mockSession({ id: 'session-b', state: SessionState.confirmed }),
+        mockSession({ id: 'session-c', state: SessionState.cancelled }),
+        mockSession({ id: 'session-d', state: SessionState.rejected }),
+        mockSession({ id: 'session-e', state: SessionState.accepted }),
+        mockSession({ id: 'session-f', state: SessionState.draft }),
+      ])
 
       const result = await routes.getSchedule()
 
@@ -125,16 +123,16 @@ describe('ConferenceRoutes', () => {
     it('should return links with no participation cap', async () => {
       const { routes, conferenceRepo, attendanceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
+      mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
           links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
         })
       )
-      jest
-        .mocked(conferenceRepo.getSlots)
-        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
+        mockSlot({ id: 'slot-a' }),
+      ])
 
       const result = await routes.getLinks(authToken, 'session-a')
 
@@ -145,7 +143,7 @@ describe('ConferenceRoutes', () => {
     it('should return links to registered attendees when there is a cap', async () => {
       const { routes, conferenceRepo, attendanceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
+      mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -153,14 +151,12 @@ describe('ConferenceRoutes', () => {
           links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
         })
       )
-      jest
-        .mocked(conferenceRepo.getSlots)
-        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
-      jest
-        .mocked(attendanceRepo.getUserAttendance)
-        .mockResolvedValue([
-          mockAttendance({ attendee: 1, session: 'session-a' }),
-        ])
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
+        mockSlot({ id: 'slot-a' }),
+      ])
+      mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
+        mockAttendance({ attendee: 1, session: 'session-a' }),
+      ])
 
       const result = await routes.getLinks(authToken, 'session-a')
 
@@ -171,7 +167,7 @@ describe('ConferenceRoutes', () => {
     it('should always return links to admins', async () => {
       const { routes, conferenceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1, user_roles: ['admin'] })
-      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
+      mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -179,9 +175,9 @@ describe('ConferenceRoutes', () => {
           links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
         })
       )
-      jest
-        .mocked(conferenceRepo.getSlots)
-        .mockResolvedValue([mockSlot({ id: 'slot-a' })])
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
+        mockSlot({ id: 'slot-a' }),
+      ])
 
       const result = await routes.getLinks(authToken, 'session-a')
 
@@ -192,7 +188,7 @@ describe('ConferenceRoutes', () => {
     it('should not return links 30m before the session', async () => {
       const { routes, conferenceRepo, attendanceRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      jest.mocked(conferenceRepo.findSession).mockResolvedValue(
+      mocked(conferenceRepo.findSession).mockResolvedValue(
         mockSession({
           id: 'session-a',
           slot: 'slot-a',
@@ -200,17 +196,15 @@ describe('ConferenceRoutes', () => {
           links: [{ type: 'video', url: 'https://youtu.be', language: 'en' }],
         })
       )
-      jest.mocked(conferenceRepo.getSlots).mockResolvedValue([
+      mocked(conferenceRepo.getSlots).mockResolvedValue([
         mockSlot({
           id: 'slot-a',
           start: new Date('3000-01-01T00:00:00.000Z'),
         }),
       ])
-      jest
-        .mocked(attendanceRepo.getUserAttendance)
-        .mockResolvedValue([
-          mockAttendance({ attendee: 1, session: 'session-a' }),
-        ])
+      mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
+        mockAttendance({ attendee: 1, session: 'session-a' }),
+      ])
 
       const result = routes.getLinks(authToken, 'session-a')
 
@@ -224,7 +218,7 @@ describe('ConferenceRoutes', () => {
       const links: LocalisedLink[] = [
         { type: 'video', url: 'https://youtu.be', language: 'en' },
       ]
-      jest.mocked(conferenceRepo.getSessions).mockResolvedValue([
+      mocked(conferenceRepo.getSessions).mockResolvedValue([
         mockSession({
           id: 'session-a',
           type: 'unknown',
@@ -254,12 +248,12 @@ describe('ConferenceRoutes', () => {
           slot: undefined,
         }),
       ])
-      jest
-        .mocked(conferenceRepo.getTypes)
-        .mockResolvedValue([mockSessionType({ id: 'type-a' })])
-      jest
-        .mocked(conferenceRepo.getTracks)
-        .mockResolvedValue([mockSessionType({ id: 'track-a' })])
+      mocked(conferenceRepo.getTypes).mockResolvedValue([
+        mockSessionType({ id: 'type-a' }),
+      ])
+      mocked(conferenceRepo.getTracks).mockResolvedValue([
+        mockSessionType({ id: 'track-a' }),
+      ])
 
       const result = await routes.lintSessions()
 

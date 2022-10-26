@@ -6,6 +6,7 @@ import {
   mockKeyValueStore,
   mockMetricsRepository,
   mockSocketService,
+  mocked,
 } from '../../test-lib/module.js'
 import { ChannelSockets } from '../channel-sockets.js'
 
@@ -29,14 +30,14 @@ describe('ChannelSockets', () => {
   describe('#joinChannel', () => {
     it('should add the user to the room', async () => {
       const { channel, sockets, jwt, conferenceRepo } = setup()
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken(),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      jest
-        .mocked(conferenceRepo.findSession)
-        .mockResolvedValue(mockSession({ enableInterpretation: true }))
+      mocked(conferenceRepo.findSession).mockResolvedValue(
+        mockSession({ enableInterpretation: true })
+      )
 
       await channel.joinChannel('socket-a', {
         sessionId: 'session-a',
@@ -50,14 +51,14 @@ describe('ChannelSockets', () => {
     })
     it('should log a metrics event', async () => {
       const { channel, metricsRepo, jwt, conferenceRepo } = setup()
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      jest
-        .mocked(conferenceRepo.findSession)
-        .mockResolvedValue(mockSession({ enableInterpretation: true }))
+      mocked(conferenceRepo.findSession).mockResolvedValue(
+        mockSession({ enableInterpretation: true })
+      )
 
       await channel.joinChannel('socket-a', {
         sessionId: 'session-a',
@@ -72,14 +73,14 @@ describe('ChannelSockets', () => {
     })
     it('should emit channel-started if it has already started', async () => {
       const { channel, sockets, jwt, conferenceRepo, store } = setup()
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken(),
         email: 'lisa@example.com',
         interpreter: null,
       })
-      jest
-        .mocked(conferenceRepo.findSession)
-        .mockResolvedValue(mockSession({ enableInterpretation: true }))
+      mocked(conferenceRepo.findSession).mockResolvedValue(
+        mockSession({ enableInterpretation: true })
+      )
       store.data.set('active-booth/session-a/en', { _: 'something non-null' })
 
       await channel.joinChannel('socket-a', {
@@ -94,10 +95,10 @@ describe('ChannelSockets', () => {
   describe('#leaveChannel', () => {
     it('should remove the user from the room', async () => {
       const { sockets, channel, jwt } = setup()
-      jest
-        .mocked(sockets.getRoomsOfSocket)
-        .mockResolvedValue(new Set(['channel/session-a/en']))
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
+        new Set(['channel/session-a/en'])
+      )
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,
@@ -115,10 +116,10 @@ describe('ChannelSockets', () => {
     })
     it('should log a leave-channel event', async () => {
       const { sockets, channel, metricsRepo, jwt } = setup()
-      jest
-        .mocked(sockets.getRoomsOfSocket)
-        .mockResolvedValue(new Set(['channel/session-a/en']))
-      jest.mocked(jwt.getSocketAuth).mockResolvedValue({
+      mocked(sockets.getRoomsOfSocket).mockResolvedValue(
+        new Set(['channel/session-a/en'])
+      )
+      mocked(jwt.getSocketAuth).mockResolvedValue({
         authToken: mockAuthToken({ sub: 1 }),
         email: 'lisa@example.com',
         interpreter: null,

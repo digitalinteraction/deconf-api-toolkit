@@ -85,9 +85,9 @@ export function mockPostgresService(): Readonly<PostgresService> &
   PostgresServiceExtras {
   const mockClient = mockPostgresClient()
   return {
-    getClient: emptyMock(async () => mockClient),
+    getClient: jest.fn(async () => mockClient),
     close: emptyMock(),
-    run: emptyMock((block) => block(mockClient)),
+    run: jest.fn((block) => block(mockClient)),
     mockClient,
     mockSql: mockClient.sql as any,
     checkHealth: emptyMock(),
@@ -142,10 +142,10 @@ export function mockEmailService(): Readonly<EmailService & EmailExtras> {
   const outbox: EmailExtras['outbox'] = []
   return {
     outbox,
-    sendEmail: emptyMock(async (to, subject) => {
+    sendEmail: jest.fn(async (to, subject) => {
       outbox.push({ to, subject })
     }),
-    sendTransactional: emptyMock(async (to, subject) => {
+    sendTransactional: jest.fn(async (to, subject) => {
       outbox.push({ to, subject })
     }),
   }
@@ -181,18 +181,18 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
   const data = new Map<string, any>()
   const expirys = new Map<string, number>()
   return {
-    retrieve: emptyMock(async (key) => data.get(key) ?? null),
-    put: emptyMock(async (key, value) => {
+    retrieve: jest.fn(async (key) => data.get(key) ?? null),
+    put: jest.fn(async (key, value) => {
       data.set(key, value)
     }),
-    checkHealth: emptyMock(),
-    setExpiry: emptyMock(async (key, length) => {
+    checkHealth: jest.fn(async () => {}),
+    setExpiry: jest.fn(async (key, length) => {
       expirys.set(key, length)
     }),
-    delete: emptyMock(async (key) => {
+    delete: jest.fn(async (key) => {
       data.delete(key)
     }),
-    close: emptyMock(),
+    close: jest.fn(async () => {}),
     data,
     expirys,
   }
@@ -239,10 +239,10 @@ export function mockInterpreterRepository(): Readonly<InterpreterRepository> {
 //
 export function mockContentRepository(): Readonly<ContentRepository> {
   return {
-    validateRemote: emptyMock(async () => true),
+    validateRemote: jest.fn(async () => true),
     updateLocalRepo: emptyMock(),
     cloneRepo: emptyMock(),
     clearDirectory: emptyMock(),
-    makeTempDir: emptyMock(async () => 'test/fixtures'),
+    makeTempDir: jest.fn(async () => 'test/fixtures'),
   }
 }

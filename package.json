@@ -86,6 +86,10 @@
   },
   "jest": {
     "preset": "ts-jest/presets/default-esm",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
     "extensionsToTreatAsEsm": [
       ".ts"
     ],

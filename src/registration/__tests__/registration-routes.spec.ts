@@ -3,6 +3,7 @@ import {
   jest,
   mockAuthToken,
   mockConferenceRepository,
+  mocked,
   mockEmailLoginToken,
   mockInterpreter,
   mockJwtService,
@@ -46,9 +47,9 @@ describe('RegistrationRoutes', () => {
     it('should return the users verification', async () => {
       const { routes, registrationRepo } = setup()
       const authToken = mockAuthToken({ sub: 1 })
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValue(mockRegistration({ email: 'geoff@example.com' }))
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'geoff@example.com' })
+      )
 
       const result = await routes.getRegistration(authToken)
 
@@ -63,12 +64,10 @@ describe('RegistrationRoutes', () => {
   describe('#startEmailLogin', () => {
     it('should send a login email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([
-          mockRegistration({ email: 'geoff@example.com', verified: true }),
-        ])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'geoff@example.com', verified: true }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_token')
 
       await routes.startEmailLogin({
         email: 'geoff@example.com',
@@ -81,12 +80,10 @@ describe('RegistrationRoutes', () => {
     })
     it('should return a VOID_RESPONSE', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([
-          mockRegistration({ email: 'geoff@example.com', verified: true }),
-        ])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'geoff@example.com', verified: true }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_token')
 
       const result = await routes.startEmailLogin({
         email: 'geoff@example.com',
@@ -99,15 +96,15 @@ describe('RegistrationRoutes', () => {
   describe('#finishEmailLogin', () => {
     it('should return a login link', async () => {
       const { routes, registrationRepo, jwt, url, conferenceRepo } = setup()
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValue(mockRegistration({ email: 'jess@example.com' }))
-      jest.mocked(jwt.verifyToken).mockReturnValue(mockEmailLoginToken())
-      jest.mocked(jwt.signToken).mockReturnValue('mock_login_token')
-      jest.mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
-      jest
-        .mocked(url.getClientLoginLink)
-        .mockImplementation((token) => new URL(`http://localhost#${token}`))
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'jess@example.com' })
+      )
+      mocked(jwt.verifyToken).mockReturnValue(mockEmailLoginToken())
+      mocked(jwt.signToken).mockReturnValue('mock_login_token')
+      mocked(conferenceRepo.findInterpreter).mockResolvedValue(null)
+      mocked(url.getClientLoginLink).mockImplementation(
+        (token) => new URL(`http://localhost#${token}`)
+      )
 
       const result = await routes.finishEmailLogin('mock_email_token')
 
@@ -115,21 +112,21 @@ describe('RegistrationRoutes', () => {
     })
     it('should add interpret and admin roles', async () => {
       const { routes, registrationRepo, jwt, url, conferenceRepo } = setup()
-      jest.mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
         mockRegistration({
           id: 1,
           email: 'geoff@example.com',
           language: 'fr',
         })
       )
-      jest.mocked(jwt.verifyToken).mockReturnValue(mockEmailLoginToken())
-      jest.mocked(jwt.signToken).mockReturnValue('mock_login_token')
-      jest
-        .mocked(conferenceRepo.findInterpreter)
-        .mockResolvedValue(mockInterpreter({ email: 'geoff@example.com' }))
-      jest
-        .mocked(url.getClientLoginLink)
-        .mockImplementation((token) => new URL(`http://localhost#${token}`))
+      mocked(jwt.verifyToken).mockReturnValue(mockEmailLoginToken())
+      mocked(jwt.signToken).mockReturnValue('mock_login_token')
+      mocked(conferenceRepo.findInterpreter).mockResolvedValue(
+        mockInterpreter({ email: 'geoff@example.com' })
+      )
+      mocked(url.getClientLoginLink).mockImplementation(
+        (token) => new URL(`http://localhost#${token}`)
+      )
 
       await routes.finishEmailLogin('mock_email_token')
 
@@ -145,12 +142,10 @@ describe('RegistrationRoutes', () => {
   describe('#startRegister', () => {
     it('should send a verification email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([
-          mockRegistration({ email: 'tim@example.com', verified: false }),
-        ])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com', verified: false }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
       await routes.startRegister({
         name: 'Tim Smith',
@@ -170,12 +165,10 @@ describe('RegistrationRoutes', () => {
     })
     it('should register the user', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([
-          mockRegistration({ email: 'tim@example.com', verified: false }),
-        ])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com', verified: false }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
       await routes.startRegister({
         name: 'Tim Smith',
@@ -201,12 +194,10 @@ describe('RegistrationRoutes', () => {
     })
     it('should return a VOID_RESPONSE', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([
-          mockRegistration({ email: 'tim@example.com', verified: false }),
-        ])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com', verified: false }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
       const result = await routes.startRegister({
         name: 'Tim Smith',
@@ -223,10 +214,10 @@ describe('RegistrationRoutes', () => {
     })
     it('should do nothing if already registered', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([mockRegistration({ email: 'tim@example.com' })])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_verify_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com' }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_verify_token')
 
       await routes.startRegister({
         name: 'Tim Smith',
@@ -243,10 +234,10 @@ describe('RegistrationRoutes', () => {
     })
     it('should send an "alreadyVerified" email', async () => {
       const { routes, registrationRepo, jwt, mailer } = setup()
-      jest
-        .mocked(registrationRepo.getRegistrations)
-        .mockResolvedValue([mockRegistration({ email: 'tim@example.com' })])
-      jest.mocked(jwt.signToken).mockReturnValue('mock_auth_token')
+      mocked(registrationRepo.getRegistrations).mockResolvedValue([
+        mockRegistration({ email: 'tim@example.com' }),
+      ])
+      mocked(jwt.signToken).mockReturnValue('mock_auth_token')
 
       await routes.startRegister({
         name: 'Tim Smith',
@@ -269,17 +260,17 @@ describe('RegistrationRoutes', () => {
   describe('#finishRegister', () => {
     it('should return a login link', async () => {
       const { routes, registrationRepo, jwt, url } = setup()
-      jest.mocked(jwt.verifyToken).mockReturnValue(mockVerifyToken())
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValueOnce(null)
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValueOnce(mockRegistration({ email: 'tim@example.com' }))
-      jest.mocked(jwt.signToken).mockReturnValue('mock_auth_token')
-      jest
-        .mocked(url.getClientLoginLink)
-        .mockImplementation((token) => new URL(`http://localhost#${token}`))
+      mocked(jwt.verifyToken).mockReturnValue(mockVerifyToken())
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValueOnce(
+        null
+      )
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValueOnce(
+        mockRegistration({ email: 'tim@example.com' })
+      )
+      mocked(jwt.signToken).mockReturnValue('mock_auth_token')
+      mocked(url.getClientLoginLink).mockImplementation(
+        (token) => new URL(`http://localhost#${token}`)
+      )
 
       const result = await routes.finishRegister('mock_verify_token')
 
@@ -287,14 +278,14 @@ describe('RegistrationRoutes', () => {
     })
     it('should verify the user', async () => {
       const { routes, registrationRepo, jwt, url } = setup()
-      jest.mocked(jwt.verifyToken).mockReturnValue(mockVerifyToken())
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValueOnce(null)
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValueOnce(mockRegistration({ id: 1 }))
-      jest.mocked(jwt.signToken).mockReturnValue('mock_auth_token')
+      mocked(jwt.verifyToken).mockReturnValue(mockVerifyToken())
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValueOnce(
+        null
+      )
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValueOnce(
+        mockRegistration({ id: 1 })
+      )
+      mocked(jwt.signToken).mockReturnValue('mock_auth_token')
 
       await routes.finishRegister('mock_verify_token')
 
@@ -306,9 +297,9 @@ describe('RegistrationRoutes', () => {
     it('should unregister the registration', async () => {
       const { routes, registrationRepo } = setup()
       const authToken = mockAuthToken()
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValue(mockRegistration({ email: 'tim@example.com' }))
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'tim@example.com' })
+      )
 
       await routes.unregister(authToken)
 
@@ -317,9 +308,9 @@ describe('RegistrationRoutes', () => {
     it('should return a VOID_RESPONSE', async () => {
       const { routes, registrationRepo } = setup()
       const authToken = mockAuthToken()
-      jest
-        .mocked(registrationRepo.getVerifiedRegistration)
-        .mockResolvedValue(mockRegistration({ email: 'tim@example.com' }))
+      mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
+        mockRegistration({ email: 'tim@example.com' })
+      )
 
       const result = await routes.unregister(authToken)
 
