@@ -39,6 +39,10 @@ export interface GetSubmissionOptions {
   questions?: number[]
 }
 
+export interface GetSpeakersOptions {
+  questions?: number[]
+}
+
 type Context = Pick<DeconfBaseContext, 'store'> & {
   env: {
     PRETALX_API_TOKEN: string
@@ -146,10 +150,13 @@ export class PretalxService {
   }
 
   /** Fetch pretalx speakers */
-  getSpeakers() {
+  getSpeakers(options: GetSpeakersOptions = {}) {
+    const searchParams = new URLSearchParams(this.baseSearchParams)
+    searchParams.set('questions', options.questions?.join(',') ?? 'all')
+
     return this.#pretalx.paginate.all('speakers', {
       pagination: this.getPaginator<PretalxSpeaker>(),
-      searchParams: this.baseSearchParams,
+      searchParams,
     })
   }
 
