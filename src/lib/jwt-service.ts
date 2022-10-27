@@ -8,6 +8,7 @@ import {
   literal,
   number,
   Struct,
+  optional,
 } from 'superstruct'
 
 import { AuthToken, Interpreter } from '@openlab/deconf-shared'
@@ -61,6 +62,7 @@ export const EmailLoginTokenStruct = type({
   kind: literal('email-login'),
   sub: number(),
   user_roles: array(string()),
+  redirect: optional(string()),
 })
 
 /**
