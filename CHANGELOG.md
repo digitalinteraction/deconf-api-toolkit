@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.1...v5.0.0) (2022-10-27)
+
+### ⚠ BREAKING CHANGES
+
+- convert to esm + require node 16
+- **pretalx:** improve slug generation
+
+### Features
+
+- **pretalx:** improve slug generation ([bb79667](https://github.com/digitalinteraction/deconf-api-toolkit/commit/bb796670a509c8e7a28bb0c5943d28c5ff49dde0)), closes [#28](https://github.com/digitalinteraction/deconf-api-toolkit/issues/28)
+
+- **pretalx** add option to pick speaker questions ([44fdb44](https://github.com/digitalinteraction/deconf-api-toolkit/commit/44fdb44597d4841304efb8feb4f0d9a030be768a))
+
+- **pretalx** pass question ids to getSubmissions ([44fdb44](https://github.com/digitalinteraction/deconf-api-toolkit/commit/44fdb44597d4841304efb8feb4f0d9a030be768a))
+
+- convert to esm + require node 16 ([44fdb44](https://github.com/digitalinteraction/deconf-api-toolkit/commit/44fdb44597d4841304efb8feb4f0d9a030be768a))
+
 ### [4.9.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.0...v4.9.1) (2022-10-25)
 
 ### Bug Fixes
