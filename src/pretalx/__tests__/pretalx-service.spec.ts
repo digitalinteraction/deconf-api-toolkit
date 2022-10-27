@@ -55,7 +55,7 @@ describe('PretalxService', () => {
     it('should include the "limit" parameter', async () => {
       const { service } = setup()
 
-      expect(service.baseSearchParams).toEqual({ limit: 50 })
+      expect(service.baseSearchParams).toEqual({ limit: '50' })
     })
   })
 
