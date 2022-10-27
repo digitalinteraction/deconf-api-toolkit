@@ -1,6 +1,4 @@
-import dedent from 'dedent'
-
-import { RESOURCE_CARBON_LOCATIONS } from '../carbon/carbon-routes'
+import { RESOURCE_CARBON_LOCATIONS } from '../carbon/carbon-routes.js'
 
 export function createTestingResources() {
   const resources = new Map<string, Buffer>()

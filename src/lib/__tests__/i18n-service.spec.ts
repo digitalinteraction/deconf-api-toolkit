@@ -1,6 +1,5 @@
-import path from 'path'
-import { getI18nKeys, I18nService, loadI18nLocales } from '../i18n-service'
-import { ResourcesMap } from '../resources'
+import { getI18nKeys, I18nService, loadI18nLocales } from '../i18n-service.js'
+import { ResourcesMap } from '../resources.js'
 
 describe('#getI18nKeys', () => {
   it('should return the dot-notation keys on an object', () => {
@@ -51,8 +50,8 @@ describe('I18nService', () => {
 
   describe('.loadLocales', () => {
     it('should load the yaml files in a directory', async () => {
-      const dir = path.join(__dirname, '../../test-lib/test-i18n')
-      const locales = await I18nService.loadLocales(dir)
+      const dir = new URL('../../test-lib/test-i18n', import.meta.url)
+      const locales = await I18nService.loadLocales(dir.pathname)
 
       expect(locales).toEqual({
         en: {

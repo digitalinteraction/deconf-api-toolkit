@@ -1,4 +1,4 @@
-import { DeconfBaseContext } from './context'
+import { DeconfBaseContext } from './context.js'
 import os from 'os'
 
 /** A lock record stored in redis */

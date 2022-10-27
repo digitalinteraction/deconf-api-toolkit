@@ -1,14 +1,14 @@
 import { object, string } from 'superstruct'
-import { mocked } from 'ts-jest/utils'
-import { ApiError } from '../../module'
+import { ApiError } from '../../module.js'
 import {
   mockJwtService,
   mockMetricsRepository,
   mockSemaphore,
   mockSocketAuth,
   mockSocketService,
-} from '../../test-lib/module'
-import { MetricsSockets, SITE_VISITORS_ROOM } from '../metrics-sockets'
+  mocked,
+} from '../../test-lib/module.js'
+import { MetricsSockets, SITE_VISITORS_ROOM } from '../metrics-sockets.js'
 
 function setup() {
   const sockets = mockSocketService()

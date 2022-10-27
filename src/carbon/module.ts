@@ -4,6 +4,6 @@
  * @module carbon
  */
 
-export * from './carbon-repository'
-export * from './carbon-routes'
-export * from './country-location-struct'
+export * from './carbon-repository.js'
+export * from './carbon-routes.js'
+export * from './country-location-struct.js'

@@ -5,7 +5,7 @@
  * @module database
  */
 
-export * from './migrate-repository'
-export * from './migrate-service'
-export * from './migrations'
-export * from './postgres-service'
+export * from './migrate-repository.js'
+export * from './migrate-service.js'
+export * from './migrations.js'
+export * from './postgres-service.js'

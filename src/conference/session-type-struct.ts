@@ -3,7 +3,7 @@
 //
 
 import { Describe, object, string } from 'superstruct'
-import { LocalisedStruct } from './localised-struct'
+import { LocalisedStruct } from './localised-struct.js'
 import { SessionType } from '@openlab/deconf-shared'
 
 /** `SessionTypeStruct` validates an object is a deconf `SessionType` */

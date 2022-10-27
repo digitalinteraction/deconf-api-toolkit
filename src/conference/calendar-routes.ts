@@ -10,7 +10,7 @@ import {
   DeconfBaseContext,
   localise,
   UserICalToken,
-} from '../lib/module'
+} from '../lib/module.js'
 
 /**
  * `getIcsDate` formats a `Date` for the `ics` library,

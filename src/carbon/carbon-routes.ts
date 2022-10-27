@@ -1,7 +1,7 @@
 import distance from 'haversine-distance'
 import { array, is } from 'superstruct'
-import { DeconfBaseContext } from '../lib/context'
-import { CountryLocationStruct } from './country-location-struct'
+import { DeconfBaseContext } from '../lib/context.js'
+import { CountryLocationStruct } from './country-location-struct.js'
 import { CarbonCalculation, CountryLocation } from '@openlab/deconf-shared'
 
 /**

@@ -1,11 +1,12 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockAuthToken,
   mockInterpreter,
   mockSession,
-} from '../../test-lib/fixtures'
-import { mockConferenceRepository, mockJwtService } from '../../test-lib/mocks'
-import { InterpreterRepository } from '../interpreter-repository'
+  mockConferenceRepository,
+  mockJwtService,
+  mocked,
+} from '../../test-lib/module.js'
+import { InterpreterRepository } from '../interpreter-repository.js'
 
 function setup() {
   const jwt = mockJwtService()

@@ -1,4 +1,4 @@
-import * as index from '../module'
+import * as index from '../module.js'
 
 it('should export the attendance module', () => {
   expect(index.AttendanceRoutes).toBeDefined()

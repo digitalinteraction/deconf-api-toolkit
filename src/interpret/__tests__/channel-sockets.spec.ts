@@ -1,13 +1,14 @@
-import { mocked } from 'ts-jest/utils'
-import { mockAuthToken, mockSession } from '../../test-lib/fixtures'
 import {
+  mockAuthToken,
+  mockSession,
   mockConferenceRepository,
   mockJwtService,
   mockKeyValueStore,
   mockMetricsRepository,
   mockSocketService,
-} from '../../test-lib/mocks'
-import { ChannelSockets } from '../channel-sockets'
+  mocked,
+} from '../../test-lib/module.js'
+import { ChannelSockets } from '../channel-sockets.js'
 
 function setup() {
   const jwt = mockJwtService()

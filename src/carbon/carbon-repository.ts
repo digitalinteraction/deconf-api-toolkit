@@ -1,4 +1,4 @@
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 /**
  * A country and the number of attendees registered in that country.

@@ -1,11 +1,11 @@
-import { mocked } from 'ts-jest/utils'
-import { createTestingDeconfConfig } from '../../lib/config'
+import { createTestingDeconfConfig } from '../../lib/config.js'
 import {
   createTestingResources,
   mockCarbonRepository,
+  mocked,
   mockKeyValueStore,
-} from '../../test-lib/module'
-import { CarbonRoutes, CARBON_CACHE_KEY } from '../carbon-routes'
+} from '../../test-lib/module.js'
+import { CarbonRoutes, CARBON_CACHE_KEY } from '../carbon-routes.js'
 
 function setup() {
   const config = createTestingDeconfConfig()

@@ -11,10 +11,10 @@ import {
 } from 'superstruct'
 
 import { AuthToken, Interpreter } from '@openlab/deconf-shared'
-import { ApiError } from './api-error'
-import { DeconfBaseContext } from './context'
-import { assertStruct } from './structs'
-import { createDebug } from './utils'
+import { ApiError } from './api-error.js'
+import { DeconfBaseContext } from './context.js'
+import { assertStruct } from './structs.js'
+import { createDebug } from './utils.js'
 
 /** @deprecated use [[JWT_DEFAULT_ISSUER]] */
 export const JWT_ISSUER = 'deconf-app'

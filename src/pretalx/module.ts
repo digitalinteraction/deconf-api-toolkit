@@ -5,6 +5,6 @@
  * @module pretalx
  */
 
-export * from './pretalx-service'
-export * from './pretalx-structs'
-export * from './pretalx-types'
+export * from './pretalx-service.js'
+export * from './pretalx-structs.js'
+export * from './pretalx-types.js'

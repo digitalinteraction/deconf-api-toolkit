@@ -15,7 +15,7 @@ import {
   Track,
   VerifyToken,
 } from '@openlab/deconf-shared'
-import { SocketAuth } from '../lib/jwt-service'
+import { SocketAuth } from '../lib/jwt-service.js'
 
 // IDEA: move to toolkit-shared?
 

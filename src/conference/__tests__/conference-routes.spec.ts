@@ -1,10 +1,11 @@
 import { LocalisedLink, SessionState } from '@openlab/deconf-shared'
-import { mocked } from 'ts-jest/utils'
-import { ApiError } from '../../lib/api-error'
-import { createTestingDeconfConfig } from '../../lib/config'
+import { ApiError, createTestingDeconfConfig } from '../../lib/module.js'
 import {
   mockAttendance,
+  mockAttendanceRepository,
   mockAuthToken,
+  mockConferenceRepository,
+  mocked,
   mockSession,
   mockSessionType,
   mockSettings,
@@ -12,13 +13,9 @@ import {
   mockSpeaker,
   mockTheme,
   mockTrack,
-} from '../../test-lib/fixtures'
-import {
-  mockAttendanceRepository,
-  mockConferenceRepository,
   mockUrlService,
-} from '../../test-lib/mocks'
-import { ConferenceRoutes } from '../conference-routes'
+} from '../../test-lib/module.js'
+import { ConferenceRoutes } from '../conference-routes.js'
 
 function setup() {
   const config = createTestingDeconfConfig()

@@ -26,7 +26,7 @@ import {
   loadResources,
   ConferenceConfigStruct,
   PretalxConfigStruct,
-} from '../src/module'
+} from '../src/module.js'
 
 import { MigrateRepository } from '../src/database/migrate-repository'
 import { object, assign, string } from 'superstruct'

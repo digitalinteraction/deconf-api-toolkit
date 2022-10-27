@@ -6,8 +6,8 @@ import {
 } from '@openlab/deconf-shared'
 
 import got, { PaginationOptions, Got } from 'got'
-import { DeconfBaseContext } from '../lib/context'
-import { createDebug } from '../lib/module'
+import { DeconfBaseContext } from '../lib/context.js'
+import { createDebug } from '../lib/module.js'
 import {
   Localised,
   PretalxEvent,
@@ -17,7 +17,7 @@ import {
   PretalxSpeaker,
   PretalxTalk,
   PretalxTax,
-} from './pretalx-types'
+} from './pretalx-types.js'
 
 /** A paginated pretalx response */
 interface PretalxPaginated<T> {
@@ -34,6 +34,14 @@ interface PretalxPaginated<T> {
 // }
 
 const debug = createDebug('deconf:pretalx:service')
+
+export interface GetSubmissionOptions {
+  questions?: number[]
+}
+
+export interface GetSpeakersOptions {
+  questions?: number[]
+}
 
 type Context = Pick<DeconfBaseContext, 'store'> & {
   env: {
@@ -80,31 +88,29 @@ export class PretalxService {
   /** @internal Create a pretalx-specific paginator for `got` requests */
   getPaginator<T>(): PaginationOptions<T, PretalxPaginated<T>> {
     return {
-      pagination: {
-        transform(response) {
-          return response.body.results
-        },
-        paginate(response) {
-          debug('paginate %o', response.requestUrl)
-          try {
-            if (!response.body.next) return false
-            const next = new URL(response.body.next)
+      transform(response) {
+        return response.body.results
+      },
+      paginate(data) {
+        debug('paginate %o', data.response.requestUrl.toString())
+        try {
+          if (!data.response.body.next) return false
+          const next = new URL(data.response.body.next)
 
-            return {
-              searchParams: next.searchParams,
-            }
-          } catch (error) {
-            return false
+          return {
+            searchParams: next.searchParams,
           }
-        },
+        } catch (error) {
+          return false
+        }
       },
     }
   }
 
   /** @internal Get common URL search params */
   get baseSearchParams() {
-    const { pageSize: limit = 100 } = this.#context.config
-    return { limit }
+    const { pageSize = 100 } = this.#context.config
+    return { limit: pageSize.toString() }
   }
 
   //
@@ -114,7 +120,7 @@ export class PretalxService {
   /** Fetch pretalx questions */
   getQuestions() {
     return this.#pretalx.paginate.all('questions', {
-      ...this.getPaginator<PretalxQuestion>(),
+      pagination: this.getPaginator<PretalxQuestion>(),
       searchParams: this.baseSearchParams,
     })
   }
@@ -125,33 +131,39 @@ export class PretalxService {
   }
 
   /** Fetch all pretalx submissions */
-  getSubmissions() {
+  getSubmissions(options: GetSubmissionOptions = {}) {
+    const searchParams = new URLSearchParams(this.baseSearchParams)
+    searchParams.set('questions', options.questions?.join(',') ?? 'all')
+
     return this.#pretalx.paginate.all('submissions', {
-      ...this.getPaginator<PretalxTalk>(),
-      searchParams: this.baseSearchParams,
+      pagination: this.getPaginator<PretalxTalk>(),
+      searchParams,
     })
   }
 
   /** Fetch released pretalx submissions @deprecated */
   getTalks() {
     return this.#pretalx.paginate.all('talks', {
-      ...this.getPaginator<PretalxTalk>(),
+      pagination: this.getPaginator<PretalxTalk>(),
       searchParams: this.baseSearchParams,
     })
   }
 
   /** Fetch pretalx speakers */
-  getSpeakers() {
+  getSpeakers(options: GetSpeakersOptions = {}) {
+    const searchParams = new URLSearchParams(this.baseSearchParams)
+    searchParams.set('questions', options.questions?.join(',') ?? 'all')
+
     return this.#pretalx.paginate.all('speakers', {
-      ...this.getPaginator<PretalxSpeaker>(),
-      searchParams: this.baseSearchParams,
+      pagination: this.getPaginator<PretalxSpeaker>(),
+      searchParams,
     })
   }
 
   /** Fetch pretalx tags */
   getTags() {
     return this.#pretalx.paginate.all('tags', {
-      ...this.getPaginator<PretalxTax>(),
+      pagination: this.getPaginator<PretalxTax>(),
       searchParams: this.baseSearchParams,
     })
   }

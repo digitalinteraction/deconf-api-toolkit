@@ -1,5 +1,5 @@
 import { Attendance } from '@openlab/deconf-shared'
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 interface RawSessionAttendance {
   session: string

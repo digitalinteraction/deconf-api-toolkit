@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockAttendance,
   mockAttendanceRepository,
@@ -8,8 +7,9 @@ import {
   mockRegistrationRepository,
   mockSession,
   VOID_RESPONSE,
-} from '../../test-lib/module'
-import { AttendanceRoutes } from '../attendance-routes'
+  mocked,
+} from '../../test-lib/module.js'
+import { AttendanceRoutes } from '../attendance-routes.js'
 
 const SESSION_ID = 'session-a'
 const ATTENDEE_ID = 1
@@ -161,15 +161,7 @@ describe('AttendanceRoutes', () => {
 
   describe('#getUserAttendance', () => {
     it("should return a user's attendance", async () => {
-      const {
-        conferenceRepo,
-        registrationRepo,
-        routes,
-        attendanceRepo,
-        session,
-        registration,
-        token,
-      } = setup()
+      const { routes, attendanceRepo, token } = setup()
       mocked(attendanceRepo.getUserAttendance).mockResolvedValue([
         mockAttendance({ attendee: ATTENDEE_ID, session: 'session-a' }),
         mockAttendance({ attendee: ATTENDEE_ID, session: 'session-b' }),

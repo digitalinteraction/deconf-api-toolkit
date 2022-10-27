@@ -8,7 +8,7 @@ import {
   DeconfBaseContext,
   ApiError,
   VoidResponse,
-} from '../lib/module'
+} from '../lib/module.js'
 
 type Context = Pick<
   DeconfBaseContext,
@@ -50,9 +50,10 @@ export class AttendanceRoutes {
     const session = await this.#context.conferenceRepo.findSession(sessionId)
     if (!session) throw ApiError.notFound()
 
-    const attendee = await this.#context.registrationRepo.getVerifiedRegistration(
-      authToken.sub
-    )
+    const attendee =
+      await this.#context.registrationRepo.getVerifiedRegistration(
+        authToken.sub
+      )
     if (!attendee) throw ApiError.unauthorized()
 
     return { session, attendee }
@@ -83,7 +84,8 @@ export class AttendanceRoutes {
     const { session, attendee } = await this.#setup(authToken, sessionId)
 
     if (session.participantCap !== null) {
-      const attendance = await this.#context.attendanceRepo.getSessionAttendance()
+      const attendance =
+        await this.#context.attendanceRepo.getSessionAttendance()
       const current = attendance.get(session.id) ?? 0
 
       if (current >= session.participantCap) {
@@ -145,7 +147,8 @@ export class AttendanceRoutes {
       attendee.id
     )
 
-    const sessionAttendance = await this.#context.attendanceRepo.getSessionAttendance()
+    const sessionAttendance =
+      await this.#context.attendanceRepo.getSessionAttendance()
 
     return {
       isAttending: userAttendance.some((a) => a.session === sessionId),

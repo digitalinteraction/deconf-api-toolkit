@@ -1,6 +1,6 @@
 import os from 'os'
-import { mockKeyValueStore } from '../../test-lib/mocks'
-import { SemaphoreService } from '../semaphore-service'
+import { mockKeyValueStore } from '../../test-lib/mocks.js'
+import { SemaphoreService } from '../semaphore-service.js'
 
 function setup() {
   const store = mockKeyValueStore()

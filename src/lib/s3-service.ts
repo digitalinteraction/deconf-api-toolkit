@@ -1,5 +1,5 @@
 import * as Minio from 'minio'
-import { DeconfEnv } from './env'
+import { DeconfEnv } from './env.js'
 
 type Context = {
   env: Pick<

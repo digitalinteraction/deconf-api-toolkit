@@ -3,7 +3,7 @@ import fs from 'fs/promises'
 
 import MarkdownIt from 'markdown-it'
 
-import { DeconfBaseContext, createDebug } from '../module'
+import { DeconfBaseContext, createDebug } from '../module.js'
 
 const debug = createDebug('deconf:content:service')
 

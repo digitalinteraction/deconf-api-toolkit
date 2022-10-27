@@ -9,7 +9,7 @@ import {
   Theme,
   Track,
 } from '@openlab/deconf-shared'
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 
 type Context = Pick<DeconfBaseContext, 'store'>
 

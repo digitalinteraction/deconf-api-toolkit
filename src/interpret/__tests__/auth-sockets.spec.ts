@@ -1,14 +1,14 @@
-import { mocked } from 'ts-jest/utils'
-import { mockInterpreter } from '../../module'
-import { mockAuthToken, mockRegistration } from '../../test-lib/fixtures'
+import { mockInterpreter } from '../../module.js'
 import {
+  mockAuthToken,
+  mockRegistration,
   mockConferenceRepository,
   mockJwtService,
   mockKeyValueStore,
   mockRegistrationRepository,
-  mockSocketService,
-} from '../../test-lib/mocks'
-import { AuthSockets } from '../auth-sockets'
+  mocked,
+} from '../../test-lib/module.js'
+import { AuthSockets } from '../auth-sockets.js'
 
 function setup() {
   const store = mockKeyValueStore()

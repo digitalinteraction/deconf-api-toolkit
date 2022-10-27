@@ -1,16 +1,16 @@
 import { assert as assertStruct, literal, number, type } from 'superstruct'
 import jsonwebtoken from 'jsonwebtoken'
 
-import { mockKeyValueStore } from '../../test-lib/mocks'
-import { createTestingEnv } from '../env'
+import { mockKeyValueStore } from '../../test-lib/mocks.js'
+import { createTestingEnv } from '../env.js'
 import {
   AuthTokenStruct,
   AuthzHeadersStruct,
   EmailLoginTokenStruct,
   JwtService,
-} from '../jwt-service'
-import { ApiError } from '../api-error'
-import { createTestingDeconfConfig } from '../config'
+} from '../jwt-service.js'
+import { ApiError } from '../api-error.js'
+import { createTestingDeconfConfig } from '../config.js'
 
 describe('AuthzHeadersStruct', () => {
   it('should validate auth headers', () => {
@@ -56,16 +56,13 @@ describe('JwtService', () => {
   describe('#signToken', () => {
     it('should sign the token with an issuer', () => {
       const { service, env } = setup()
-
       const result = service.signToken({
         kind: 'auth',
         sub: 1,
         user_roles: ['admin'],
         user_lang: 'en',
       })
-
       const decoded = jsonwebtoken.verify(result, env.JWT_SECRET)
-
       expect(decoded).toEqual({
         kind: 'auth',
         sub: 1,

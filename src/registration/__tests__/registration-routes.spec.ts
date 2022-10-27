@@ -1,20 +1,19 @@
-import { mocked } from 'ts-jest/utils'
-import { createTestingDeconfConfig } from '../../lib/config'
+import { createTestingDeconfConfig } from '../../lib/config.js'
 import {
+  jest,
   mockAuthToken,
+  mockConferenceRepository,
+  mocked,
   mockEmailLoginToken,
   mockInterpreter,
-  mockRegistration,
-  mockVerifyToken,
-  VOID_RESPONSE,
-} from '../../test-lib/module'
-import {
-  mockConferenceRepository,
   mockJwtService,
+  mockRegistration,
   mockRegistrationRepository,
   mockUrlService,
-} from '../../test-lib/mocks'
-import { RegistrationRoutes } from '../registration-routes'
+  mockVerifyToken,
+  VOID_RESPONSE,
+} from '../../test-lib/module.js'
+import { RegistrationRoutes } from '../registration-routes.js'
 import { object, string } from 'superstruct'
 
 function setup() {
@@ -24,9 +23,9 @@ function setup() {
   const registrationRepo = mockRegistrationRepository()
   const config = createTestingDeconfConfig()
   const mailer = {
-    sendLoginEmail: jest.fn(),
-    sendVerifyEmail: jest.fn(),
-    sendAlreadyRegisteredEmail: jest.fn(),
+    sendLoginEmail: jest.fn<any>(),
+    sendVerifyEmail: jest.fn<any>(),
+    sendAlreadyRegisteredEmail: jest.fn<any>(),
   }
   const userDataStruct = object({
     favouritePizza: string(),
@@ -114,7 +113,11 @@ describe('RegistrationRoutes', () => {
     it('should add interpret and admin roles', async () => {
       const { routes, registrationRepo, jwt, url, conferenceRepo } = setup()
       mocked(registrationRepo.getVerifiedRegistration).mockResolvedValue(
-        mockRegistration({ id: 1, email: 'geoff@example.com', language: 'fr' })
+        mockRegistration({
+          id: 1,
+          email: 'geoff@example.com',
+          language: 'fr',
+        })
       )
       mocked(jwt.verifyToken).mockReturnValue(mockEmailLoginToken())
       mocked(jwt.signToken).mockReturnValue('mock_login_token')

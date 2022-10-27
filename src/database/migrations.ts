@@ -1,5 +1,5 @@
-import { PostgresClient } from './postgres-service'
-import { Migration } from './migrate-repository'
+import { PostgresClient } from './postgres-service.js'
+import { Migration } from './migrate-repository.js'
 
 /**
  * `DECONF_MIGRATIONS` are the migrations for deconf

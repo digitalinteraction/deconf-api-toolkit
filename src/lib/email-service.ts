@@ -1,7 +1,7 @@
 import { MailService as Sendgrid } from '@sendgrid/mail'
-import { MailData } from '@sendgrid/helpers/classes/mail'
-import { DeconfBaseContext } from './context'
-import { DeconfEnv } from './env'
+import { MailData } from '@sendgrid/helpers/classes/mail.js'
+import { DeconfBaseContext } from './context.js'
+import { DeconfEnv } from './env.js'
 
 type Context = {
   /** @deprecated use `mailConfig` */

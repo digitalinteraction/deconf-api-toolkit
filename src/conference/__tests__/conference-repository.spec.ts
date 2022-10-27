@@ -1,4 +1,5 @@
 import {
+  jest,
   mockInterpreter,
   mockKeyValueStore,
   mockSession,
@@ -7,8 +8,8 @@ import {
   mockSpeaker,
   mockTheme,
   mockTrack,
-} from '../../test-lib/module'
-import { ConferenceRepository } from '../conference-repository'
+} from '../../test-lib/module.js'
+import { ConferenceRepository } from '../conference-repository.js'
 
 function setup() {
   const store = mockKeyValueStore()

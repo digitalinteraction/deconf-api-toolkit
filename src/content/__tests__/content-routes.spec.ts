@@ -1,5 +1,5 @@
-import { mockKeyValueStore } from '../../test-lib/module'
-import { ContentRoutes } from '../content-routes'
+import { mockKeyValueStore } from '../../test-lib/module.js'
+import { ContentRoutes } from '../content-routes.js'
 
 function setup() {
   const store = mockKeyValueStore()

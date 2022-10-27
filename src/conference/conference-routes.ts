@@ -7,8 +7,8 @@ import {
 } from '@openlab/deconf-shared'
 import * as ics from 'ics'
 
-import { ApiError, DeconfBaseContext } from '../lib/module'
-import { getIcsDate } from './calendar-routes'
+import { ApiError, DeconfBaseContext } from '../lib/module.js'
+import { getIcsDate } from './calendar-routes.js'
 
 // 30 minutes
 const LINKS_GRACE_MS = 30 * 60 * 1000

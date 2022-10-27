@@ -1,11 +1,11 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockJwtService,
   mockRegistration,
   mockRegistrationRepository,
   mockUrlService,
-} from '../../test-lib/module'
-import { DevAuthCommand } from '../dev-auth-command'
+  mocked,
+} from '../../test-lib/module.js'
+import { DevAuthCommand } from '../dev-auth-command.js'
 
 function setup() {
   const jwt = mockJwtService()

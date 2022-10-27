@@ -1,7 +1,7 @@
-import { DeconfBaseContext } from '../lib/context'
+import { DeconfBaseContext } from '../lib/context.js'
 import ms from 'ms'
 import { Struct, validate } from 'superstruct'
-import { ApiError, createDebug, StructApiError } from '../lib/module'
+import { ApiError, createDebug, StructApiError } from '../lib/module.js'
 
 const debug = createDebug('deconf:metrics:sockets')
 

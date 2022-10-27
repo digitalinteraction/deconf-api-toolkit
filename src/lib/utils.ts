@@ -1,4 +1,4 @@
-import { ApiError } from './api-error'
+import { ApiError } from './api-error.js'
 
 export { default as createDebug } from 'debug'
 

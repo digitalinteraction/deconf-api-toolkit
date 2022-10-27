@@ -1,18 +1,16 @@
-import { mocked } from 'ts-jest/utils'
 import {
   mockInterpreter,
   mockSession,
   mockSocketAuth,
-} from '../../test-lib/fixtures'
-import {
   mockInterpreterRepository,
   mockJwtService,
   mockKeyValueStore,
   mockMetricsRepository,
   mockS3Service,
   mockSocketService,
-} from '../../test-lib/mocks'
-import { InterpreterSockets } from '../interpreter-sockets'
+  mocked,
+} from '../../test-lib/module.js'
+import { InterpreterSockets } from '../interpreter-sockets.js'
 
 function setup() {
   const jwt = mockJwtService()
@@ -202,7 +200,11 @@ describe('InterpreterSockets', () => {
       const { interpreter, sockets, jwt, interpreterRepo } = setup()
       mocked(sockets.getSocketsInRoom).mockResolvedValue(['socket-b'])
       mocked(jwt.getSocketAuth).mockResolvedValueOnce(
-        mockSocketAuth({ id: 1, email: 'geoff@example.com', interpreter: true })
+        mockSocketAuth({
+          id: 1,
+          email: 'geoff@example.com',
+          interpreter: true,
+        })
       )
       mocked(interpreterRepo.prepInterpreter).mockResolvedValue(
         mockPrep(1, 'jess@example.com', 'session-a', 'en')

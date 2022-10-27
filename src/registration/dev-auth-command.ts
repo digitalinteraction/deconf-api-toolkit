@@ -1,5 +1,5 @@
 import { AuthToken } from '@openlab/deconf-shared'
-import { createDebug, DeconfBaseContext } from '../lib/module'
+import { createDebug, DeconfBaseContext } from '../lib/module.js'
 
 const debug = createDebug('deconf:registration:dev-auth')
 

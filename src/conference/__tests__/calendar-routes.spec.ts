@@ -1,5 +1,3 @@
-import { mocked } from 'ts-jest/utils'
-
 import {
   mockSession,
   mockAttendanceRepository,
@@ -8,15 +6,16 @@ import {
   mockAttendance,
   mockJwtService,
   mockAuthToken,
-} from '../../test-lib/module'
+  mocked,
+} from '../../test-lib/module.js'
 
 import {
   CalendarRoutes,
   getGoogleDate,
   getIcsDate,
   getSessionIcsAttributes,
-} from '../calendar-routes'
-import { mockSlot } from '../mock-schedule-command'
+} from '../calendar-routes.js'
+import { mockSlot } from '../mock-schedule-command.js'
 
 function setup() {
   const jwt = mockJwtService()

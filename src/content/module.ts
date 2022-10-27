@@ -56,6 +56,6 @@
  * @module content
  */
 
-export * from './content-repository'
-export * from './content-routes'
-export * from './content-service'
+export * from './content-repository.js'
+export * from './content-routes.js'
+export * from './content-service.js'

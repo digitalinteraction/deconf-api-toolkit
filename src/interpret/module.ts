@@ -1,8 +1,8 @@
 /** @module interpret */
 
-export * from './auth-sockets'
-export * from './channel-sockets'
-export * from './interpret-booth-struct'
-export * from './interpreter-repository'
-export * from './interpreter-sockets'
-export * from './interpreter-struct'
+export * from './auth-sockets.js'
+export * from './channel-sockets.js'
+export * from './interpret-booth-struct.js'
+export * from './interpreter-repository.js'
+export * from './interpreter-sockets.js'
+export * from './interpreter-struct.js'
