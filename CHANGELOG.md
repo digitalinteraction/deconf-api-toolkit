@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.1...v6.0.0) (2022-10-27)
+
+### ⚠ BREAKING CHANGES
+
+- convert to esm + require node 16
+- **pretalx:** improve slug generation
+
+### Features
+
+- **lib:** add optional redirect to EmailLoginToken objects ([63c7ea7](https://github.com/digitalinteraction/deconf-api-toolkit/commit/63c7ea70d42fdf08f1552248ba959b4e66151b5f))
+- **pretalx:** improve slug generation ([bb79667](https://github.com/digitalinteraction/deconf-api-toolkit/commit/bb796670a509c8e7a28bb0c5943d28c5ff49dde0)), closes [#28](https://github.com/digitalinteraction/deconf-api-toolkit/issues/28)
+
+- convert to esm + require node 16 ([44fdb44](https://github.com/digitalinteraction/deconf-api-toolkit/commit/44fdb44597d4841304efb8feb4f0d9a030be768a))
+
 ## [5.0.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.1...v5.0.0) (2022-10-27)
 
 ### ⚠ BREAKING CHANGES
