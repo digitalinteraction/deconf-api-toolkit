@@ -91,6 +91,8 @@ export interface PretalxTalk {
   track: {
     'en-mozilla': string
   } | null
+  track_id: number | null
+  submission_type_id: number | null
   state:
     | 'pending'
     | 'accepted'
