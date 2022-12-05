@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v5.1.0...v5.1.1) (2022-12-05)
+
+### Bug Fixes
+
+- **pretalx:** add new id fields to Pretalx ([44ec590](https://github.com/digitalinteraction/deconf-api-toolkit/commit/44ec590580d210c8da12fa5908fe71f7587c995e))
+
 ## [5.1.0](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v4.9.1...v5.1.0) (2022-10-27)
 
 ### Features
