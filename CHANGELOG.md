@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.2](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v5.1.1...v5.1.2) (2023-01-11)
+
+### Bug Fixes
+
+- upgrade bad dependencies now uses jsonwebtoken@9 ([6956bc9](https://github.com/digitalinteraction/deconf-api-toolkit/commit/6956bc921bb6a46ef1c2468dfc7c1a5e1f7b2f23))
+
 ### [5.1.1](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v5.1.0...v5.1.1) (2022-12-05)
 
 ### Bug Fixes
