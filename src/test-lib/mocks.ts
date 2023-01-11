@@ -87,7 +87,7 @@ export function mockPostgresService(): Readonly<PostgresService> &
   return {
     getClient: jest.fn(async () => mockClient),
     close: emptyMock(),
-    run: jest.fn((block) => block(mockClient)),
+    run: jest.fn((block: any) => block(mockClient)),
     mockClient,
     mockSql: mockClient.sql as any,
     checkHealth: emptyMock(),
@@ -142,10 +142,10 @@ export function mockEmailService(): Readonly<EmailService & EmailExtras> {
   const outbox: EmailExtras['outbox'] = []
   return {
     outbox,
-    sendEmail: jest.fn(async (to, subject) => {
+    sendEmail: jest.fn(async (to: string, subject: string) => {
       outbox.push({ to, subject })
     }),
-    sendTransactional: jest.fn(async (to, subject) => {
+    sendTransactional: jest.fn(async (to: string, subject: string) => {
       outbox.push({ to, subject })
     }),
   }
@@ -181,15 +181,15 @@ export function mockKeyValueStore(): Readonly<KeyValueService & StoreExtras> {
   const data = new Map<string, any>()
   const expirys = new Map<string, number>()
   return {
-    retrieve: jest.fn(async (key) => data.get(key) ?? null),
-    put: jest.fn(async (key, value) => {
+    retrieve: jest.fn(async (key: string) => data.get(key) ?? null),
+    put: jest.fn(async (key: string, value: unknown) => {
       data.set(key, value)
     }),
     checkHealth: jest.fn(async () => {}),
-    setExpiry: jest.fn(async (key, length) => {
+    setExpiry: jest.fn(async (key: string, length: number) => {
       expirys.set(key, length)
     }),
-    delete: jest.fn(async (key) => {
+    delete: jest.fn(async (key: string) => {
       data.delete(key)
     }),
     close: jest.fn(async () => {}),
