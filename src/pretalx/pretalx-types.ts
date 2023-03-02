@@ -117,6 +117,7 @@ export interface PretalxTalk {
 
 /** https://docs.pretalx.org/api/resources/tags.html */
 export interface PretalxTax {
+  id: number
   tag: string
   description: Localised
   color: string
