@@ -132,16 +132,15 @@ export class ContentService {
       const output: Record<T, string> = {} as any
 
       for (const locale of languages) {
-        const data = await fs.readFile(
-          path.join(directory, `${locale}.md`),
-          'utf8'
-        )
-        output[locale] = this.processMarkdown(data)
+        const data = await fs
+          .readFile(path.join(directory, `${locale}.md`), 'utf8')
+          .catch(() => null)
+        if (data) output[locale] = this.processMarkdown(data)
       }
 
       return output
     } catch (error) {
-      console.error('Error reading content', error)
+      console.error('Error reading content')
       throw error
     }
   }
