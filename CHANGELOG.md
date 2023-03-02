@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.3](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v5.1.2...v5.1.3) (2023-03-02)
+
+### Bug Fixes
+
+- **content:** avoid crash when loading missing locales ([bf5cbc2](https://github.com/digitalinteraction/deconf-api-toolkit/commit/bf5cbc25657d0d99ac29522a8e06a9b592ac8a0a))
+
 ### [5.1.2](https://github.com/digitalinteraction/deconf-api-toolkit/compare/v5.1.1...v5.1.2) (2023-01-11)
 
 ### Bug Fixes
