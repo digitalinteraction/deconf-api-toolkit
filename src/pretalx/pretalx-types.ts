@@ -113,7 +113,7 @@ export interface PretalxTalk {
   created: string // 2021-01-26T12:29:58.965155+01:00
   answers: PretalxResponse[]
   tags?: string[]
-  tag_ids?: string[]
+  tag_ids?: number[]
 }
 
 /** https://docs.pretalx.org/api/resources/tags.html */
